@@ -122,7 +122,7 @@ Page({
     })
     // this.noticeLastOne()
     // this.getshopInfo()
-    this.categories()
+    this.categoriesPromise = this.categories()
     // this.banners()
   },
   onShow: function(){
@@ -133,8 +133,27 @@ Page({
       })
     }
     
-    
-    this.shippingCarInfo()
+    // 从其他页面返回时，如果 categories 已完成，直接调用 shippingCarInfo
+    // 如果 categories 还在执行，等待完成后调用
+    if (this.data.currentLevel1Category) {
+      // categories 已完成，直接调用
+      this.shippingCarInfo()
+    } else if (this.categoriesPromise) {
+      // categories 正在执行，等待完成后调用
+      this.categoriesPromise.then(() => {
+        this.shippingCarInfo()
+      }).catch(() => {
+        // 即使失败也尝试调用
+        this.shippingCarInfo()
+      })
+    } else {
+      // 如果 Promise 不存在且分类也未加载，重新调用 categories
+      this.categoriesPromise = this.categories().then(() => {
+        this.shippingCarInfo()
+      }).catch(() => {
+        this.shippingCarInfo()
+      })
+    }
     const refreshIndex = wx.getStorageSync('refreshIndex')
     if (refreshIndex) {
       this.getshopInfo()
@@ -279,8 +298,8 @@ Page({
     const level1Categories = res.data.filter(item => item.level == 1)
     const level2Categories = res.data.filter(item => item.level == 2)
     const subCategories = level2Categories.filter(cat => cat.key === String(res.data[0].id));
-    // 初始化时设置 firstLevel1Category 为第一个一级分类
-    const firstLevel1Category = level1Categories.length > 0 ? level1Categories[0] : null
+    // 初始化时设置 currentLevel1Category 为第一个一级分类
+    const currentLevel1Category = level1Categories.length > 0 ? level1Categories[0] : null
     this.setData({
       page: 1,
       // categories: res.data,
@@ -291,7 +310,7 @@ Page({
       level1CategoryIndex: 0,
       level2CategoryIndex: 0, // 初始化为第一个分类
       goodsByCategory: [],
-      firstLevel1Category: firstLevel1Category // 初始化 firstLevel1Category
+      currentLevel1Category: currentLevel1Category // 初始化 currentLevel1Category
     })
     // if (shop_goods_split == '1') {
     //   wx.setStorageSync('shopIds', shopInfo.id)
@@ -634,7 +653,16 @@ Page({
   },
 
   async shippingCarInfo() {
-    const res = await WXAPI.shippingCarInfo(wx.getStorageSync('token'))
+    console.log("进入了shippingCarInfo")
+    console.log("currentLevel1Category",this.data.currentLevel1Category)
+    let res = null
+    if(this.data.currentLevel1Category.id == 559239){
+      res = await WXAPI.shippingCarInfo(wx.getStorageSync('token'),"delivery")
+    }
+    else {
+      res = await WXAPI.shippingCarInfo(wx.getStorageSync('token'),"self-pickup")
+    }
+    // const res = await WXAPI.shippingCarInfo(wx.getStorageSync('token'))
     console.log("获取购物车结果",res)
     if (res.code == 0) {
       this.setData({
@@ -688,7 +716,15 @@ Page({
         number = 1
       }
     }
-    const res = await WXAPI.shippingCarInfoAddItem(token, item.id, number, [], [])
+    console.log("addCart1的currentLevel1Category",this.data.currentLevel1Category.id)
+    let res = null
+    if(this.data.currentLevel1Category.id == 559239){
+      res = await WXAPI.shippingCarInfoAddItem(token, item.id, number, [], [], "delivery")
+    }
+    else {
+      res = await WXAPI.shippingCarInfoAddItem(token, item.id, number, [], [], "self-pickup")
+    }
+    // const res = await WXAPI.shippingCarInfoAddItem(token, item.id, number, [], [])
     console.log("添加购物车结果",res)
     wx.hideLoading()
     if (res.code == 2000) {
@@ -893,13 +929,35 @@ Page({
       title: '',
     })
    
-    const d = {
-      token,
-      goodsId: curGoodsMap.basicInfo.id,
-      number: curGoodsMap.number,
-      sku: sku && sku.length > 0 ? JSON.stringify(sku) : '',
-      addition: goodsAddition && goodsAddition.length > 0 ? JSON.stringify(goodsAddition) : '',
+    let d = null
+    if(this.data.currentLevel1Category.id == 559239){
+      d = {
+        token,
+        goodsId: curGoodsMap.basicInfo.id,
+        number: curGoodsMap.number,
+        sku: sku && sku.length > 0 ? JSON.stringify(sku) : '',
+        addition: goodsAddition && goodsAddition.length > 0 ? JSON.stringify(goodsAddition) : '',
+        type: "delivery"
+      }
     }
+    else {
+      d = {
+        token,
+        goodsId: curGoodsMap.basicInfo.id,
+        number: curGoodsMap.number,
+        sku: sku && sku.length > 0 ? JSON.stringify(sku) : '',
+        addition: goodsAddition && goodsAddition.length > 0 ? JSON.stringify(goodsAddition) : '',
+        type: "self-pickup"
+      }
+    }
+
+    // const d = {
+    //   token,
+    //   goodsId: curGoodsMap.basicInfo.id,
+    //   number: curGoodsMap.number,
+    //   sku: sku && sku.length > 0 ? JSON.stringify(sku) : '',
+    //   addition: goodsAddition && goodsAddition.length > 0 ? JSON.stringify(goodsAddition) : '',
+    // }
     if (this.data.goodsTimesSchedule) {
       const a = this.data.goodsTimesSchedule.find(ele => ele.active)
       if (a) {
@@ -910,6 +968,8 @@ Page({
         }
       }
     }
+    console.log("addCart2的currentLevel1Category",this.data.currentLevel1Category.id)
+    
     const res = await WXAPI.shippingCarInfoAddItemV2(d)
     wx.hideLoading()
     if (res.code == 2000) {
@@ -929,14 +989,24 @@ Page({
   },
   async cartStepChange(e) {
     const token = wx.getStorageSync('token')
+    console.log("进入了移除商品")
     const index = e.currentTarget.dataset.idx
     const item = this.data.shippingCarInfo.items[index]
+    const currentLevel1Category = this.data.currentLevel1Category
+    console.log("currentLevel1Category",currentLevel1Category)
     if (e.detail < 1) {
       // 删除商品
       wx.showLoading({
         title: '',
       })
-      const res = await WXAPI.shippingCarInfoRemoveItem(token, item.key)
+      let res = null
+      if(currentLevel1Category.id == 559239){
+        res = await WXAPI.shippingCarInfoRemoveItem(token, item.key, "delivery")
+      }
+      else {
+        res = await WXAPI.shippingCarInfoRemoveItem(token, item.key, "self-pickup")
+      }
+      // const res = await WXAPI.shippingCarInfoRemoveItem(token, item.key)
       wx.hideLoading()
       if (res.code == 700) {
         this.setData({
@@ -959,7 +1029,14 @@ Page({
       wx.showLoading({
         title: '',
       })
-      const res = await WXAPI.shippingCarInfoModifyNumber(token, item.key, e.detail)
+      let res = null
+      if(currentLevel1Category.id == 559239){
+        res = await WXAPI.shippingCarInfoModifyNumber(token, item.key, e.detail, "delivery")
+      }
+      else {
+        res = await WXAPI.shippingCarInfoModifyNumber(token, item.key, e.detail, "self-pickup")
+      }
+      // const res = await WXAPI.shippingCarInfoModifyNumber(token, item.key, e.detail)
       wx.hideLoading()
       if (res.code != 0) {
         wx.showToast({
@@ -982,7 +1059,16 @@ Page({
     wx.showLoading({
       title: '',
     })
-    const res = await WXAPI.shippingCarInfoRemoveAll(wx.getStorageSync('token'))
+    // const res = await WXAPI.shippingCarInfoRemoveAll(wx.getStorageSync('token'))
+    console.log("清空购物车")
+    console.log("currentLevel1Category",this.data.currentLevel1Category)
+    let res = null
+    if(this.data.currentLevel1Category.id == 559239){
+      res = await WXAPI.shippingCarInfoRemoveAll(wx.getStorageSync('token'),"delivery")
+    }
+    else {
+      res = await WXAPI.shippingCarInfoRemoveAll(wx.getStorageSync('token'),"self-pickup")
+    }
     wx.hideLoading()
     if (res.code != 0) {
       wx.showToast({
@@ -991,6 +1077,14 @@ Page({
       })
       return
     }
+    // wx.hideLoading()
+    // if (res.code != 0) {
+    //   wx.showToast({
+    //     title: res.msg,
+    //     icon: 'none'
+    //   })
+    //   return
+    // }
     
     this.shippingCarInfo()
   },
@@ -1410,16 +1504,17 @@ Page({
   onHorizontalCategoryClick(e) {
     const index = e.currentTarget.dataset.idx;
     console.log("一级分类序号",index)
-    const firstLevel1Category = this.data.level1Categories[index];
-    const subCategories = this.data.level2Categories.filter(cat => cat.key === String(firstLevel1Category.id));
+    const currentLevel1Category = this.data.level1Categories[index];
+    const subCategories = this.data.level2Categories.filter(cat => cat.key === String(currentLevel1Category.id));
     this.setData({
       subCategories: subCategories,
       level1CategoryIndex:index,
-      firstLevel1Category:firstLevel1Category,
+      currentLevel1Category:currentLevel1Category,
       level2CategoryIndex:0, // 重置当前索引为第一个
       page: 1 // 重置页码
     });
     // 调用初始化商品列表的函数
     this._getGoodsListContinuous();
+    this.shippingCarInfo();
    }
 })
