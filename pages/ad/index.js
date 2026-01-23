@@ -12,7 +12,10 @@ Page({
     cancelBtn: false,
     pickerRegionRange: [],
     pickerSelect:[0, 0, 0],
-    addressData: {}
+    addressData: {},
+    // 固定省市：广东省 / 汕头市
+    fixedProvinceName: '广东省',
+    fixedCityName: '汕头市',
   },
   // 添加地址
   addAddress: function() {
@@ -148,93 +151,98 @@ Page({
     }
   },   
   // 省市选择器 三栏
-  initRegionPicker () {
-    // https://www.yuque.com/apifm/nu0f75/anab2a
-    WXAPI.provinceV2().then(res => {
-      if (res.code === 0) {
-        let _pickerRegionRange = []
-        _pickerRegionRange.push(res.data)
-        _pickerRegionRange.push([{ name: this.data.$t.common.select }])
-        _pickerRegionRange.push([{ name: this.data.$t.common.select }])
-        this.data.pickerRegionRange = _pickerRegionRange
-        this.bindcolumnchange({ detail: { column: 0, value: 0 } })
-      }
-    })
-  },
-  async initRegionDB (pname, cname, dname) {
-    this.data.showRegionStr = pname + cname + dname
-    let pObject = undefined
-    let cObject = undefined
-    let dObject = undefined
-    if (pname) {
-      const index = this.data.pickerRegionRange[0].findIndex(ele=>{
-        return ele.name == pname
-      })      
-      if (index >= 0) {
-        this.data.pickerSelect[0] = index
-        pObject = this.data.pickerRegionRange[0][index]
-      }
-    }    
+  async initRegionPicker () {
+    // 固定为：广东省 / 汕头市，仅允许选择区县
+    const res = await WXAPI.provinceV2()
+    if (res.code !== 0) {
+      return
+    }
+    const provinces = res.data || []
+    const pObject = provinces.find(p => p.name === this.data.fixedProvinceName)
     if (!pObject) {
       return
     }
-    // https://www.yuque.com/apifm/nu0f75/kfukig
-    const _cRes = await WXAPI.nextRegionV2(pObject.id)
-    if (_cRes.code === 0) {
-      this.data.pickerRegionRange[1] = _cRes.data
-      if (cname) {
-        const index = this.data.pickerRegionRange[1].findIndex(ele => {
-          return ele.name == cname
-        })        
-        if (index >= 0) {
-          this.data.pickerSelect[1] = index
-          cObject = this.data.pickerRegionRange[1][index]
-        }
-      }
-    }    
+    const resCity = await WXAPI.nextRegionV2(pObject.id)
+    if (resCity.code !== 0) {
+      return
+    }
+    const cities = resCity.data || []
+    const cObject = cities.find(c => c.name === this.data.fixedCityName)
     if (!cObject) {
       return
     }
-    // https://www.yuque.com/apifm/nu0f75/kfukig
-    const _dRes = await WXAPI.nextRegionV2(cObject.id)
-    if (_dRes.code === 0) {
-      this.data.pickerRegionRange[2] = _dRes.data
-      if (dname) {
-        const index = this.data.pickerRegionRange[2].findIndex(ele => {
-          return ele.name == dname
-        })        
-        if (index >= 0) {
-          this.data.pickerSelect[2] = index
-          dObject = this.data.pickerRegionRange[2][index]
-        }
-      }
+    const resArea = await WXAPI.nextRegionV2(cObject.id)
+    if (resArea.code !== 0) {
+      return
     }
+    const areas = resArea.data || []
+    const dObject = areas.length > 0 ? areas[0] : undefined
+
+    this.data.pickerRegionRange = [
+      [pObject], // 省固定
+      [cObject], // 市固定
+      areas       // 区可选
+    ]
+    this.data.pickerSelect = [0, 0, 0]
     this.setData({
       pickerRegionRange: this.data.pickerRegionRange,
       pickerSelect: this.data.pickerSelect,
-      showRegionStr: this.data.showRegionStr,
-      pObject: pObject,
-      cObject: cObject,
-      dObject: dObject
+      pObject,
+      cObject,
+      dObject,
+      showRegionStr: pObject.name + cObject.name + (dObject ? dObject.name : '')
+    })
+  },
+  async initRegionDB (pname, cname, dname) {
+    // 忽略传入的省市，强制固定为：广东省 / 汕头市
+    // dname（区县）如果存在，则定位到对应区县
+    await this.initRegionPicker()
+    const pObject = this.data.pickerRegionRange?.[0]?.[0]
+    const cObject = this.data.pickerRegionRange?.[1]?.[0]
+    let dObject = this.data.pickerRegionRange?.[2]?.[0]
+    let dIndex = 0
+    if (dname && this.data.pickerRegionRange?.[2]?.length) {
+      const idx = this.data.pickerRegionRange[2].findIndex(ele => ele.name === dname)
+      if (idx >= 0) {
+        dIndex = idx
+        dObject = this.data.pickerRegionRange[2][idx]
+      }
+    }
+    this.data.pickerSelect = [0, 0, dIndex]
+    this.setData({
+      pickerSelect: this.data.pickerSelect,
+      showRegionStr: (pObject?.name || '') + (cObject?.name || '') + (dObject?.name || ''),
+      pObject,
+      cObject,
+      dObject
     })
     
   },  
   bindchange: function(e) {    
-    const pObject = this.data.pickerRegionRange[0][e.detail.value[0]]
-    const cObject = this.data.pickerRegionRange[1][e.detail.value[1]]
+    // 省市固定，区县可选
+    const pObject = this.data.pickerRegionRange[0][0]
+    const cObject = this.data.pickerRegionRange[1][0]
     const dObject = this.data.pickerRegionRange[2][e.detail.value[2]]
     const showRegionStr = pObject.name + cObject.name + dObject.name
     this.setData({
       pObject: pObject,
       cObject: cObject,
       dObject: dObject,
-      showRegionStr: showRegionStr
+      showRegionStr: showRegionStr,
+      pickerSelect: [0, 0, e.detail.value[2]]
     })
   },
   bindcolumnchange: function(e) {
     const column = e.detail.column
-    const index = e.detail.value    
-    const regionObject = this.data.pickerRegionRange[column][index]    
+    // 省市固定，禁止切换（直接忽略）
+    if (column === 0 || column === 1) {
+      this.setData({
+        pickerSelect: this.data.pickerSelect
+      })
+      return
+    }
+    const index = e.detail.value
+    const regionObject = this.data.pickerRegionRange[column][index]
     if (column === 2) {
       this.setData({
         pickerRegionRange: this.data.pickerRegionRange
@@ -261,45 +269,23 @@ Page({
   },  
   // 
   async provinces(provinceId, cityId, districtId) {
-    // https://www.yuque.com/apifm/nu0f75/anab2a
-    const res1 = await WXAPI.provinceV2()    
-    const provinces = res1.data  
+    // 编辑地址时，也强制固定为：广东省 / 汕头市，只回显区县
+    await this.initRegionPicker()
+    const areas = this.data.pickerRegionRange?.[2] || []
+    let aIndex = 0
+    if (districtId && areas.length) {
+      const idx = areas.findIndex(ele => String(ele.id) === String(districtId))
+      if (idx >= 0) {
+        aIndex = idx
+      }
+    }
+    const dObject = areas[aIndex]
+    this.data.pickerSelect = [0, 0, aIndex]
     this.setData({
-      provinces,
-    })     
-    var pIndex = provinces.findIndex(ele => {
-      return ele.id == provinceId
-    })  
-     
-    const pid = this.data.provinces[pIndex].id    
-    // https://www.yuque.com/apifm/nu0f75/kfukig
-    const res2 = await WXAPI.nextRegionV2(pid)
-    const cities = res2.data  
-    this.setData({
-      cities,
-    })  
-    var  cIndex = cities.findIndex(ele => {
-      return ele.id == cityId
+      pickerSelect: this.data.pickerSelect,
+      dObject,
+      showRegionStr: (this.data.pickerRegionRange?.[0]?.[0]?.name || '') + (this.data.pickerRegionRange?.[1]?.[0]?.name || '') + (dObject?.name || '')
     })
-    
-    const cid = this.data.cities[cIndex].id
-    // https://www.yuque.com/apifm/nu0f75/kfukig
-    const res3 = await WXAPI.nextRegionV2(cid);
-    const areas = res3.data
-    this.setData({
-      areas,
-    })
-    var aIndex = areas.findIndex(ele => {
-      return ele.id == districtId
-    })
-    // var pIndex = pIndex + 1
-    // var cIndex = cIndex + 1
-    // var aIndex = aIndex + 1
-    this.setData({
-      pIndex: pIndex,
-      cIndex: cIndex,
-      aIndex: aIndex,
-    })  
     
   },
   linkManChange(e) {
