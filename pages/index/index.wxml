@@ -1,9 +1,9 @@
 <!-- 语言切换悬浮按钮 -->
-<view wx:if="{{ language }}" class="float-lang-btn" bind:tap="changeLang">
+<!-- <view wx:if="{{ language }}" class="float-lang-btn" bind:tap="changeLang">
   <image class="lang-icon" src="/images/lang/{{language}}.png" mode="aspectFill"></image>
-</view>
+</view> -->
 
-<view wx:if="{{noticeLastOne}}" class="notice">
+<!-- <view wx:if="{{noticeLastOne}}" class="notice">
   <van-notice-bar
     mode="link"
     left-icon="volume-o"
@@ -29,25 +29,48 @@
       </view>
     </navigator>
   </view>
+</view> -->
+
+<!-- 顶部横向分类视图 -->
+<view class="top-category-scroll">
+  <scroll-view class="category-scroll-view" scroll-x="true" show-scrollbar="false">
+    <view class="category-scroll-content">
+      <view 
+        wx:for="{{level1Categories}}" 
+        wx:key="id" 
+        class="category-item {{index === level1CategoryIndex ? 'active' : ''}}"
+        data-idx="{{index}}"
+        bindtap="onHorizontalCategoryClick">
+        <view class="category-icon-wrapper">
+          <view class="category-icon">
+            <image wx:if="{{item.icon}}" class="category-icon-img" src="{{item.icon}}" mode="aspectFill"></image>
+            <text wx:else class="category-icon-text">{{item.name}}</text>
+          </view>
+        </view>
+        <view class="category-name">{{item.name}}</view>
+      </view>
+    </view>
+  </scroll-view>
 </view>
+
 <view class="box1">
   <view class="box-1">
-    <van-sidebar activeKey="{{ currentCategoryIndex }}">
+    <van-sidebar activeKey="{{ level2CategoryIndex }}">
       <van-sidebar-item
-        wx:for="{{categories}}" wx:key="id"
+        wx:for="{{subCategories}}" wx:key="id"
         title="{{item.name}}"
         badge="{{ item.badge ? item.badge : '' }}"
-        active="{{index === currentCategoryIndex}}"
+        active="{{index === level2CategoryIndex}}"
         data-idx="{{index}}" bind:click="categoryClick"
       />
     </van-sidebar>
   </view>
   <scroll-view class="box-2" scroll-y="true" scroll-top="{{scrollTop}}" bindscrolltolower="_onReachBottom" bindscroll="onScroll">
-    <swiper wx:if="{{banners}}" class="swiper1" indicator-dots="true" autoplay circular>
+    <!-- <swiper wx:if="{{banners}}" class="swiper1" indicator-dots="true" autoplay circular>
       <swiper-item wx:for="{{banners}}" wx:key="id">
         <image  mode="aspectFill" bindtap="tapBanner" data-url="{{item.linkUrl}}" src="{{item.picUrl}}" />
       </swiper-item>
-    </swiper>
+    </swiper> -->
     <van-empty wx:if="{{!goods || goods.length == 0}}" description="{{ $t.common.empty }}" />
     <van-card
       wx:for="{{goods}}" wx:key="id"
@@ -155,10 +178,10 @@
   position="bottom"
   custom-style="bottom: 100rpx;max-height: 80%;"
   bind:close="hideCartPop">
-  <view class="empty-box" bindtap="clearCart">
-    <van-icon name="delete" />
-    <view class="empty-1">{{ $t.cart.clear }}</view>
-  </view>
+    <view class="empty-box" bindtap="clearCart">
+      <van-icon name="delete" />
+      <view class="empty-1">{{ $t.cart.clear }}</view>
+    </view>
   <view wx:for="{{shippingCarInfo.items}}" wx:key="key" class="cart-goods-list">
     <view class="l">
       <view class="title">{{item.name}}</view>

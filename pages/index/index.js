@@ -19,10 +19,10 @@ Page({
 
     // 连续滚动模式相关数据
     isContinuousMode: true, // 是否启用连续滚动模式
-    categoryIndex: 0, // 当前激活的分类索引
+    level1CategoryIndex: 0, // 当前激活的分类索引
     goodsByCategory: [], // 按分类分组的商品数据，用于跟踪每个分类的商品范围
     scrollTop: 0, // 当前滚动位置
-    currentCategoryIndex: 0, // 当前滚动到的分类索引
+    level2CategoryIndex: 0, // 当前滚动到的分类索引
   },  
   onLoad: function (e) {
     getApp().initLanguage(this)
@@ -120,9 +120,10 @@ Page({
     this.setData({
       peisongType
     })
-    this.noticeLastOne()
-    this.getshopInfo()
-    this.banners()
+    // this.noticeLastOne()
+    // this.getshopInfo()
+    this.categories()
+    // this.banners()
   },
   onShow: function(){
     const peisongType = wx.getStorageSync('peisongType')
@@ -131,6 +132,8 @@ Page({
         peisongType
       })
     }
+    
+    
     this.shippingCarInfo()
     const refreshIndex = wx.getStorageSync('refreshIndex')
     if (refreshIndex) {
@@ -198,6 +201,7 @@ Page({
       }
     })
   },
+
   async fetchShops(latitude, longitude, kw){
     const res = await WXAPI.fetchShops({
       curlatitude: latitude,
@@ -252,39 +256,51 @@ Page({
   },
   // 获取分类
   async categories() {
-    const shopInfo = wx.getStorageSync('shopInfo')
-    const shop_goods_split = wx.getStorageSync('shop_goods_split')
-    let shopId = '0'
-    if (shopInfo) {
-      shopId = '0,' + shopInfo.id
-    }
-    if (shop_goods_split != '1') {
-      shopId = ''
-    }
+    // const shopInfo = wx.getStorageSync('shopInfo')
+    // const shop_goods_split = wx.getStorageSync('shop_goods_split')
+    // let shopId = '0'
+    // if (shopInfo) {
+    //   shopId = '0,' + shopInfo.id
+    // }
+    // if (shop_goods_split != '1') {
+    //   shopId = ''
+    // }
     // https://www.yuque.com/apifm/nu0f75/racmle
-    const res = await WXAPI.goodsCategoryV2(shopId)
+    // const res = await WXAPI.goodsCategoryV2(shopId)
+    const res = await WXAPI.goodsCategory()
     if (res.code != 0) {
       wx.showToast({
         title: res.msg,
         icon: 'none'
       })
       return
-    }    
+    }
+    // 过滤出类别
+    const level1Categories = res.data.filter(item => item.level == 1)
+    const level2Categories = res.data.filter(item => item.level == 2)
+    const subCategories = level2Categories.filter(cat => cat.key === String(res.data[0].id));
+    // 初始化时设置 firstLevel1Category 为第一个一级分类
+    const firstLevel1Category = level1Categories.length > 0 ? level1Categories[0] : null
     this.setData({
       page: 1,
-      categories: res.data,
+      // categories: res.data,
+      level1Categories: level1Categories,
+      level2Categories: level2Categories,
+      subCategories: subCategories,
       categorySelected: res.data[0],
-      categoryIndex: 0,
-      currentCategoryIndex: 0, // 初始化为第一个分类
-      goodsByCategory: []
+      level1CategoryIndex: 0,
+      level2CategoryIndex: 0, // 初始化为第一个分类
+      goodsByCategory: [],
+      firstLevel1Category: firstLevel1Category // 初始化 firstLevel1Category
     })
-    if (shop_goods_split == '1') {
-      wx.setStorageSync('shopIds', shopInfo.id)
-    } else {
-      wx.removeStorageSync('shopIds')
-    }
+    // if (shop_goods_split == '1') {
+    //   wx.setStorageSync('shopIds', shopInfo.id)
+    // } else {
+    //   wx.removeStorageSync('shopIds')
+    // }
     this.data.page = 1
-    this.getGoodsList()
+    // this.getGoodsList()
+    await this._getGoodsListContinuous()
   },
   async getGoodsList() {
     if (!this.data.isContinuousMode) {
@@ -298,51 +314,51 @@ Page({
   },
 
   // 原有的单分类商品加载逻辑
-  async _getGoodsListSingleCategory() {
-    wx.showLoading({
-      title: '',
-    })
-    // https://www.yuque.com/apifm/nu0f75/wg5t98
-    const res = await WXAPI.goodsv2({
-      page: this.data.page,
-      categoryId: this.data.categorySelected.id,
-      pageSize: 10000
-    })
-    wx.hideLoading()
-    if (res.code == 700) {
-      if (this.data.page == 1) {
-        this.setData({
-          goods: null
-        })
-      }
-      return
-    }
-    if (res.code != 0) {
-      wx.showToast({
-        title: res.msg,
-        icon: 'none'
-      })
-      return
-    }
-    res.data.result.forEach(ele => {
-      if (ele.miaosha) {
-        // 秒杀商品，显示倒计时
-        const _now = new Date().getTime()
-        ele.dateStartInt = new Date(ele.dateStart.replace(/-/g, '/')).getTime() - _now
-        ele.dateEndInt = new Date(ele.dateEnd.replace(/-/g, '/')).getTime() -_now
-      }
-    })
-    if (this.data.page == 1) {
-      this.setData({
-        goods: res.data.result
-      })
-    } else {
-      this.setData({
-        goods: this.data.goods.concat(res.data.result)
-      })
-    }
-    this.processBadge()
-  },
+  // async _getGoodsListSingleCategory() {
+  //   wx.showLoading({
+  //     title: '',
+  //   })
+  //   // https://www.yuque.com/apifm/nu0f75/wg5t98
+  //   const res = await WXAPI.goodsv2({
+  //     page: this.data.page,
+  //     categoryId: this.data.categorySelected.id,
+  //     pageSize: 10000
+  //   })
+  //   wx.hideLoading()
+  //   if (res.code == 700) {
+  //     if (this.data.page == 1) {
+  //       this.setData({
+  //         goods: null
+  //       })
+  //     }
+  //     return
+  //   }
+  //   if (res.code != 0) {
+  //     wx.showToast({
+  //       title: res.msg,
+  //       icon: 'none'
+  //     })
+  //     return
+  //   }
+  //   res.data.result.forEach(ele => {
+  //     if (ele.miaosha) {
+  //       // 秒杀商品，显示倒计时
+  //       const _now = new Date().getTime()
+  //       ele.dateStartInt = new Date(ele.dateStart.replace(/-/g, '/')).getTime() - _now
+  //       ele.dateEndInt = new Date(ele.dateEnd.replace(/-/g, '/')).getTime() -_now
+  //     }
+  //   })
+  //   if (this.data.page == 1) {
+  //     this.setData({
+  //       goods: res.data.result
+  //     })
+  //   } else {
+  //     this.setData({
+  //       goods: this.data.goods.concat(res.data.result)
+  //     })
+  //   }
+  //   this.processBadge()
+  // },
 
   // 连续滚动模式的商品加载逻辑
   async _getGoodsListContinuous() {
@@ -350,8 +366,9 @@ Page({
       title: '',
     })
 
-    const categories = this.data.categories
-    const categoryIndex = this.data.categoryIndex
+    // const categories = this.data.categories
+    let subCategories = this.data.subCategories
+    const level2CategoryIndex = this.data.level2CategoryIndex
     let allGoods = this.data.goods || []
     let goodsByCategory = this.data.goodsByCategory || []
 
@@ -362,8 +379,10 @@ Page({
     }
 
     // 循环加载所有分类的商品
-    for (let i = categoryIndex; i < categories.length; i++) {
-      const category = categories[i]
+    for (let i = level2CategoryIndex; i < subCategories.length; i++) {
+      console.log("类别",level2CategoryIndex)
+      const category = subCategories[i]
+      console.log("类别信息",category)
       const res = await WXAPI.goodsv2({
         page: 1, // 每个分类都从第一页开始
         categoryId: category.id,
@@ -372,14 +391,17 @@ Page({
 
       if (res.code == 0 && res.data.result && res.data.result.length > 0) {
         // 处理秒杀商品倒计时
-        res.data.result.forEach(ele => {
-          if (ele.miaosha) {
-            const _now = new Date().getTime()
-            ele.dateStartInt = new Date(ele.dateStart.replace(/-/g, '/')).getTime() - _now
-            ele.dateEndInt = new Date(ele.dateEnd.replace(/-/g, '/')).getTime() - _now
-          }
-        })
+        // res.data.result.forEach(ele => {
+        //   if (ele.miaosha) {
+        //     const _now = new Date().getTime()
+        //     ele.dateStartInt = new Date(ele.dateStart.replace(/-/g, '/')).getTime() - _now
+        //     ele.dateEndInt = new Date(ele.dateEnd.replace(/-/g, '/')).getTime() - _now
+        //   }
+        // })
 
+        // 对结果根据 categoryId 进行排序
+        res.data.result.sort((a, b) => a.categoryId - b.categoryId);
+        console.log("商品信息",res.data.result)
         // 记录该分类的商品范围
         const startIndex = allGoods.length
         const endIndex = startIndex + res.data.result.length - 1
@@ -395,19 +417,20 @@ Page({
         allGoods = allGoods.concat(res.data.result)
 
         // 如果加载到足够商品，停止加载更多分类
-        if (allGoods.length >= 50) { // 限制初始加载数量
+        if (allGoods.length >= 5) { // 限制初始加载数量
           break
         }
       }
     }
-
+    console.log("首次加载商品",goodsByCategory)
     wx.hideLoading()
 
     this.setData({
       goods: allGoods,
       goodsByCategory: goodsByCategory,
-      categoryIndex: Math.min(categoryIndex + 1, categories.length - 1),
-      currentCategoryIndex: 0 // 初始化第一个分类为激活状态
+      // level1CategoryIndex: Math.min(level1CategoryIndex + 1, categories.length - 1),
+      // level2CategoryIndex: Math.min(level2CategoryIndex + 1, subCategories.length - 1),
+      level2CategoryIndex: 0 // 初始化为激活状态
     })
 
     console.log('商品数据加载完成，分类数据:', goodsByCategory)
@@ -423,17 +446,24 @@ Page({
 
     // 连续滚动模式：继续加载更多分类的商品
     this._loadMoreCategories()
+    console.log("this.data.page",this.data.page)
   },
 
   // 连续滚动模式下加载更多分类的商品
   async _loadMoreCategories() {
-    const categories = this.data.categories
-    const categoryIndex = this.data.categoryIndex
+    // const categories = this.data.categories
+    const subCategories = this.data.subCategories
+    console.log("加载更多分类的商品",subCategories)
+    // const level1CategoryIndex = this.data.level1CategoryIndex
+    const level2CategoryIndex = this.data.level2CategoryIndex
     let allGoods = this.data.goods || []
     let goodsByCategory = this.data.goodsByCategory || []
 
     // 如果已经加载完所有分类，不再加载
-    if (categoryIndex >= categories.length) {
+    // if (level1CategoryIndex >= categories.length) {
+    //   return
+    // }
+    if (level2CategoryIndex >= subCategories.length) {
       return
     }
 
@@ -442,8 +472,8 @@ Page({
     })
 
     // 从当前分类索引开始继续加载
-    for (let i = categoryIndex; i < categories.length; i++) {
-      const category = categories[i]
+    for (let i = level2CategoryIndex; i < subCategories.length; i++) {
+      const category = subCategories[i]
       const res = await WXAPI.goodsv2({
         page: 1,
         categoryId: category.id,
@@ -452,13 +482,16 @@ Page({
 
       if (res.code == 0 && res.data.result && res.data.result.length > 0) {
         // 处理秒杀商品倒计时
-        res.data.result.forEach(ele => {
-          if (ele.miaosha) {
-            const _now = new Date().getTime()
-            ele.dateStartInt = new Date(ele.dateStart.replace(/-/g, '/')).getTime() - _now
-            ele.dateEndInt = new Date(ele.dateEnd.replace(/-/g, '/')).getTime() - _now
-          }
-        })
+        // res.data.result.forEach(ele => {
+        //   if (ele.miaosha) {
+        //     const _now = new Date().getTime()
+        //     ele.dateStartInt = new Date(ele.dateStart.replace(/-/g, '/')).getTime() - _now
+        //     ele.dateEndInt = new Date(ele.dateEnd.replace(/-/g, '/')).getTime() - _now
+        //   }
+        // })
+
+        // 对结果根据 categoryId 进行排序
+        res.data.result.sort((a, b) => a.categoryId - b.categoryId);
 
         // 记录该分类的商品范围
         const startIndex = allGoods.length
@@ -484,7 +517,7 @@ Page({
     this.setData({
       goods: allGoods,
       goodsByCategory: goodsByCategory,
-      categoryIndex: Math.min(categoryIndex + 1, categories.length)
+      // level2CategoryIndex: Math.min(level2CategoryIndex + 1, subCategories.length)
       // 注意：不在这里设置currentCategoryIndex，以避免影响滚动时的选中状态
     })
 
@@ -498,9 +531,9 @@ Page({
     }
 
     const scrollTop = e.detail.scrollTop
-    // this.setData({
-    //   scrollTop: scrollTop
-    // })
+    this.setData({
+      scrollTop: scrollTop
+    })
 
     // 计算当前滚动到的分类
     this._calculateCurrentCategory(scrollTop)
@@ -524,11 +557,11 @@ Page({
     console.log('计算分类 - 滚动位置:', scrollTop, '可见商品索引:', visibleStartIndex, '分类数据:', goodsByCategory)
 
     // 找到对应的分类
-    let currentCategoryIndex = 0
+    let level2CategoryIndex = 0
     for (let i = 0; i < goodsByCategory.length; i++) {
       const category = goodsByCategory[i]
       if (visibleStartIndex >= category.startIndex && visibleStartIndex <= category.endIndex) {
-        currentCategoryIndex = i
+        level2CategoryIndex = i
         console.log('找到匹配分类:', i, category)
         break
       }
@@ -536,27 +569,28 @@ Page({
 
     // 如果滚动到了最后，设置最后一个分类为激活状态
     if (visibleStartIndex >= goodsByCategory[goodsByCategory.length - 1].endIndex) {
-      currentCategoryIndex = goodsByCategory.length - 1
-      console.log('滚动到最后，设置最后一个分类:', currentCategoryIndex)
+      level2CategoryIndex = goodsByCategory.length - 1
+      console.log('滚动到最后，设置最后一个分类:', level2CategoryIndex)
     }
 
-    console.log('最终激活分类:', currentCategoryIndex, '当前值:', this.data.currentCategoryIndex)
+    console.log('最终激活分类:', level2CategoryIndex, '当前值:', this.data.level2CategoryIndex)
 
     // 更新当前分类索引
-    if (currentCategoryIndex !== this.data.currentCategoryIndex) {
-      console.log('更新激活分类:', currentCategoryIndex)
+    if (level2CategoryIndex !== this.data.level2CategoryIndex) {
+      console.log('更新激活分类:', level2CategoryIndex)
       this.setData({
-        currentCategoryIndex: currentCategoryIndex
+        level2CategoryIndex: level2CategoryIndex
       })
     }
   },
 
   categoryClick(e) {
     const index = e.currentTarget.dataset.idx
-
+    console.log("点击的类别",index)
     if (!this.data.isContinuousMode) {
       // 原有的单分类模式
-      const categorySelected = this.data.categories[index]
+      // const categorySelected = this.data.categories[index]
+      const categorySelected = this.data.subCategories[index]
       this.setData({
         page: 1,
         categorySelected,
@@ -571,13 +605,15 @@ Page({
   },
 
   // 滚动到指定分类的第一个商品
-  _scrollToCategory(categoryIndex) {
+  _scrollToCategory(level2CategoryIndex) {
     const goodsByCategory = this.data.goodsByCategory
-    if (!goodsByCategory || goodsByCategory.length <= categoryIndex) {
+    console.log("此时的goodsByCategory拥有的数据",goodsByCategory)
+    if (!goodsByCategory || goodsByCategory.length <= level2CategoryIndex) {
       return
     }
 
-    const category = goodsByCategory[categoryIndex]
+    const category = goodsByCategory[level2CategoryIndex]
+    console.log("点击的类别在goodsByCategory的信息",category)
     if (!category) {
       return
     }
@@ -589,14 +625,17 @@ Page({
 
     this.setData({
       scrollTop: scrollTop,
-      currentCategoryIndex: categoryIndex
+      // currentCategoryIndex: categoryIndex
+      level2CategoryIndex:level2CategoryIndex
     })
 
     // 使用scroll-view的滚动方法
     // 注意：需要在wxml中为scroll-view添加scroll-top属性绑定
   },
+
   async shippingCarInfo() {
     const res = await WXAPI.shippingCarInfo(wx.getStorageSync('token'))
+    console.log("获取购物车结果",res)
     if (res.code == 0) {
       this.setData({
         shippingCarInfo: res.data
@@ -607,8 +646,11 @@ Page({
         showCartPop: false
       })
     }
+    
+
     this.processBadge()
   },
+
   showCartPop() {
     if (this.data.scanDining) {
       // 扫码点餐，前往购物车页面
@@ -621,19 +663,24 @@ Page({
       })
     }
   },
+  
   hideCartPop() {
     this.setData({
       showCartPop: false
     })
   },
+
   async addCart1(e) {
     const token = wx.getStorageSync('token')
     const index = e.currentTarget.dataset.idx
+    console.log("点击的商品",index)
     const item = this.data.goods[index]
     wx.showLoading({
       title: '',
     })
+
     let number = item.minBuyNumber // 加入购物车的数量
+
     if (this.data.shippingCarInfo && this.data.shippingCarInfo.items) {
       const goods = this.data.shippingCarInfo.items.find(ele => { return ele.goodsId == item.id})
       console.log(goods);
@@ -641,7 +688,8 @@ Page({
         number = 1
       }
     }
-    const res = await WXAPI.shippingCarInfoAddItem(token, item.id, number, [])
+    const res = await WXAPI.shippingCarInfoAddItem(token, item.id, number, [], [])
+    console.log("添加购物车结果",res)
     wx.hideLoading()
     if (res.code == 2000) {
       AUTH.login(this)
@@ -650,12 +698,13 @@ Page({
     if (res.code != 0) {
       wx.showToast({
         title: res.msg,
-        icon: 'none'
+        icon: 'non  e'
       })
       return
     }
     this.shippingCarInfo()
   },
+
   async skuClick(e) {
     const index1 = e.currentTarget.dataset.idx1
     const index2 = e.currentTarget.dataset.idx2
@@ -669,6 +718,7 @@ Page({
     })
     this.calculateGoodsPrice()
   },
+
   async calculateGoodsPrice() {
     const curGoodsMap = this.data.curGoodsMap
     // 计算最终的商品价格
@@ -730,6 +780,7 @@ Page({
       buyNumMax
     });
   },
+
   async skuClick2(e) {
     const propertyindex = e.currentTarget.dataset.idx1
     const propertychildindex = e.currentTarget.dataset.idx2
@@ -759,6 +810,7 @@ Page({
     })
     this.calculateGoodsPrice()
   },
+  
   skuCanSubmit() {
     const curGoodsMap = this.data.curGoodsMap
     let canSubmit = true
@@ -840,6 +892,7 @@ Page({
     wx.showLoading({
       title: '',
     })
+   
     const d = {
       token,
       goodsId: curGoodsMap.basicInfo.id,
@@ -938,6 +991,7 @@ Page({
       })
       return
     }
+    
     this.shippingCarInfo()
   },
   async showGoodsDetailPOP(e) {
@@ -1038,6 +1092,12 @@ Page({
     }
   },
   goPay() {
+    // 检查购物车是否为空
+    if (!this.data.shippingCarInfo || !this.data.shippingCarInfo.number || this.data.shippingCarInfo.number === 0) {
+      // 购物车为空，不执行任何操作
+      return
+    }
+    
     if (this.data.scanDining) {
       // 扫码点餐，前往购物车
       wx.navigateTo({
@@ -1237,16 +1297,17 @@ Page({
   },
   // 显示分类和商品数量徽章
   processBadge() {
-    const categories = this.data.categories
+    // const categories = this.data.categories
+    const subCategories = this.data.subCategories
     const goods = this.data.goods
     const shippingCarInfo = this.data.shippingCarInfo
-    if (!categories) {
+    if (!subCategories) {
       return
     }
     if (!goods) {
       return
     }
-    categories.forEach(ele => {
+    subCategories.forEach(ele => {
       ele.badge = 0
     })
     goods.forEach(ele => {
@@ -1255,7 +1316,7 @@ Page({
     if (shippingCarInfo) {
       shippingCarInfo.items.forEach(ele => {
         if (ele.categoryId) {
-          const category = categories.find(a => {
+          const category = subCategories.find(a => {
             return a.id == ele.categoryId
           })
           if (category) {
@@ -1272,8 +1333,9 @@ Page({
         }
       })
     }
+
     this.setData({
-      categories,
+      subCategories,
       goods
     })
   },
@@ -1345,4 +1407,19 @@ Page({
       url: '/pages/index/index',
     })
   },
+  onHorizontalCategoryClick(e) {
+    const index = e.currentTarget.dataset.idx;
+    console.log("一级分类序号",index)
+    const firstLevel1Category = this.data.level1Categories[index];
+    const subCategories = this.data.level2Categories.filter(cat => cat.key === String(firstLevel1Category.id));
+    this.setData({
+      subCategories: subCategories,
+      level1CategoryIndex:index,
+      firstLevel1Category:firstLevel1Category,
+      level2CategoryIndex:0, // 重置当前索引为第一个
+      page: 1 // 重置页码
+    });
+    // 调用初始化商品列表的函数
+    this._getGoodsListContinuous();
+   }
 })
