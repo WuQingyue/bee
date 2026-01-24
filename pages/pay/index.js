@@ -245,6 +245,26 @@ Page({
       }
       this.createOrder(true)
     }
+    // 清空购物车
+    try {
+      const token = wx.getStorageSync('token')
+      const currentLevel1Category = wx.getStorageSync('currentLevel1Category')
+      
+      if (token) {
+        // 根据当前分类判断是配送还是自提
+        if (currentLevel1Category && currentLevel1Category.id == 559239) {
+          // 配送模式
+          WXAPI.shippingCarInfoRemoveAll(token, "delivery")
+        } else {
+          // 自提模式
+          WXAPI.shippingCarInfoRemoveAll(token, "self-pickup")
+        }
+        console.log('购物车已清空')
+      }
+    } catch (error) {
+      console.error('清空购物车失败:', error)
+      // 即使清空购物车失败，也不影响支付成功的流程
+    }
   },
   async createOrder(e) {
     var that = this;
