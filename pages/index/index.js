@@ -539,6 +539,15 @@ Page({
     // 从当前分类索引开始继续加载
     for (let i = level2CategoryIndex; i < subCategories.length; i++) {
       const category = subCategories[i]
+
+      // 检查该分类是否已经加载过（防止重复）
+      const alreadyLoaded = goodsByCategory.some(item => item.categoryId === category.id)
+      if (alreadyLoaded) {
+        console.log(`分类 ${category.name} (id: ${category.id}) 已加载，跳过`)
+        continue  // 跳过已加载的分类，继续下一个
+      }
+
+      console.log("加载分类", category.name, "索引", i)
       const res = await WXAPI.goodsv2({
         page: 1,
         categoryId: category.id,
@@ -613,30 +622,68 @@ Page({
     }
 
     // 更准确的估算值（rpx转px，微信小程序中1rpx = 0.5px在大多数设备上）
-    const itemHeight = 200 // 每个商品卡片约200px高度（包括间距）
-    const headerHeight = 200 // banner等头部高度约200px
+    // const itemHeight = 200 // 每个商品卡片约200px高度（包括间距）
+    const itemHeight = 100 // 每个商品卡片约200px高度（包括间距）
+    // const headerHeight = 200 // banner等头部高度约200px
+    const headerHeight = 0 // banner等已注释
 
     // 计算当前可见区域的商品索引
     const visibleStartIndex = Math.max(0, Math.floor((scrollTop - headerHeight) / itemHeight))
 
     console.log('计算分类 - 滚动位置:', scrollTop, '可见商品索引:', visibleStartIndex, '分类数据:', goodsByCategory)
 
-    // 找到对应的分类
-    let level2CategoryIndex = 0
+    // 找到对应的分类（在 goodsByCategory 中）
+    let matchedCategory = null
     for (let i = 0; i < goodsByCategory.length; i++) {
       const category = goodsByCategory[i]
       if (visibleStartIndex >= category.startIndex && visibleStartIndex <= category.endIndex) {
-        level2CategoryIndex = i
+        matchedCategory = category
+        console.log("goodsByCategory",goodsByCategory)
         console.log('找到匹配分类:', i, category)
         break
       }
     }
 
-    // 如果滚动到了最后，设置最后一个分类为激活状态
-    if (visibleStartIndex >= goodsByCategory[goodsByCategory.length - 1].endIndex) {
-      level2CategoryIndex = goodsByCategory.length - 1
-      console.log('滚动到最后，设置最后一个分类:', level2CategoryIndex)
+    // 如果滚动到了最后，使用最后一个分类
+    if (!matchedCategory && goodsByCategory.length > 0) {
+      if (visibleStartIndex >= goodsByCategory[goodsByCategory.length - 1].endIndex) {
+        matchedCategory = goodsByCategory[goodsByCategory.length - 1]
+        console.log('滚动到最后，使用最后一个分类:', matchedCategory)
+      }
     }
+
+    // // 找到对应的分类
+    // let level2CategoryIndex = 0
+    // for (let i = 0; i < goodsByCategory.length; i++) {
+    //   const category = goodsByCategory[i]
+    //   if (visibleStartIndex >= category.startIndex && visibleStartIndex <= category.endIndex) {
+    //     level2CategoryIndex = i
+    //     console.log('找到匹配分类:', i, category)
+    //     break
+    //   }
+    // }
+
+    // ⭐ 关键修复：根据 categoryId 在 subCategories 中找到对应的索引
+    const subCategories = this.data.subCategories
+    console.log("subCategories",subCategories)
+    let level2CategoryIndex = 0
+    if (matchedCategory) {
+      const foundIndex = subCategories.findIndex(cat => cat.id === matchedCategory.categoryId)
+      if (foundIndex >= 0) {
+        level2CategoryIndex = foundIndex  // 这是 subCategories 的索引
+        console.log('在subCategories中找到分类索引:', level2CategoryIndex, '分类名称:', subCategories[foundIndex].name)
+      } else {
+        console.log('未在subCategories中找到分类，categoryId:', matchedCategory.categoryId)
+        // 如果找不到，保持当前索引，不更新
+        return
+      }
+    }
+
+    // 如果滚动到了最后，设置最后一个分类为激活状态
+    // if (visibleStartIndex >= goodsByCategory[goodsByCategory.length - 1].endIndex) {
+    //   level2CategoryIndex = goodsByCategory.length - 1
+    //   console.log('滚动到最后，设置最后一个分类:', level2CategoryIndex)
+    // }
 
     console.log('最终激活分类:', level2CategoryIndex, '当前值:', this.data.level2CategoryIndex)
 
