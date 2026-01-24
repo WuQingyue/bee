@@ -129,7 +129,16 @@
       </view>
     </view>
     
-    <!-- 门店联系电话 -->
+    <!-- 提示语 -->
+    <view class="pickup-tip-section" wx:if="{{shopInfo && shopInfo.info && shopInfo.info.introduce}}">
+      <view class="section-divider"></view>
+      <view class="pickup-tip-content">
+        <van-icon name="info-o" size="28rpx" color="#D4A574" />
+        <text class="pickup-tip-text">{{shopInfo.info.introduce}}</text>
+      </view>
+    </view>
+    
+    <!-- 门店联系电话
     <view class="info-section" wx:if="{{shopInfo && shopInfo.linkPhone}}">
       <view class="section-divider"></view>
       <view class="info-item">
@@ -139,9 +148,9 @@
         </view>
         <view class="info-value">{{shopInfo.linkPhone}}</view>
       </view>
-    </view>
+    </view> -->
     
-    <!-- 取件时间 -->
+    <!-- 取件时间
     <view class="time-section" wx:if="{{ create_order_select_time == '1' }}">
       <view class="section-divider"></view>
       <view class="time-selector" bind:tap="diningTimeShow">
@@ -154,7 +163,7 @@
           <van-icon name="arrow" size="28rpx" color="#999" />
         </view>
       </view>
-    </view>
+    </view>  -->
   </view>
 </view>
 

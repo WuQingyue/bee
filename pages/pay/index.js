@@ -210,7 +210,7 @@ Page({
       })
       return
     }
-    if (!this.data.diningTime && this.data.create_order_select_time == '1') {
+    if (!this.data.diningTime && this.data.create_order_select_time == '1' && this.data.peisongType == 'kd') {
       wx.showToast({
         title: this.data.$t.pay.select,
         icon: 'none'

@@ -137,6 +137,37 @@ page {
   white-space: nowrap;
 }
 
+/* 自提提示语 */
+.pickup-tip-section {
+  margin-top: 8rpx;
+}
+
+.pickup-tip-content {
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx 24rpx;
+  margin: 16rpx 0;
+  background: linear-gradient(135deg, #FFF8E8 0%, #FFF5E0 100%);
+  border-radius: 16rpx;
+  border-left: 4rpx solid #D4A574;
+  gap: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(212, 165, 116, 0.1);
+}
+
+.pickup-tip-content .van-icon {
+  flex-shrink: 0;
+  margin-top: 2rpx;
+}
+
+.pickup-tip-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #8B6F47;
+  line-height: 1.6;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
 .card-title {
   font-size: 32rpx;
   font-weight: 600;
