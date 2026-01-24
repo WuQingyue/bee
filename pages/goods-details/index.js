@@ -439,13 +439,35 @@ Page({
     if (this.data.curKanjiaprogress && this.data.curKanjiaprogress.kanjiaInfo.uid == this.data.curuid) {
       await WXAPI.shippingCarInfoRemoveAll(token)
     }
-    const d = {
-      token,
-      goodsId,
-      number: this.data.buyNumber,
-      sku: sku && sku.length > 0 ? JSON.stringify(sku) : '',
-      addition: goodsAddition && goodsAddition.length > 0 ? JSON.stringify(goodsAddition) : '',
+    let d = null
+    const currentLevel1Category = wx.getStorageSync('currentLevel1Category')
+    if(currentLevel1Category.id == 559239){
+      d = {
+        token,
+        goodsId,
+        number: this.data.buyNumber,
+        sku: sku && sku.length > 0 ? JSON.stringify(sku) : '',
+        addition: goodsAddition && goodsAddition.length > 0 ? JSON.stringify(goodsAddition) : '',
+        type: "delivery"
+      }
     }
+    else {
+      d = {
+        token,
+        goodsId,
+        number: this.data.buyNumber,
+        sku: sku && sku.length > 0 ? JSON.stringify(sku) : '',
+        addition: goodsAddition && goodsAddition.length > 0 ? JSON.stringify(goodsAddition) : '',
+        type: "self-pickup"
+      }
+    }
+    // const d = {
+    //   token,
+    //   goodsId,
+    //   number: this.data.buyNumber,
+    //   sku: sku && sku.length > 0 ? JSON.stringify(sku) : '',
+    //   addition: goodsAddition && goodsAddition.length > 0 ? JSON.stringify(goodsAddition) : '',
+    // }
     if (this.data.goodsTimesSchedule) {
       const a = this.data.goodsTimesSchedule.find(ele => ele.active)
       if (a) {
