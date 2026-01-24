@@ -167,7 +167,8 @@ Page({
         wx.setStorageSync('currentLevel1Category', currentLevel1Category)
         
         // 重新加载商品列表
-        this._getGoodsListContinuous && this._getGoodsListContinuous()
+        // this._getGoodsListContinuous && this._getGoodsListContinuous()
+        this._loadAllCategoriesGoods()
       }
     }
     
@@ -365,7 +366,8 @@ Page({
     // }
     this.data.page = 1
     // this.getGoodsList()
-    await this._getGoodsListContinuous()
+    // await this._getGoodsListContinuous()
+    await this._loadAllCategoriesGoods()
   },
   async getGoodsList() {
     if (!this.data.isContinuousMode) {
@@ -375,7 +377,8 @@ Page({
     }
 
     // 连续滚动模式
-    await this._getGoodsListContinuous()
+    // await this._getGoodsListContinuous()
+    await this._loadAllCategoriesGoods();
   },
 
   // 原有的单分类商品加载逻辑
@@ -499,6 +502,81 @@ Page({
     })
 
     console.log('商品数据加载完成，分类数据:', goodsByCategory)
+    this.processBadge()
+  },
+  // 一次性加载所有分类的商品数据
+  async _loadAllCategoriesGoods() {
+    wx.showLoading({
+      title: '',
+      mask: true
+    })
+
+    const subCategories = this.data.subCategories
+    if (!subCategories || subCategories.length === 0) {
+      wx.hideLoading()
+      console.log('subCategories为空，无法加载商品')
+      this.setData({
+        goods: [],
+        goodsByCategory: []
+      })
+      return
+    }
+
+    let allGoods = []
+    let goodsByCategory = []
+
+    console.log('开始加载所有分类的商品，共', subCategories.length, '个分类')
+
+    // 循环加载所有分类的商品
+    for (let i = 0; i < subCategories.length; i++) {
+      const category = subCategories[i]
+      console.log(`正在加载分类 [${i + 1}/${subCategories.length}]:`, category.name, 'ID:', category.id)
+
+      const res = await WXAPI.goodsv2({
+        page: 1,
+        categoryId: category.id,
+        pageSize: 10000 // 加载该分类的所有商品
+      })
+
+      if (res.code == 0 && res.data.result && res.data.result.length > 0) {
+
+        // 对结果根据 categoryId 进行排序（确保同一分类的商品在一起）
+        res.data.result.sort((a, b) => a.categoryId - b.categoryId)
+
+        // 记录该分类的商品范围
+        const startIndex = allGoods.length
+        const endIndex = startIndex + res.data.result.length - 1
+        
+        goodsByCategory.push({
+          categoryId: category.id,
+          categoryName: category.name,
+          startIndex: startIndex,
+          endIndex: endIndex,
+          goodsCount: res.data.result.length
+        })
+
+        // 添加到总商品列表
+        allGoods = allGoods.concat(res.data.result)
+
+        console.log(`分类 ${category.name} 加载完成，商品数量:`, res.data.result.length, '总商品数:', allGoods.length)
+      } 
+      
+    }
+
+    wx.hideLoading()
+
+    console.log('所有分类商品加载完成')
+    console.log('总商品数:', allGoods.length)
+    console.log('分类数据:', goodsByCategory)
+
+    // 更新数据
+    this.setData({
+      goods: allGoods,
+      goodsByCategory: goodsByCategory,
+      level2CategoryIndex: 0 // 初始化为第一个分类
+    })
+
+    // 处理徽章等后续操作
     this.processBadge()
   },
   _onReachBottom() {
@@ -723,16 +801,28 @@ Page({
     if (!goodsByCategory || goodsByCategory.length <= level2CategoryIndex) {
       return
     }
+    const subCategories = this.data.subCategories
+    if (!subCategories || level2CategoryIndex >= subCategories.length) {
+      console.log('subCategories为空或索引超出范围')
+      return
+    }
+    const targetSubCategory = subCategories[level2CategoryIndex]
+    console.log("目标分类信息", targetSubCategory)
 
-    const category = goodsByCategory[level2CategoryIndex]
+    // 在 goodsByCategory 中查找对应的分类
+    const category = goodsByCategory.find(cat => cat.categoryId === targetSubCategory.id)
+
+    // const category = goodsByCategory[level2CategoryIndex]
     console.log("点击的类别在goodsByCategory的信息",category)
     if (!category) {
       return
     }
 
     // 估算滚动位置：商品索引 * 商品高度 + 头部高度
-    const itemHeight = 200 // 与_calculateCurrentCategory中的估算值保持一致
-    const headerHeight = 200 // banner等头部高度
+    // const itemHeight = 200 // 与_calculateCurrentCategory中的估算值保持一致
+    // const headerHeight = 200 // banner等头部高度
+    const itemHeight = 100 // 与_calculateCurrentCategory中的估算值保持一致
+    const headerHeight = 0 // banner等已注释
     const scrollTop = category.startIndex * itemHeight + headerHeight
 
     this.setData({
@@ -1603,6 +1693,7 @@ Page({
     console.log("一级分类序号",index)
     const currentLevel1Category = this.data.level1Categories[index];
     const subCategories = this.data.level2Categories.filter(cat => cat.key === String(currentLevel1Category.id));
+    console.log("subCategories",subCategories)
     this.setData({
       subCategories: subCategories,
       level1CategoryIndex:index,
@@ -1615,7 +1706,8 @@ Page({
       wx.setStorageSync('currentLevel1Category', currentLevel1Category)
     }
     // 调用初始化商品列表的函数
-    this._getGoodsListContinuous();
+    // this._getGoodsListContinuous();
+    this._loadAllCategoriesGoods();
     this.shippingCarInfo();
    }
 })
