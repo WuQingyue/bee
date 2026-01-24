@@ -49,6 +49,9 @@ Page({
     packaging_fee_use: '1', // 自提需要包装费
     tihuodianOpen: false, // 是否开启提货点，后台系统开关参数控制
     selectedPickPointId: null, // 选择的提货点ID
+    currentLevel1Category: wx.getStorageSync('currentLevel1Category'), // 当前一级分类
+    estimatedArrivalTime: '', // 预计到达时间
+    shopShortAddress: '', // 自提门店短地址（最多12个字）
   },
   diningTimeChange(a) {
     const selectedHour = a.detail.getColumnValue(0).replace('点', '') * 1
@@ -67,21 +70,21 @@ Page({
     }
   },
   onShow(){
-    const shopInfo = wx.getStorageSync('shopInfo')
-    let peisongType = wx.getStorageSync('peisongType')
-    if (!peisongType) {
-      peisongType = 'zq' // 此处修改默认值
-    }
-    if (shopInfo.openWaimai && !shopInfo.openZiqu) {
-      peisongType = 'kd'
-    }
-    if (!shopInfo.openWaimai && shopInfo.openZiqu) {
-      peisongType = 'zq'
-    }
-    this.setData({
-      shopInfo,
-      peisongType
-    })
+    // const shopInfo = wx.getStorageSync('shopInfo')
+    // let peisongType = wx.getStorageSync('peisongType')
+    // if (!peisongType) {
+    //   peisongType = 'zq' // 此处修改默认值
+    // }
+    // if (shopInfo.openWaimai && !shopInfo.openZiqu) {
+    //   peisongType = 'kd'
+    // }
+    // if (!shopInfo.openWaimai && shopInfo.openZiqu) {
+    //   peisongType = 'zq'
+    // }
+    // this.setData({
+    //   shopInfo,
+    //   peisongType
+    // })
     this._pickPoints()
     AUTH.checkHasLogined().then(isLogined => {
       this.setData({
@@ -99,11 +102,31 @@ Page({
     let goodsList = [];
     const token = wx.getStorageSync('token')
     //立即购买下单
-    if ("buyNow" == this.data.orderType) {
-      goodsList = wx.getStorageSync('pingtuanGoodsList')
-    } else {
-      //购物车下单
-      const res = await WXAPI.shippingCarInfo(token)
+    // if ("buyNow" == this.data.orderType) {
+    //   goodsList = wx.getStorageSync('pingtuanGoodsList')
+    // } else {
+      // //购物车下单
+      // const res = await WXAPI.shippingCarInfo(token)
+      // if (res.code == 0) {
+      //   goodsList = res.data.items
+      // }
+    // }
+    //购物车下单
+    // 从本地存储获取 currentLevel1Category，并同步到 data，供模板和后续逻辑使用
+    const currentLevel1Category = wx.getStorageSync('currentLevel1Category') || null
+    console.log("doneShow")
+    console.log("currentLevel1Category", currentLevel1Category)
+    this.setData({
+      currentLevel1Category
+    })
+    if(currentLevel1Category && currentLevel1Category.id == 559239){
+      const res = await WXAPI.shippingCarInfo(token, "delivery")
+      if (res.code == 0) {
+        goodsList = res.data.items
+      }
+    }
+    else {
+      const res = await WXAPI.shippingCarInfo(token, "self-pickup")
       if (res.code == 0) {
         goodsList = res.data.items
       }
@@ -112,6 +135,10 @@ Page({
       goodsList: goodsList
     })
     this.initShippingAddress()
+    // 计算预计到达时间（如果是配送模式）
+    if (currentLevel1Category && currentLevel1Category.id == 559239) {
+      this.calculateEstimatedArrivalTime()
+    }
   },
 
   onLoad(e) {
@@ -230,30 +257,30 @@ Page({
       peisongType: that.data.peisongType,
       isCanHx: true
     }
-    if (e && that.data.peisongType == 'zq' && that.data.tihuodianOpen == '1') {
-      // 开启了自提点的功能
-      if (!that.data.selectedPickPointId) {
-        wx.showToast({
-          title: '请选择提货点',
-          icon: 'none'
-        })
-        return
-      }
-      postData.pickPointId = that.data.selectedPickPointId
-    }
-    if (this.data.shopInfo) {
-      if (!this.data.shopInfo.openWaimai && !this.data.shopInfo.openZiqu) {
-        wx.showModal({
-          confirmText: this.data.$t.common.confirm,
-          cancelText: this.data.$t.common.cancel,
-          content: this.data.$t.pay.servicesclosed,
-          showCancel: false
-        })
-        return;
-      }
-      postData.shopIdZt = this.data.shopInfo.id
-      postData.shopNameZt = this.data.shopInfo.name
-    }
+    // if (e && that.data.peisongType == 'zq' && that.data.tihuodianOpen == '1') {
+    //   // 开启了自提点的功能
+    //   if (!that.data.selectedPickPointId) {
+    //     wx.showToast({
+    //       title: '请选择提货点',
+    //       icon: 'none'
+    //     })
+    //     return
+    //   }
+    //   postData.pickPointId = that.data.selectedPickPointId
+    // }
+    // if (this.data.shopInfo) {
+    //   if (!this.data.shopInfo.openWaimai && !this.data.shopInfo.openZiqu) {
+    //     wx.showModal({
+    //       confirmText: this.data.$t.common.confirm,
+    //       cancelText: this.data.$t.common.cancel,
+    //       content: this.data.$t.pay.servicesclosed,
+    //       showCancel: false
+    //     })
+    //     return;
+    //   }
+    //   postData.shopIdZt = this.data.shopInfo.id
+    //   postData.shopNameZt = this.data.shopInfo.name
+    // }
     if (that.data.kjId) {
       postData.kjid = that.data.kjId
     }
@@ -492,6 +519,11 @@ Page({
         curAddressData: res.data.info,
         distance
       })
+      
+      // 如果有地址，重新计算预计到达时间
+      if (this.data.currentLevel1Category && this.data.currentLevel1Category.id == 559239) {
+        this.calculateEstimatedArrivalTime()
+      }
     } else {
       this.setData({
         curAddressData: null
@@ -693,13 +725,60 @@ Page({
   },
   async _pickPoints() {
     // 获取提货点列表 https://www.yuque.com/apifm/nu0f75/hm3exv
-    const res = await WXAPI.pickPoints({
-      shopIds: '0,' + this.data.shopInfo.id
-    })
+    // const res = await WXAPI.pickPoints({
+    //   shopIds: '0,' + this.data.shopInfo.id
+    // })
+    const res = await WXAPI.shopSubdetail(1027146)
     if (res.code == 0) {
+      console.log("shopInfo", res.data);
+      const shopInfo = res.data
       this.setData({
-        pickPoints: res.data.result
+        shopInfo,
+        shopShortAddress: this.formatShortAddress(shopInfo && shopInfo.info && shopInfo.info.address)
       })
     }
+  },
+  // 截断门店地址，只保留前12个字符，超出用省略号
+  formatShortAddress(str) {
+    if (!str) return ''
+    const maxLen = 12
+    if (str.length <= maxLen) {
+      return str
+    }
+    return str.substring(0, maxLen) + '...'
+  },
+  // 计算预计到达时间
+  calculateEstimatedArrivalTime() {
+    if (!this.data.curAddressData || !this.data.distance) {
+      this.setData({
+        estimatedArrivalTime: ''
+      })
+      return
+    }
+    
+    const now = new Date()
+    // 根据距离计算配送时间（分钟）
+    // 假设：每公里需要5分钟，最少30分钟
+    const minutesPerKm = 5
+    const minDeliveryTime = 30
+    const deliveryMinutes = Math.max(minDeliveryTime, Math.ceil(this.data.distance * minutesPerKm))
+    
+    // 计算预计到达时间
+    const estimatedTime = new Date(now.getTime() + deliveryMinutes * 60 * 1000)
+    
+    // 格式化时间
+    const formatTime = (date) => {
+      const hour = date.getHours()
+      const minute = date.getMinutes()
+      const h = hour < 10 ? `0${hour}` : `${hour}`
+      const m = minute < 10 ? `0${minute}` : `${minute}`
+      return `${h}:${m}`
+    }
+    
+    const estimatedArrivalTime = formatTime(estimatedTime)
+    
+    this.setData({
+      estimatedArrivalTime
+    })
   },
 })

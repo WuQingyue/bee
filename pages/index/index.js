@@ -39,84 +39,80 @@ Page({
     //   scene: 'shopId%3d12879%2cid%3d111%2ckey%3dY6RoIT' 
     // }
 
-    let mod = 0 // 0 普通模式； 1 扫码点餐模式
-    if (e && e.scene) {
-      const scene = decodeURIComponent(e.scene) // 处理扫码进商品详情页面的逻辑
-      if (scene && scene.split(',').length == 3) {
-        // 扫码点餐
-        const scanDining = {}
-        if (scene.indexOf('key=') != -1) {
-          // 原来shopId=36,id=111,key=Y6RoIT的参数
-          scene.split(',').forEach(ele => {
-            scanDining[ele.split('=')[0]] = ele.split('=')[1]
-          })
-        } else {
-          // 新的 1007292,1015,zsT1U3 模式
-          const _scene = scene.split(',')
-          scanDining.shopId = _scene[0]
-          scanDining.id = _scene[1]
-          scanDining.key = _scene[2]
-        }
+    // let mod = 0 // 0 普通模式； 1 扫码点餐模式
+    // if (e && e.scene) {
+    //   const scene = decodeURIComponent(e.scene) // 处理扫码进商品详情页面的逻辑
+    //   if (scene && scene.split(',').length == 3) {
+    //     // 扫码点餐
+    //     const scanDining = {}
+    //     if (scene.indexOf('key=') != -1) {
+    //       // 原来shopId=36,id=111,key=Y6RoIT的参数
+    //       scene.split(',').forEach(ele => {
+    //         scanDining[ele.split('=')[0]] = ele.split('=')[1]
+    //       })
+    //     } else {
+    //       // 新的 1007292,1015,zsT1U3 模式
+    //       const _scene = scene.split(',')
+    //       scanDining.shopId = _scene[0]
+    //       scanDining.id = _scene[1]
+    //       scanDining.key = _scene[2]
+    //     }
         
-        wx.setStorageSync('scanDining', scanDining)
-        _data.scanDining = scanDining
-        this.cyTableToken(scanDining.id, scanDining.key)
-        mod = 1
-      } else {
-        wx.removeStorageSync('scanDining')
-      }
-    }
-    if (wx.getStorageSync('scanDining')) {
-      mod = 1
-      _data.scanDining = wx.getStorageSync('scanDining')
-      wx.hideTabBar()
-    }
-    this.setData(_data)
-    if (e.share_goods_id) {
-      this.data.share_goods_id = e.share_goods_id
-      this._showGoodsDetailPOP(e.share_goods_id)
-    }
-    if (e.share_pingtuan_open_id) {
-      this.data.share_pingtuan_open_id = e.share_pingtuan_open_id
-    } else {
-      this._showCouponPop()
-    }
+    //     wx.setStorageSync('scanDining', scanDining)
+    //     _data.scanDining = scanDining
+    //     this.cyTableToken(scanDining.id, scanDining.key)
+    //     mod = 1
+    //   } else {
+    //     wx.removeStorageSync('scanDining')
+    //   }
+    // }
+    // if (wx.getStorageSync('scanDining')) {
+    //   mod = 1
+    //   _data.scanDining = wx.getStorageSync('scanDining')
+    //   wx.hideTabBar()
+    // }
+    // this.setData(_data)
+    // if (e.share_goods_id) {
+    //   this.data.share_goods_id = e.share_goods_id
+    //   this._showGoodsDetailPOP(e.share_goods_id)
+    // }
+    // if (e.share_pingtuan_open_id) {
+    //   this.data.share_pingtuan_open_id = e.share_pingtuan_open_id
+    // } else {
+    //   this._showCouponPop()
+    // }
     // 静默式授权注册/登陆
-    if (mod == 0) {
-      AUTH.checkHasLogined().then(isLogin => {
-        if (isLogin) {
-          AUTH.bindSeller()
-        } else {
-          AUTH.authorize().then(res => {
-            AUTH.bindSeller()
-          })
-        }
-      })
-    }
+    // if (mod == 0) {
+    //   AUTH.checkHasLogined().then(isLogin => {
+    //     if (isLogin) {
+    //       AUTH.bindSeller()
+    //     } else {
+    //       AUTH.authorize().then(res => {
+    //         AUTH.bindSeller()
+    //       })
+    //     }
+    //   })
+    // }
     // 设置标题
-    const mallName = wx.getStorageSync('mallName')
-    if (mallName) {
-      this.setData({
-        mallName
-      })
-      wx.setNavigationBarTitle({
-        title: mallName
-      })
-    }
-    APP.configLoadOK = () => {
-      const mallName = wx.getStorageSync('mallName')
-      if (mallName) {
-        wx.setNavigationBarTitle({
-          title: mallName
-        })
-      }
-    }
+    // const mallName = wx.getStorageSync('mallName')
+    // if (mallName) {
+    //   this.setData({
+    //     mallName
+    //   })
+    //   wx.setNavigationBarTitle({
+    //     title: mallName
+    //   })
+    // }
+    // APP.configLoadOK = () => {
+    //   const mallName = wx.getStorageSync('mallName')
+    //   if (mallName) {
+    //     wx.setNavigationBarTitle({
+    //       title: mallName
+    //     })
+    //   }
+    // }
     // 读取默认配送方式
     let peisongType = wx.getStorageSync('peisongType')
-    if (!peisongType) {
-      peisongType = 'zq'
-      wx.setStorageSync('peisongType', peisongType)
-    }
     this.setData({
       peisongType
     })
@@ -133,24 +129,70 @@ Page({
       })
     }
     
-    // 从其他页面返回时，如果 categories 已完成，直接调用 shippingCarInfo
-    // 如果 categories 还在执行，等待完成后调用
-    if (this.data.currentLevel1Category) {
-      // categories 已完成，直接调用
+    // 根据 peisongType 调整 currentLevel1Category 的辅助函数
+    const adjustCategoryByPeisongType = () => {
+      const level1Categories = this.data.level1Categories || []
+      if (level1Categories.length === 0) {
+        return // 分类数据未加载，无法调整
+      }
+      
+      let currentLevel1Category = this.data.currentLevel1Category
+      const storedPeisongType = wx.getStorageSync('peisongType')
+      
+      // 根据 peisongType 调整分类
+      if (storedPeisongType === 'zq' && (!currentLevel1Category || currentLevel1Category.id === 559239)) {
+        // 自提模式：如果不是第一个分类，切换到第一个
+        currentLevel1Category = level1Categories.length > 0 ? level1Categories[0] : null
+      } else if (storedPeisongType === 'kd' && (!currentLevel1Category || currentLevel1Category.id !== 559239)) {
+        // 配送模式：如果不是火锅分类(id=559239)，切换到火锅分类
+        currentLevel1Category = level1Categories.find(cat => cat.id === 559239) || currentLevel1Category
+      }
+      
+      // 如果分类发生变化，更新相关状态
+      if (currentLevel1Category && currentLevel1Category.id !== this.data.currentLevel1Category?.id) {
+        const level2Categories = this.data.level2Categories || []
+        const subCategories = level2Categories.filter(cat => cat.key === String(currentLevel1Category.id))
+        const level1CategoryIndex = level1Categories.findIndex(cat => cat.id === currentLevel1Category.id)
+        
+        this.setData({
+          currentLevel1Category,
+          level1CategoryIndex: level1CategoryIndex >= 0 ? level1CategoryIndex : 0,
+          level2CategoryIndex: 0,
+          subCategories,
+          page: 1,
+          goodsByCategory: []
+        })
+        
+        // 保存到本地存储
+        wx.setStorageSync('currentLevel1Category', currentLevel1Category)
+        
+        // 重新加载商品列表
+        this._getGoodsListContinuous && this._getGoodsListContinuous()
+      }
+    }
+    
+    // 从其他页面返回时，如果 categories 已完成，直接调用
+    if (this.data.currentLevel1Category && this.data.level1Categories && this.data.level1Categories.length > 0) {
+      // categories 已完成，先调整分类，再调用 shippingCarInfo
+      adjustCategoryByPeisongType()
       this.shippingCarInfo()
     } else if (this.categoriesPromise) {
       // categories 正在执行，等待完成后调用
       this.categoriesPromise.then(() => {
+        adjustCategoryByPeisongType()
         this.shippingCarInfo()
       }).catch(() => {
         // 即使失败也尝试调用
+        adjustCategoryByPeisongType()
         this.shippingCarInfo()
       })
     } else {
       // 如果 Promise 不存在且分类也未加载，重新调用 categories
       this.categoriesPromise = this.categories().then(() => {
+        adjustCategoryByPeisongType()
         this.shippingCarInfo()
       }).catch(() => {
+        adjustCategoryByPeisongType()
         this.shippingCarInfo()
       })
     }
@@ -312,6 +354,10 @@ Page({
       goodsByCategory: [],
       currentLevel1Category: currentLevel1Category // 初始化 currentLevel1Category
     })
+    // 保存到本地存储，供其他页面使用
+    if (currentLevel1Category) {
+      wx.setStorageSync('currentLevel1Category', currentLevel1Category)
+    }
     // if (shop_goods_split == '1') {
     //   wx.setStorageSync('shopIds', shopInfo.id)
     // } else {
@@ -1192,6 +1238,10 @@ Page({
       return
     }
     
+    // 支付前把当前一级分类写入本地，供支付页使用
+    if (this.data.currentLevel1Category) {
+      wx.setStorageSync('currentLevel1Category', this.data.currentLevel1Category)
+    }
     if (this.data.scanDining) {
       // 扫码点餐，前往购物车
       wx.navigateTo({
@@ -1513,6 +1563,10 @@ Page({
       level2CategoryIndex:0, // 重置当前索引为第一个
       page: 1 // 重置页码
     });
+    // 保存到本地存储，供其他页面使用
+    if (currentLevel1Category) {
+      wx.setStorageSync('currentLevel1Category', currentLevel1Category)
+    }
     // 调用初始化商品列表的函数
     this._getGoodsListContinuous();
     this.shippingCarInfo();

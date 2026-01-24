@@ -115,9 +115,10 @@
   </view>  
   <view class="r">
     <view class="amount"><text>¥</text>{{shippingCarInfo.price}}</view>
-    <view wx:if="{{shopIsOpened}}" class="topay" bindtap="goPay">{{ $t.index.submit }}</view>
+    <view class="topay" bindtap="goPay">{{ $t.index.submit }}</view>
+    <!-- <view wx:if="{{shopIsOpened}}" class="topay" bindtap="goPay">{{ $t.index.submit }}</view>
     <view wx:elif="{{ !shopInfo }}" class="topay" bindtap="getshopInfo">{{ $t.index.selectShop }}</view>
-    <view wx:else class="topay noopen">{{ $t.index.noBusiness }}</view>
+    <view wx:else class="topay noopen">{{ $t.index.noBusiness }}</view> -->
   </view>
 </view>
 

@@ -14,8 +14,8 @@ Page({
     pickerSelect:[0, 0, 0],
     addressData: {},
     // 固定省市：广东省 / 汕头市
-    fixedProvinceName: '广东省',
-    fixedCityName: '汕头市',
+    fixedProvinceName: '福建省',
+    fixedCityName: '厦门市',
   },
   // 添加地址
   addAddress: function() {

@@ -39,14 +39,14 @@
           <image class="delivery-icon" src="/images/zq.png"></image>
         </view>
         <view class="delivery-text">{{ $t.home.zq }}</view>
-        <view class="delivery-desc">到店自取</view>
+        <view class="delivery-desc">除火锅食材可配送,其余商品均需到店自提哦</view>
       </view>
       <view class="delivery-card" data-type="kd" bind:tap="changePeisongType">
         <view class="delivery-icon-wrapper">
           <image class="delivery-icon" src="/images/ps.png"></image>
         </view>
         <view class="delivery-text">{{ $t.home.ps }}</view>
-        <view class="delivery-desc">外卖配送</view>
+        <view class="delivery-desc">仅支持火锅食材配送哦</view>
       </view>
     </view>
   </view>

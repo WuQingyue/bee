@@ -73,6 +73,8 @@ Page({
   changePeisongType(e) {
     const peisongType = e.currentTarget.dataset.type
     wx.setStorageSync('peisongType', peisongType)
+    console.log("peisongType", peisongType)
+    // kd: 配送, zq: 自取
     wx.switchTab({
       url: '/pages/index/index',
     })

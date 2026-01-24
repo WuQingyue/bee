@@ -80,6 +80,63 @@ page {
   box-shadow: 0 4rpx 20rpx rgba(139, 90, 60, 0.08);
 }
 
+/* ========== 自提门店信息（参考图样式） ========== */
+.pickup-shop-section {
+  margin-top: 8rpx;
+}
+
+.pickup-shop-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0 14rpx;
+}
+
+.pickup-shop-main {
+  flex: 1;
+  overflow: hidden;
+  padding-right: 16rpx;
+}
+
+.pickup-shop-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333333;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pickup-shop-address {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: #A0A0A0;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pickup-shop-arrow {
+  width: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4rpx;
+}
+
+.pickup-shop-arrow-icon {
+  flex-shrink: 0;
+}
+
+.pickup-shop-arrow-text {
+  font-size: 28rpx;
+  color: #1677FF;
+  margin-left: 8rpx;
+  white-space: nowrap;
+}
+
 .card-title {
   font-size: 32rpx;
   font-weight: 600;
@@ -87,6 +144,9 @@ page {
   margin-bottom: 24rpx;
   position: relative;
   padding-left: 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
 }
 
 .card-title::before {
@@ -99,6 +159,35 @@ page {
   height: 32rpx;
   background: linear-gradient(180deg, #D4A574 0%, #C99960 100%);
   border-radius: 4rpx;
+}
+
+/* 火锅配送 / 门店自提 标签（对齐参考图） */
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  line-height: 40rpx;
+  letter-spacing: 0.5rpx;
+  border: 1rpx solid transparent;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.section-tag--hotpot {
+  color: #FF4D4F;
+  background: rgba(255, 77, 79, 0.12);
+  border-color: rgba(255, 77, 79, 0.35);
+}
+
+.section-tag--pickup {
+  color: #1677FF;
+  background: rgba(22, 119, 255, 0.12);
+  border-color: rgba(22, 119, 255, 0.35);
 }
 
 .delivery-options {
@@ -201,17 +290,17 @@ page {
   flex: 1;
 }
 
-.contact-info {
-  font-size: 30rpx;
-  color: #2C2C2C;
-  font-weight: 600;
-  margin-bottom: 12rpx;
-}
-
 .address-text {
   font-size: 26rpx;
   color: #666;
   line-height: 1.6;
+  margin-bottom: 12rpx;
+}
+
+.contact-info {
+  font-size: 30rpx;
+  color: #2C2C2C;
+  font-weight: 600;
 }
 
 .address-right {
@@ -263,6 +352,43 @@ page {
 }
 
 .time-value .placeholder {
+  color: #999;
+}
+
+/* 信息展示部分 */
+.info-section {
+  margin-top: 8rpx;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+}
+
+.info-label {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #2C2C2C;
+  font-weight: 500;
+}
+
+.info-label text {
+  margin-left: 12rpx;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #666;
+  text-align: right;
+  flex: 1;
+  margin-left: 20rpx;
+  word-break: break-all;
+}
+
+.info-value--placeholder {
   color: #999;
 }
 
