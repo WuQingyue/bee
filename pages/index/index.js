@@ -701,7 +701,7 @@ Page({
 
     // 更准确的估算值（rpx转px，微信小程序中1rpx = 0.5px在大多数设备上）
     // const itemHeight = 200 // 每个商品卡片约200px高度（包括间距）
-    const itemHeight = 100 // 每个商品卡片约200px高度（包括间距）
+    const itemHeight = 100 // 
     // const headerHeight = 200 // banner等头部高度约200px
     const headerHeight = 0 // banner等已注释
 
@@ -798,10 +798,16 @@ Page({
   _scrollToCategory(level2CategoryIndex) {
     const goodsByCategory = this.data.goodsByCategory
     console.log("此时的goodsByCategory拥有的数据",goodsByCategory)
-    if (!goodsByCategory || goodsByCategory.length <= level2CategoryIndex) {
+    console.log("level2CategoryIndex",level2CategoryIndex)
+    // if (!goodsByCategory || goodsByCategory.length <= level2CategoryIndex) {
+    //   return
+    // }
+    if (!goodsByCategory || goodsByCategory.length === 0) {
+      console.log('goodsByCategory为空')
       return
     }
     const subCategories = this.data.subCategories
+    console.log("subCategories",subCategories)
     if (!subCategories || level2CategoryIndex >= subCategories.length) {
       console.log('subCategories为空或索引超出范围')
       return
@@ -820,8 +826,8 @@ Page({
 
     // 估算滚动位置：商品索引 * 商品高度 + 头部高度
     // const itemHeight = 200 // 与_calculateCurrentCategory中的估算值保持一致
+    const itemHeight = 100
     // const headerHeight = 200 // banner等头部高度
-    const itemHeight = 100 // 与_calculateCurrentCategory中的估算值保持一致
     const headerHeight = 0 // banner等已注释
     const scrollTop = category.startIndex * itemHeight + headerHeight
 
