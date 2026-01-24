@@ -1,7 +1,7 @@
 const WXAPI = require('apifm-wxapi')
 Page({
   data: {
-
+    
   },
   onLoad(e) {
     getApp().initLanguage(this)
@@ -73,6 +73,7 @@ Page({
   changePeisongType(e) {
     const peisongType = e.currentTarget.dataset.type
     wx.setStorageSync('peisongType', peisongType)
+    wx.setStorageSync('shouldAdjustCategoryByPeisongType', true)
     console.log("peisongType", peisongType)
     // kd: 配送, zq: 自取
     wx.switchTab({

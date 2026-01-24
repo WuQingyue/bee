@@ -114,7 +114,7 @@ Page({
     // 读取默认配送方式
     let peisongType = wx.getStorageSync('peisongType')
     this.setData({
-      peisongType
+      peisongType,
     })
     // this.noticeLastOne()
     // this.getshopInfo()
@@ -123,6 +123,9 @@ Page({
   },
   onShow: function(){
     const peisongType = wx.getStorageSync('peisongType')
+    const shouldAdjustCategoryByPeisongType = wx.getStorageSync('shouldAdjustCategoryByPeisongType')
+    console.log("peisongType",peisongType)
+    console.log("shouldAdjustCategoryByPeisongType",shouldAdjustCategoryByPeisongType)
     if (peisongType) {
       this.setData({
         peisongType
@@ -138,14 +141,16 @@ Page({
       
       let currentLevel1Category = this.data.currentLevel1Category
       const storedPeisongType = wx.getStorageSync('peisongType')
-      
-      // 根据 peisongType 调整分类
-      if (storedPeisongType === 'zq' && (!currentLevel1Category || currentLevel1Category.id === 559239)) {
-        // 自提模式：如果不是第一个分类，切换到第一个
-        currentLevel1Category = level1Categories.length > 0 ? level1Categories[0] : null
-      } else if (storedPeisongType === 'kd' && (!currentLevel1Category || currentLevel1Category.id !== 559239)) {
-        // 配送模式：如果不是火锅分类(id=559239)，切换到火锅分类
-        currentLevel1Category = level1Categories.find(cat => cat.id === 559239) || currentLevel1Category
+      console.log("shouldAdjustCategoryByPeisongType",shouldAdjustCategoryByPeisongType)
+      if(shouldAdjustCategoryByPeisongType){
+        // 根据 peisongType 调整分类
+        if (storedPeisongType === 'zq' && (!currentLevel1Category || currentLevel1Category.id === 559239)) {
+          // 自提模式：如果不是第一个分类，切换到第一个
+          currentLevel1Category = level1Categories.length > 0 ? level1Categories[0] : null
+        } else if (storedPeisongType === 'kd' && (!currentLevel1Category || currentLevel1Category.id !== 559239)) {
+          // 配送模式：如果不是火锅分类(id=559239)，切换到火锅分类
+          currentLevel1Category = level1Categories.find(cat => cat.id === 559239) || currentLevel1Category
+        }
       }
       
       // 如果分类发生变化，更新相关状态
@@ -160,12 +165,14 @@ Page({
           level2CategoryIndex: 0,
           subCategories,
           page: 1,
-          goodsByCategory: []
+          goodsByCategory: [],
+          shouldAdjustCategoryByPeisongType: false
         })
         
         // 保存到本地存储
         wx.setStorageSync('currentLevel1Category', currentLevel1Category)
-        
+        wx.setStorageSync('shouldAdjustCategoryByPeisongType', false)
+
         // 重新加载商品列表
         // this._getGoodsListContinuous && this._getGoodsListContinuous()
         this._loadAllCategoriesGoods()
