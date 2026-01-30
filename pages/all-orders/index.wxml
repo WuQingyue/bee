@@ -1,4 +1,17 @@
 <view class="container">
+	<!-- 顶部状态导航 - 始终显示在顶部 -->
+	<view class="order-tabs" wx:if="{{apiOk}}">
+		<view
+			wx:for="{{tabs}}"
+			wx:key="key"
+			class="order-tab {{ activeTab == item.key ? 'order-tab--active' : '' }}"
+			data-key="{{item.key}}"
+			bindtap="onTabChange"
+		>
+			<text class="order-tab__text">{{item.label}}</text>
+		</view>
+	</view>
+
 	<!-- 空状态设计 -->
 	<view wx:if="{{apiOk && !orderList}}" class="no-order">
 		<view class="empty-icon">☕</view>

@@ -156,7 +156,7 @@ Page({
       // 如果分类发生变化，更新相关状态
       if (currentLevel1Category && currentLevel1Category.id !== this.data.currentLevel1Category?.id) {
         const level2Categories = this.data.level2Categories || []
-        const subCategories = level2Categories.filter(cat => cat.key === String(currentLevel1Category.id))
+        const subCategories = level2Categories.filter(cat => cat.pid === currentLevel1Category.id)
         const level1CategoryIndex = level1Categories.findIndex(cat => cat.id === currentLevel1Category.id)
         
         this.setData({
@@ -347,7 +347,9 @@ Page({
     // 过滤出类别
     const level1Categories = res.data.filter(item => item.level == 1)
     const level2Categories = res.data.filter(item => item.level == 2)
-    const subCategories = level2Categories.filter(cat => cat.key === String(res.data[0].id));
+    const subCategories = level2Categories.filter(cat => cat.pid === res.data[0].id);
+    console.log("subCategories",subCategories)
+     console.log("level2Categories",level2Categories)
     // 初始化时设置 currentLevel1Category 为第一个一级分类
     const currentLevel1Category = level1Categories.length > 0 ? level1Categories[0] : null
     this.setData({
@@ -1705,7 +1707,7 @@ Page({
     const index = e.currentTarget.dataset.idx;
     console.log("一级分类序号",index)
     const currentLevel1Category = this.data.level1Categories[index];
-    const subCategories = this.data.level2Categories.filter(cat => cat.key === String(currentLevel1Category.id));
+    const subCategories = this.data.level2Categories.filter(cat => cat.pid === currentLevel1Category.id);
     console.log("subCategories",subCategories)
     this.setData({
       subCategories: subCategories,

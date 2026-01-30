@@ -6,7 +6,18 @@ APP.configLoadOK = () => {
 }
 Page({
   data: {
-    apiOk: false
+    apiOk: false,
+    // 顶部导航标签
+    tabs: [
+      { key: 'all', label: '全部' },
+      { key: 'pending', label: '待支付' },
+      { key: 'pickup', label: '待取餐' },
+      { key: 'finished', label: '已完成' },
+      { key: 'canceled', label: '已取消' },
+    ],
+    activeTab: 'all',      // 当前选中的标签
+    orderListAll: null,    // 原始订单列表
+    orderList: null        // 当前展示的订单列表（按标签过滤）
   },
   cancelOrderTap: function(e) {
     const that = this;
@@ -151,36 +162,78 @@ Page({
     })
     wx.hideLoading()
     if (res.code == 0) {
-      const orderList = res.data.orderList
-      orderList.forEach(ele => {
-        if (ele.status == -1) {
-          ele.statusStr = this.data.$t.order.status.st01
-        }
-        if (ele.status == 1 && ele.isNeedLogistics) {
-          ele.statusStr = this.data.$t.order.status.st11
-        }
-        if (ele.status == 1 && !ele.isNeedLogistics) {
-          ele.statusStr = this.data.$t.order.status.st10
-        }
-        if (ele.status == 3) {
-          ele.statusStr = this.data.$t.order.status.st3
-        }
-      })
+      const orderList = res.data.orderList || []
+      console.log("all-orders的orderList",orderList)
+      if (orderList && orderList.length > 0) {
+        orderList.forEach(ele => {
+          if (ele.status == -1) {
+            ele.statusStr = this.data.$t.order.status.st01
+          }
+          if (ele.status == 1 && ele.isNeedLogistics) {
+            ele.statusStr = this.data.$t.order.status.st11
+          }
+          if (ele.status == 1 && !ele.isNeedLogistics) {
+            ele.statusStr = this.data.$t.order.status.st10
+          }
+          if (ele.status == 3) {
+            ele.statusStr = this.data.$t.order.status.st3
+          }
+        })
+      }
       this.setData({
-        orderList: res.data.orderList,
-        logisticsMap: res.data.logisticsMap,
-        goodsMap: res.data.goodsMap,
+        orderListAll: orderList,
+        logisticsMap: res.data.logisticsMap || {},
+        goodsMap: res.data.goodsMap || {},
         apiOk: true
-      });
+      })
+      // 根据当前标签过滤一次
+      this.filterOrderList()
       
     } else {
       this.setData({
+        orderListAll: null,
         orderList: null,
         logisticsMap: {},
         goodsMap: {},
         apiOk: true
       });
     }
+  },
+  // 顶部标签点击
+  onTabChange(e) {
+    const key = e.currentTarget.dataset.key
+    if (key === this.data.activeTab) return
+    this.setData({
+      activeTab: key
+    })
+    this.filterOrderList()
+  },
+  // 根据当前标签过滤订单列表
+  filterOrderList() {
+    const { activeTab, orderListAll } = this.data
+    if (!orderListAll || !orderListAll.length) {
+      this.setData({
+        orderList: null
+      })
+      return
+    }
+    let filtered = orderListAll
+    if (activeTab === 'pending') {
+      // 待支付：status = 0
+      filtered = orderListAll.filter(ele => ele.status == 0)
+    } else if (activeTab === 'pickup') {
+      // 待取餐：status = 1
+      filtered = orderListAll.filter(ele => ele.status == 1)
+    } else if (activeTab === 'finished') {
+      // 已完成：status = 3
+      filtered = orderListAll.filter(ele => ele.status == 3)
+    } else if (activeTab === 'canceled') {
+      // 已取消：status = -1
+      filtered = orderListAll.filter(ele => ele.status == -1)
+    }
+    this.setData({
+      orderList: filtered.length ? filtered : null
+    })
   },
   toIndexPage: function() {
     wx.switchTab({

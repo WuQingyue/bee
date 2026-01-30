@@ -201,9 +201,12 @@ Page({
     this.data.remark = e.detail.value
   },
   goCreateOrder(){
+    console.log("goCreateOrder");
     if (this.data.submitLoding) return
-    const mobile = this.data.mobile
-    if (this.data.peisongType == 'zq' && !mobile) {
+    // const mobile = this.data.mobile
+    // console.log("mobile",mobile);
+    // if (this.data.peisongType == 'zq' && !mobile) {
+    if (this.data.peisongType == 'zq') {
       wx.showToast({
         title: this.data.$t.pay.inputphoneNO,
         icon: 'none'
@@ -267,6 +270,7 @@ Page({
     }
   },
   async createOrder(e) {
+    console.log("createOrder");
     var that = this;
     var loginToken = wx.getStorageSync('token') // 用户登录 token
     var remark = this.data.remark; // 备注信息
@@ -333,19 +337,19 @@ Page({
       }
     }
     // 达达配送
-    if (this.data.shopInfo && this.data.shopInfo.number && this.data.shopInfo.expressType == 'dada' && postData.peisongType == 'kd') {
-      if (!that.data.curAddressData) {
-        wx.hideLoading();
-        wx.showToast({
-          title: this.data.$t.pay.setaddress,
-          icon: 'none'
-        })
-        return;
-      }
-      postData.dadaShopNo = this.data.shopInfo.number
-      postData.lat = this.data.curAddressData.latitude
-      postData.lng = this.data.curAddressData.longitude
-    }
+    // if (this.data.shopInfo && this.data.shopInfo.number && this.data.shopInfo.expressType == 'dada' && postData.peisongType == 'kd') {
+    //   if (!that.data.curAddressData) {
+    //     wx.hideLoading();
+    //     wx.showToast({
+    //       title: this.data.$t.pay.setaddress,
+    //       icon: 'none'
+    //     })
+    //     return;
+    //   }
+    //   postData.dadaShopNo = this.data.shopInfo.number
+    //   postData.lat = this.data.curAddressData.latitude
+    //   postData.lng = this.data.curAddressData.longitude
+    // }
     if (e && postData.peisongType == 'kd') {
       if (!that.data.curAddressData) {
         wx.hideLoading();
