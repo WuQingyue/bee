@@ -48,7 +48,25 @@ Component({
    */
   methods: {
     close() {
-      this.triggerEvent('cancel')
+      // this.triggerEvent('cancel')
+      wx.showModal({
+        title: '是否放弃本次付款',
+        content: '只差最后一步，即可完成订单支付',
+        confirmText: '继续付款',
+        cancelText: '放弃',
+        confirmColor: '#0000FF',
+        cancelColor: '#0000FF',
+        success: (res) => {
+          if (res.confirm) {
+            console.log('用户选择继续付款');
+          } else if (res.cancel) {
+            console.log('用户选择放弃付款');
+            wx.redirectTo({
+              url: '/pages/all-orders/index?activeTab=pending'
+            });
+          }
+        }
+      });
     },
     payTypeChange(event) {
       this.setData({
@@ -97,7 +115,7 @@ Component({
           content: this.data.$t.payment.notSupport,
           showCancel: false
         })
-        this.close()
+        // this.close()
         return
       }
       if (res.code != 0) {
@@ -105,7 +123,7 @@ Component({
           content: JSON.stringify(res),
           showCancel: false
         })
-        this.close()
+        // this.close()
         return
       }
       if (this.data.payType == 'wx') {

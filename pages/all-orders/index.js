@@ -130,16 +130,24 @@ Page({
       paymentShow: false
     })
   },
-  onLoad: function(options) {
+  onLoad: function() {
     getApp().initLanguage(this)
     wx.setNavigationBarTitle({
       title: this.data.$t.order.title,
     })
   },
   onShow: function() {
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    const options = currentPage.options;
     AUTH.checkHasLogined().then(isLogined => {
       if (isLogined) {
+        const activeTab = options && options.activeTab ? options.activeTab : 'all';
+        this.setData({
+          activeTab: activeTab
+        });
         this.doneShow();
+        this.filterOrderList()
       } else {
         wx.showModal({
           confirmText: this.data.$t.common.confirm,
