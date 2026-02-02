@@ -60,6 +60,7 @@ App({
     WXAPI.queryConfigBatch('mallName,myBg,mapPos,order_hx_uids,subscribe_ids,share_profile,zxdz,admin_uids,shop_goods_split,QQ_MAP_KEY,shop_join_open,create_order_select_time,packaging_fee,customerServiceChatCorpId,customerServiceChatUrl,alipay,share_pic,tihuodianOpen').then(res => {
       if (res.code == 0) {
         res.data.forEach(config => {
+          console.log(config.key, config.value);
           wx.setStorageSync(config.key, config.value);
         })
         if (this.configLoadOK) {

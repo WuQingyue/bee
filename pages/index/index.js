@@ -113,9 +113,12 @@ Page({
     // }
     // 读取默认配送方式
     let peisongType = wx.getStorageSync('peisongType')
-    this.setData({
-      peisongType,
-    })
+    if(peisongType){
+      this.setData({
+        peisongType,
+      })
+    }
+    
     // this.noticeLastOne()
     // this.getshopInfo()
     this.categoriesPromise = this.categories()
@@ -1394,6 +1397,10 @@ Page({
     if (this.data.currentLevel1Category) {
       wx.setStorageSync('currentLevel1Category', this.data.currentLevel1Category)
     }
+    if(this.data.peisongType){
+      wx.setStorageSync('peisongType', this.data.peisongType)
+      console.log("this.data.peisongType",this.data.peisongType)
+    }
     if (this.data.scanDining) {
       // 扫码点餐，前往购物车
       wx.navigateTo({
@@ -1720,6 +1727,18 @@ Page({
     if (currentLevel1Category) {
       wx.setStorageSync('currentLevel1Category', currentLevel1Category)
     }
+    // peisongType
+    if(currentLevel1Category.id == 559239){
+      this.setData({
+        peisongType:'kd'
+      })
+      
+    } else{
+      this.setData({
+        peisongType:'zq'
+      })
+    }
+    wx.setStorageSync('peisongType', this.data.peisongType)
     // 调用初始化商品列表的函数
     // this._getGoodsListContinuous();
     this._loadAllCategoriesGoods();

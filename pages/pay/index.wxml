@@ -17,8 +17,8 @@
 
 <!-- 配送方式卡片 -->
 <view class="delivery-card">
-  <view class="card-title">
-    <!-- 说明：wx:else 必须紧跟 wx:if/wx:elif，使用 block 避免空白节点导致编译报错 -->
+  <!-- <view class="card-title"> -->
+    <!-- 说明：wx:else 必须紧跟 wx:if/wx:elif，使用 block 避免空白节点导致编译报错
     <block wx:if="{{ currentLevel1Category && currentLevel1Category.id == 559239 }}">
       <view class="section-tag section-tag--hotpot">配送</view>
     </block>
@@ -39,7 +39,7 @@
       </view>
       <view class="option-text">{{ $t.index.Delivery }}</view>
     </view>
-  </view>
+  </view> -->
   
   <!-- Delivery 模式：显示地址、联系方式、昵称、预计到达时间、希望到达时间 -->
   <view wx:if="{{ currentLevel1Category && currentLevel1Category.id == 559239 }}">
@@ -302,9 +302,10 @@
 <van-datetime-picker
   type="time"
 	value="{{ currentDate }}"
-	min-hour="{{ minHour }}"
-	max-hour="{{ 22 }}"
-	min-minute="{{ minMinute }}"
+	min-hour="{{ currentHour }}"
+	max-hour="{{ maxHour }}"
+	min-minute="{{ currentMinute }}"
+	max-minute="{{ maxMinute }}"
 	formatter="{{ formatter }}"
 	filter="{{ filter }}"
 	bind:change="diningTimeChange"

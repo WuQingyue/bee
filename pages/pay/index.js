@@ -30,8 +30,12 @@ Page({
     remark: '',
 
     currentDate: new Date().getHours() + ':' + (new Date().getMinutes() % 10 === 0 ? new Date().getMinutes() : Math.ceil(new Date().getMinutes() / 10) * 10),
-    minHour: new Date().getHours(),
-    minMinute: new Date().getMinutes(),
+    currentHour: new Date().getHours(),
+    currentMinute: new Date().getMinutes(),
+    minHour:"",
+    minMinute:"",
+    maxHour: 23, // 最大小时为23点（今日24点）
+    maxMinute: 59, // 最大分钟为59分
     formatter(type, value) {
       if (type === 'hour') {
         return `${value}点`;
@@ -42,7 +46,7 @@ Page({
     },
     filter(type, options) {
       if (type === 'minute') {
-        return options.filter((option) => option % 10 === 0);
+        return options.filter((option) => option % 5 === 0);
       }
       return options;
     },
@@ -54,24 +58,26 @@ Page({
     shopShortAddress: '', // 自提门店短地址（最多12个字）
   },
   diningTimeChange(a) {
+    console.log("调用了diningTimeChange")
     const selectedHour = a.detail.getColumnValue(0).replace('点', '') * 1
-    if (selectedHour == new Date().getHours()) {
-      let minMinute = new Date().getMinutes()
-      if (minMinute % 10 != 0) {
-        minMinute = Math.round(minMinute / 10 + 1);
-      }
+    if (selectedHour == this.data.minHour) {
+      // let minMin = minMinute
+      // if (minMin % 5 != 0) {
+      //   minMin = Math.round(minMin / 10 + 1)
+      // }
       this.setData({
-        minMinute
+        currentMinute: this.data.minMinute
       })
     } else {
       this.setData({
-        minMinute: 0
+        currentMinute: 0
       })
     }
   },
   onShow(){
     // const shopInfo = wx.getStorageSync('shopInfo')
-    // let peisongType = wx.getStorageSync('peisongType')
+    let peisongType = wx.getStorageSync('peisongType')
+    console.log("peisongType",peisongType)
     // if (!peisongType) {
     //   peisongType = 'zq' // 此处修改默认值
     // }
@@ -81,10 +87,10 @@ Page({
     // if (!shopInfo.openWaimai && shopInfo.openZiqu) {
     //   peisongType = 'zq'
     // }
-    // this.setData({
-    //   shopInfo,
-    //   peisongType
-    // })
+    this.setData({
+      // shopInfo,
+      peisongType
+    })
     this._pickPoints()
     AUTH.checkHasLogined().then(isLogined => {
       this.setData({
@@ -100,7 +106,7 @@ Page({
   },
   async doneShow() {
     let goodsList = [];
-    const token = wx.getStorageSync('token')
+    const token = wx.getStorageSync('token') 
     //立即购买下单
     // if ("buyNow" == this.data.orderType) {
     //   goodsList = wx.getStorageSync('pingtuanGoodsList')
@@ -135,10 +141,10 @@ Page({
       goodsList: goodsList
     })
     this.initShippingAddress()
-    // 计算预计到达时间（如果是配送模式）
-    if (currentLevel1Category && currentLevel1Category.id == 559239) {
-      this.calculateEstimatedArrivalTime()
-    }
+    // // 计算预计到达时间（如果是配送模式）
+    // if (currentLevel1Category && currentLevel1Category.id == 559239) {
+    //   this.calculateEstimatedArrivalTime()
+    // }
   },
 
   onLoad(e) {
@@ -184,6 +190,7 @@ Page({
       peisongType
     })
     wx.setStorageSync('peisongType', peisongType)
+    console.log("调用了selected函数")
     this.createOrder()
   },
   
@@ -201,7 +208,7 @@ Page({
     this.data.remark = e.detail.value
   },
   goCreateOrder(){
-    console.log("goCreateOrder");
+    console.log("调用了goCreateOrder函数")
     if (this.data.submitLoding) return
     // const mobile = this.data.mobile
     // console.log("mobile",mobile);
@@ -235,6 +242,7 @@ Page({
           console.error(e)
         },
         complete: (e) => {
+          console.log("调用了goCreateOrder函数")
           this.createOrder(true)
         },
       })
@@ -246,6 +254,7 @@ Page({
         })
         return
       }
+      console.log("调用了goCreateOrder函数")
       this.createOrder(true)
     }
     // 清空购物车
@@ -270,10 +279,10 @@ Page({
     }
   },
   async createOrder(e) {
-    console.log("createOrder");
     var that = this;
     var loginToken = wx.getStorageSync('token') // 用户登录 token
     var remark = this.data.remark; // 备注信息
+    
     const postData = {
       token: loginToken,
       goodsJsonStr: that.data.goodsJsonStr,
@@ -313,7 +322,7 @@ Page({
     }
     const extJsonStr = {}
     if (postData.peisongType == 'zq') {
-      extJsonStr['联系电话'] = this.data.mobile
+      // extJsonStr['联系电话'] = this.data.mobile
       if (this.data.packaging_fee && this.data.packaging_fee_use == '1') {
         postData.trips = this.data.packaging_fee
       }
@@ -337,19 +346,19 @@ Page({
       }
     }
     // 达达配送
-    // if (this.data.shopInfo && this.data.shopInfo.number && this.data.shopInfo.expressType == 'dada' && postData.peisongType == 'kd') {
-    //   if (!that.data.curAddressData) {
-    //     wx.hideLoading();
-    //     wx.showToast({
-    //       title: this.data.$t.pay.setaddress,
-    //       icon: 'none'
-    //     })
-    //     return;
-    //   }
-    //   postData.dadaShopNo = this.data.shopInfo.number
-    //   postData.lat = this.data.curAddressData.latitude
-    //   postData.lng = this.data.curAddressData.longitude
-    // }
+    if (this.data.shopInfo && this.data.shopInfo.number && this.data.shopInfo.expressType == 'dada' && postData.peisongType == 'kd') {
+      if (!that.data.curAddressData) {
+        wx.hideLoading();
+        wx.showToast({
+          title: this.data.$t.pay.setaddress,
+          icon: 'none'
+        })
+        return;
+      }
+      postData.dadaShopNo = this.data.shopInfo.number
+      postData.lat = this.data.curAddressData.latitude
+      postData.lng = this.data.curAddressData.longitude
+    }
     if (e && postData.peisongType == 'kd') {
       if (!that.data.curAddressData) {
         wx.hideLoading();
@@ -375,11 +384,11 @@ Page({
     if (!e) {
       postData.calculate = "true";
     }
-    // console.log(postData)
+    console.log("postData",postData)
     // console.log(e)
     WXAPI.orderCreate(postData)
     .then(function (res) {     
-      console.log(res.data) 
+      console.log("res.data",res.data) 
       if (res.code != 0) {
         wx.showModal({
           confirmText: that.data.$t.common.confirm,
@@ -489,9 +498,12 @@ Page({
   },
   async getDistance(curAddressData) {
     // 计算门店与收货地址之间的距离
+    console.log("调用了getDistance函数")
     if (!this.data.shopInfo || !this.data.shopInfo.latitude || !this.data.shopInfo.longitude || !curAddressData || !curAddressData.latitude || !curAddressData.longitude) {
+      console.log("getDistance函数返回0")
       return 0
     }
+    console.log("this.data.shopInfo",this.data.shopInfo)
     let distance = 0
     const QQ_MAP_KEY = wx.getStorageSync('QQ_MAP_KEY')
     if (QQ_MAP_KEY == '1') {
@@ -506,8 +518,9 @@ Page({
           title: distanceRes.msg,
           icon: 'none'
         })
-        return distance
+        return this.getDistanceLine(this.data.shopInfo.latitude, this.data.shopInfo.longitude, curAddressData.latitude, curAddressData.longitude) / 1000
       }
+      console.log("distanceRes",distanceRes)
       distance = distanceRes.data.result.rows[0].elements[0].distance / 1000.0
       return distance
     }
@@ -531,6 +544,7 @@ Page({
     const res = await WXAPI.defaultAddress(wx.getStorageSync('token'))
     if (res.code == 0) {
       // 计算距离
+      console.log("调用了initShippingAddress函数")
       let distance = await this.getDistance(res.data.info)
       console.log('distance', distance);
       if (this.data.shopInfo.serviceDistance && distance > this.data.shopInfo.serviceDistance * 1 && this.data.peisongType == 'kd') {
@@ -545,7 +559,8 @@ Page({
       })
       
       // 如果有地址，重新计算预计到达时间
-      if (this.data.currentLevel1Category && this.data.currentLevel1Category.id == 559239) {
+      // if (this.data.currentLevel1Category && this.data.currentLevel1Category.id == 559239) {
+      if (this.data.peisongType == 'kd') {
         this.calculateEstimatedArrivalTime()
       }
     } else {
@@ -565,11 +580,13 @@ Page({
 
     let inviter_id = 0;
     let inviter_id_storge = wx.getStorageSync('referrer');
+    console.log
     if (inviter_id_storge) {
       inviter_id = inviter_id_storge;
     }
     for (let i = 0; i < goodsList.length; i++) {
       let carShopBean = goodsList[i];
+      console.log("carShopBean",carShopBean)
       if (carShopBean.stores < carShopBean.minBuyNumber) {
         continue
       }
@@ -609,6 +626,7 @@ Page({
       isNeedLogistics: isNeedLogistics,
       goodsJsonStr: JSON.stringify(goodsJsonStr)
     });
+    console.log("调用了processYunfei函数")
     this.createOrder()
   },
   addAddress: function () {
@@ -627,6 +645,7 @@ Page({
       curCoupon: this.data.coupons[selIndex],
       curCouponShowText: this.data.coupons[selIndex].nameExt
     })
+    console.log("调用了bindChangeCoupon函数")
     this.createOrder()
   },
   // 选择提货点
@@ -738,6 +757,7 @@ Page({
     this.setData({
       packaging_fee_use: event.detail,
     })
+    console.log("调用了packaging_fee_Change函数")
     this.createOrder()
   },
   packaging_fee_Click(event) {
@@ -745,6 +765,7 @@ Page({
     this.setData({
       packaging_fee_use: name,
     })
+    console.log("调用了packaging_fee_Click函数")
     this.createOrder()
   },
   async _pickPoints() {
@@ -752,10 +773,11 @@ Page({
     // const res = await WXAPI.pickPoints({
     //   shopIds: '0,' + this.data.shopInfo.id
     // })
-    const res = await WXAPI.shopSubdetail(1027146)
+    // const res = await WXAPI.shopSubdetail(1027146)
+    const res = await WXAPI.fetchShops()
     if (res.code == 0) {
-      console.log("shopInfo", res.data);
-      const shopInfo = res.data
+      const shopInfo = res.data.find(shop => shop.status === 1) || null
+      console.log("shopInfo", shopInfo)
       this.setData({
         shopInfo,
         shopShortAddress: this.formatShortAddress(shopInfo && shopInfo.info && shopInfo.info.address)
@@ -773,6 +795,7 @@ Page({
   },
   // 计算预计到达时间
   calculateEstimatedArrivalTime() {
+    console.log("调用了calculateEstimatedArrivalTime")
     if (!this.data.curAddressData || !this.data.distance) {
       this.setData({
         estimatedArrivalTime: ''
@@ -800,9 +823,20 @@ Page({
     }
     
     const estimatedArrivalTime = formatTime(estimatedTime)
-    
+    console.log("计算预计到达时间",estimatedArrivalTime)
+
+    // 解析小时和分钟
+    const [estimatedHour, estimatedMinute] = estimatedArrivalTime.split(':').map(Number)
+    if(estimatedMinute > 55){
+       estimatedHour += 1;
+       estimatedMinute = 0;
+    }
     this.setData({
-      estimatedArrivalTime
+      estimatedArrivalTime,
+      minHour: estimatedHour,
+      minMinute: estimatedMinute,
+      currentHour: estimatedHour,
+      currentMinute: estimatedMinute
     })
   },
 })
