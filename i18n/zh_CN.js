@@ -61,6 +61,9 @@ module.exports = {
       st10: '待取餐',
       st11: '配送中',
       st3: '已完成',
+      st: '全部',
+      st0: '待支付',
+      st2: '已发货',
     },
     deleteProfile: '确定要删除该订单吗？',
     empty: {

@@ -1,4 +1,4 @@
 
 path：orderList
   description: 订单列表
-    status: 0--- statusStr: "待支付",status: -1--- statusStr: "已取消/已关闭",status: 3--- statusStr: "已完成",status: 1--- statusStr: "待取餐",
+    status: 0--- statusStr: "待支付",status: -1--- statusStr: "已取消/已关闭",status: 1 --- statusStr: "待取餐"，status: 1--- statusStr: "配送中",status: 2--- statusStr: "已发货",status: 3--- statusStr: "已完成",

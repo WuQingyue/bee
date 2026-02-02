@@ -11,6 +11,7 @@ Page({
     tabs: [
       { key: 'all', label: '全部' },
       { key: 'pending', label: '待支付' },
+      { key: 'shipped', label: '已发货' },
       { key: 'pickup', label: '待取餐' },
       { key: 'finished', label: '已完成' },
       { key: 'canceled', label: '已取消' },
@@ -174,6 +175,9 @@ Page({
       console.log("all-orders的orderList",orderList)
       if (orderList && orderList.length > 0) {
         orderList.forEach(ele => {
+          if (ele.status == 0 ) {
+            ele.statusStr = this.data.$t.order.status.st0
+          }
           if (ele.status == -1) {
             ele.statusStr = this.data.$t.order.status.st01
           }
@@ -182,6 +186,9 @@ Page({
           }
           if (ele.status == 1 && !ele.isNeedLogistics) {
             ele.statusStr = this.data.$t.order.status.st10
+          }
+          if (ele.status == 2) {
+            ele.statusStr = this.data.$t.order.status.st2
           }
           if (ele.status == 3) {
             ele.statusStr = this.data.$t.order.status.st3
@@ -229,9 +236,12 @@ Page({
     if (activeTab === 'pending') {
       // 待支付：status = 0
       filtered = orderListAll.filter(ele => ele.status == 0)
+    } else if (activeTab === 'shipped') {
+      // 已发货（配送中）：status = 1 && isNeedLogistics = true
+      filtered = orderListAll.filter(ele => ele.status == 1 && ele.isNeedLogistics)
     } else if (activeTab === 'pickup') {
-      // 待取餐：status = 1
-      filtered = orderListAll.filter(ele => ele.status == 1)
+      // 待取餐：status = 1 && isNeedLogistics = false
+      filtered = orderListAll.filter(ele => ele.status == 1 && !ele.isNeedLogistics)
     } else if (activeTab === 'finished') {
       // 已完成：status = 3
       filtered = orderListAll.filter(ele => ele.status == 3)

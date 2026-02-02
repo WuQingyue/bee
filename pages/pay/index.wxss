@@ -103,9 +103,9 @@ page {
   font-weight: 500;
   color: #333333;
   line-height: 1.2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
 }
 
 .pickup-shop-address {
@@ -113,9 +113,9 @@ page {
   font-size: 24rpx;
   color: #A0A0A0;
   line-height: 1.4;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
 }
 
 .pickup-shop-arrow {

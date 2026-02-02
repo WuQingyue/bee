@@ -17,8 +17,8 @@
 
 <!-- 配送方式卡片 -->
 <view class="delivery-card">
-  <!-- <view class="card-title"> -->
-    <!-- 说明：wx:else 必须紧跟 wx:if/wx:elif，使用 block 避免空白节点导致编译报错
+  <view class="card-title">
+    <!-- 说明：wx:else 必须紧跟 wx:if/wx:elif，使用 block 避免空白节点导致编译报错 -->
     <block wx:if="{{ currentLevel1Category && currentLevel1Category.id == 559239 }}">
       <view class="section-tag section-tag--hotpot">配送</view>
     </block>
@@ -26,7 +26,7 @@
       <view class="section-tag section-tag--pickup">自提</view>
     </block>
   </view>
-  <view wx:if="{{ shopInfo.openWaimai && shopInfo.openZiqu }}" class="delivery-options">
+  <!-- <view wx:if="{{ shopInfo.openWaimai && shopInfo.openZiqu }}" class="delivery-options">
     <view class="delivery-option {{peisongType == 'zq' ? 'active' : ''}}" bindtap="selected" data-pstype="zq">
       <view class="option-icon">
         <van-icon name="shop-collect-o" size="40rpx" color="{{peisongType == 'zq' ? '#fff' : '#8B5A3C'}}" />
@@ -116,10 +116,10 @@
       <view class="pickup-shop-row">
         <view class="pickup-shop-main">
           <view class="pickup-shop-title">
-            {{shopShortAddress }}
+            {{ shopInfo.address }}
           </view>
-          <view class="pickup-shop-address" wx:if="{{shopInfo.info.linkPhone}}">
-            {{shopInfo.info.linkPhone}}
+          <view class="pickup-shop-address" wx:if="{{shopInfo.linkPhone}}">
+            {{shopInfo.linkPhone}}
           </view>
         </view>
         <view class="pickup-shop-arrow">
@@ -130,11 +130,11 @@
     </view>
     
     <!-- 提示语 -->
-    <view class="pickup-tip-section" wx:if="{{shopInfo && shopInfo.info && shopInfo.info.introduce}}">
+    <view class="pickup-tip-section" wx:if="{{shopInfo && shopInfo.introduce}}">
       <view class="section-divider"></view>
       <view class="pickup-tip-content">
         <van-icon name="info-o" size="28rpx" color="#D4A574" />
-        <text class="pickup-tip-text">{{shopInfo.info.introduce}}</text>
+        <text class="pickup-tip-text">{{shopInfo.introduce}}</text>
       </view>
     </view>
     

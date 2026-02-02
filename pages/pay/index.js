@@ -54,8 +54,7 @@ Page({
     tihuodianOpen: false, // 是否开启提货点，后台系统开关参数控制
     selectedPickPointId: null, // 选择的提货点ID
     currentLevel1Category: wx.getStorageSync('currentLevel1Category'), // 当前一级分类
-    estimatedArrivalTime: '', // 预计到达时间
-    shopShortAddress: '', // 自提门店短地址（最多12个字）
+    estimatedArrivalTime: '' // 预计到达时间
   },
   diningTimeChange(a) {
     console.log("调用了diningTimeChange")
@@ -314,12 +313,12 @@ Page({
     //   postData.shopIdZt = this.data.shopInfo.id
     //   postData.shopNameZt = this.data.shopInfo.name
     // }
-    if (that.data.kjId) {
-      postData.kjid = that.data.kjId
-    }
-    if (that.data.pingtuanOpenId) {
-      postData.pingtuanOpenId = that.data.pingtuanOpenId
-    }
+    // if (that.data.kjId) {
+    //   postData.kjid = that.data.kjId
+    // }
+    // if (that.data.pingtuanOpenId) {
+    //   postData.pingtuanOpenId = that.data.pingtuanOpenId
+    // }
     const extJsonStr = {}
     if (postData.peisongType == 'zq') {
       // extJsonStr['联系电话'] = this.data.mobile
@@ -328,11 +327,7 @@ Page({
       }
     }
     if (this.data.create_order_select_time == '1') {
-      if (postData.peisongType == 'zq') {
-        extJsonStr['取餐时间'] = this.data.diningTime
-      } else {
-        extJsonStr['送达时间'] = this.data.diningTime
-      }
+      extJsonStr['diningTime'] = this.data.diningTime
     }
     postData.extJsonStr = JSON.stringify(extJsonStr)
     // 有设置了配送费的情况下，计算运费
@@ -747,8 +742,10 @@ Page({
     })
   },
   async _peisonFeeList() {
+    console.log("调用了_peisonFeeList函数")
     // https://www.yuque.com/apifm/nu0f75/nx465k
     const res = await WXAPI.peisonFeeList()
+    console.log("peisonFeeList",res)
     if (res.code == 0) {
       this.data.peisonFeeList = res.data
     }
@@ -778,9 +775,9 @@ Page({
     if (res.code == 0) {
       const shopInfo = res.data.find(shop => shop.status === 1) || null
       console.log("shopInfo", shopInfo)
+      console.log("shopInfo.address", shopInfo.address)
       this.setData({
-        shopInfo,
-        shopShortAddress: this.formatShortAddress(shopInfo && shopInfo.info && shopInfo.info.address)
+        shopInfo
       })
     }
   },
@@ -827,16 +824,18 @@ Page({
 
     // 解析小时和分钟
     const [estimatedHour, estimatedMinute] = estimatedArrivalTime.split(':').map(Number)
+    let hour = estimatedHour
+    let minute = estimatedMinute
     if(estimatedMinute > 55){
-       estimatedHour += 1;
-       estimatedMinute = 0;
+       hour += 1;
+       minute = 0;
     }
     this.setData({
       estimatedArrivalTime,
-      minHour: estimatedHour,
-      minMinute: estimatedMinute,
-      currentHour: estimatedHour,
-      currentMinute: estimatedMinute
+      minHour: hour,
+      minMinute: minute,
+      currentHour: hour,
+      currentMinute: minute
     })
   },
 })
