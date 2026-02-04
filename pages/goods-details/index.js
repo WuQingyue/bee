@@ -440,8 +440,8 @@ Page({
       await WXAPI.shippingCarInfoRemoveAll(token)
     }
     let d = null
-    const currentLevel1Category = wx.getStorageSync('currentLevel1Category')
-    if(currentLevel1Category.id == 559239){
+    const currentCategory = wx.getStorageSync('currentCategory')
+    if(currentCategory.id == 559239){
       d = {
         token,
         goodsId,

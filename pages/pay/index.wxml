@@ -19,7 +19,7 @@
 <view class="delivery-card">
   <view class="card-title">
     <!-- 说明：wx:else 必须紧跟 wx:if/wx:elif，使用 block 避免空白节点导致编译报错 -->
-    <block wx:if="{{ currentLevel1Category && currentLevel1Category.id == 559239 }}">
+    <block wx:if="{{ currentCategory && currentCategory.id == 559239 }}">
       <view class="section-tag section-tag--hotpot">配送</view>
     </block>
     <block wx:else>
@@ -42,7 +42,7 @@
   </view> -->
   
   <!-- Delivery 模式：显示地址、联系方式、昵称、预计到达时间、希望到达时间 -->
-  <view wx:if="{{ currentLevel1Category && currentLevel1Category.id == 559239 }}">
+  <view wx:if="{{ currentCategory && currentCategory.id == 559239 }}">
     <!-- 配送地址 -->
     <view class="address-section">
       <view class="section-divider"></view>
@@ -68,7 +68,7 @@
       </view>
     </view>
     
-    <!-- 联系方式（如果地址中没有显示） -->
+    <!-- 联系方式（如果地址中没有显示）
     <view class="info-section" wx:if="{{curAddressData && !curAddressData.mobile}}">
       <view class="section-divider"></view>
       <view class="info-item">
@@ -78,7 +78,7 @@
         </view>
         <view class="info-value">{{mobile}}</view>
       </view>
-    </view>
+    </view> -->
     
     <!-- 预计到达时间 -->
     <view class="info-section" wx:if="{{estimatedArrivalTime}}">

@@ -53,8 +53,8 @@ Page({
     packaging_fee_use: '1', // 自提需要包装费
     tihuodianOpen: false, // 是否开启提货点，后台系统开关参数控制
     selectedPickPointId: null, // 选择的提货点ID
-    currentLevel1Category: wx.getStorageSync('currentLevel1Category'), // 当前一级分类
-    estimatedArrivalTime: '' // 预计到达时间
+    currentCategory: wx.getStorageSync('currentCategory'), // 当前一级分类
+    estimatedArrivalTime: '' ,// 预计到达时间
   },
   diningTimeChange(a) {
     console.log("调用了diningTimeChange")
@@ -117,14 +117,14 @@ Page({
       // }
     // }
     //购物车下单
-    // 从本地存储获取 currentLevel1Category，并同步到 data，供模板和后续逻辑使用
-    const currentLevel1Category = wx.getStorageSync('currentLevel1Category') || null
+    // 从本地存储获取 currentCategory，并同步到 data，供模板和后续逻辑使用
+    const currentCategory = wx.getStorageSync('currentCategory') || null
     console.log("doneShow")
-    console.log("currentLevel1Category", currentLevel1Category)
+    console.log("currentCategory", currentCategory)
     this.setData({
-      currentLevel1Category
+      currentCategory
     })
-    if(currentLevel1Category && currentLevel1Category.id == 559239){
+    if(currentCategory && currentCategory.id == 559239){
       const res = await WXAPI.shippingCarInfo(token, "delivery")
       if (res.code == 0) {
         goodsList = res.data.items
@@ -180,7 +180,8 @@ Page({
     this.setData({
       nick: apiUserInfoMap.base.nick,
       avatarUrl: apiUserInfoMap.base.avatarUrl,
-      mobile: apiUserInfoMap.base.mobile
+      mobile: apiUserInfoMap.base.mobile,
+      username: apiUserInfoMap.base.username,
     })
   },
   selected(e){
@@ -212,13 +213,13 @@ Page({
     // const mobile = this.data.mobile
     // console.log("mobile",mobile);
     // if (this.data.peisongType == 'zq' && !mobile) {
-    if (this.data.peisongType == 'zq') {
-      wx.showToast({
-        title: this.data.$t.pay.inputphoneNO,
-        icon: 'none'
-      })
-      return
-    }
+    // if (this.data.peisongType == 'zq') {
+    //   wx.showToast({
+    //     title: this.data.$t.pay.inputphoneNO,
+    //     icon: 'none'
+    //   })
+    //   return
+    // }
     if (!this.data.diningTime && this.data.create_order_select_time == '1' && this.data.peisongType == 'kd') {
       wx.showToast({
         title: this.data.$t.pay.select,
@@ -259,11 +260,11 @@ Page({
     // 清空购物车
     try {
       const token = wx.getStorageSync('token')
-      const currentLevel1Category = wx.getStorageSync('currentLevel1Category')
+      const currentCategory = wx.getStorageSync('currentCategory')
       
       if (token) {
         // 根据当前分类判断是配送还是自提
-        if (currentLevel1Category && currentLevel1Category.id == 559239) {
+        if (currentCategory && currentCategory.id == 559239) {
           // 配送模式
           WXAPI.shippingCarInfoRemoveAll(token, "delivery")
         } else {

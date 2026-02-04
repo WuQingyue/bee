@@ -36,11 +36,11 @@
   <scroll-view class="category-scroll-view" scroll-x="true" show-scrollbar="false">
     <view class="category-scroll-content">
       <view 
-        wx:for="{{level1Categories}}" 
+        wx:for="{{categories}}" 
         wx:key="id" 
-        class="category-item {{index === level1CategoryIndex ? 'active' : ''}}"
+        class="category-item {{index === categoryIndex ? 'active' : ''}}"
         data-idx="{{index}}"
-        bindtap="onHorizontalCategoryClick">
+        bindtap="categoryClick">
         <view class="category-icon-wrapper">
           <view class="category-icon">
             <image wx:if="{{item.icon}}" class="category-icon-img" src="{{item.icon}}" mode="aspectFill"></image>
@@ -54,7 +54,7 @@
 </view>
 
 <view class="box1">
-  <view class="box-1">
+   <!-- <view class="box-1">
     <van-sidebar activeKey="{{ level2CategoryIndex }}">
       <van-sidebar-item
         wx:for="{{subCategories}}" wx:key="id"
@@ -64,14 +64,15 @@
         data-idx="{{index}}" bind:click="categoryClick"
       />
     </van-sidebar>
-  </view>
-  <scroll-view class="box-2" scroll-y="true" scroll-top="{{scrollTop}}" bindscroll="onScroll">
-  <!-- <scroll-view class="box-2" scroll-y="true" scroll-top="{{scrollTop}}" bindscrolltolower="_onReachBottom" bindscroll="onScroll">
+  </view> -->
+  <!-- <scroll-view class="box-2" scroll-y="true" scroll-top="{{scrollTop}}" bindscroll="onScroll">
+  <scroll-view class="box-2" scroll-y="true" scroll-top="{{scrollTop}}" bindscrolltolower="_onReachBottom" bindscroll="onScroll">
     <swiper wx:if="{{banners}}" class="swiper1" indicator-dots="true" autoplay circular>
       <swiper-item wx:for="{{banners}}" wx:key="id">
         <image  mode="aspectFill" bindtap="tapBanner" data-url="{{item.linkUrl}}" src="{{item.picUrl}}" />
       </swiper-item>
     </swiper> -->
+  <scroll-view class="box-2" scroll-y="true" scroll-top="{{scrollTop}}" bindscroll="onScroll" bindscrolltolower="_onReachBottom">
     <van-empty wx:if="{{!goods || goods.length == 0}}" description="{{ $t.common.empty }}" />
     <van-card
       wx:for="{{goods}}" wx:key="id"
