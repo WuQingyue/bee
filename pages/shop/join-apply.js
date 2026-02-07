@@ -51,7 +51,8 @@ Page({
     if (this.data.picsList) {
       for (let index = 0; index < this.data.picsList.length; index++) {
         const pic = this.data.picsList[index];
-        const res = await WXAPI.uploadFileV2(wx.getStorageSync('token'), pic.url)
+        // const res = await WXAPI.uploadFileV2(wx.getStorageSync('token'), pic.url)
+        const res = await WXAPI.uploadFileV2(getApp().globalData.token, pic.url)
         if (res.code == 0) {
           extJsonStr['file' + index] = res.data.url
         }
@@ -59,7 +60,8 @@ Page({
     }
 
     const res = await WXAPI.addComment({
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       type: 1,
       extJsonStr: JSON.stringify(extJsonStr),
       content: this.data.content

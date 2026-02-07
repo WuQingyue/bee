@@ -28,7 +28,8 @@ Page({
       title: '',
     })
     const res = await WXAPI.cashLogsV2({
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       page:1,
       pageSize:500
     })

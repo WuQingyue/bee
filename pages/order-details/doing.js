@@ -37,7 +37,8 @@ Page({
       title: '',
     })
     const res = await WXAPI.orderList({
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       type: 0,
       statusBatch: '1,2'
     })

@@ -25,7 +25,8 @@ Page({
     wx.stopPullDownRefresh()
   },
   async getUserAmount() {
-    const res = await WXAPI.userAmount(wx.getStorageSync('token'))
+    // const res = await WXAPI.userAmount(wx.getStorageSync('token'))
+    const res = await WXAPI.userAmount(getApp().globalData.token)
     if (res.code == 0) {
       this.setData({
         balance: res.data.balance,
@@ -36,7 +37,8 @@ Page({
     }
   },
   async dynamicUserCode() {
-    const res = await WXAPI.dynamicUserCode(wx.getStorageSync('token'))
+    // const res = await WXAPI.dynamicUserCode(wx.getStorageSync('token'))
+    const res = await WXAPI.dynamicUserCode(getApp().globalData.token)
     if (res.code == 0) {
       this.setData({
         userCode: res.data

@@ -34,7 +34,8 @@ Page({
   },
   async userAmount() {
     // https://www.yuque.com/apifm/nu0f75/wrqkcb
-    const res = await WXAPI.userAmount(wx.getStorageSync('token'))
+    // const res = await WXAPI.userAmount(wx.getStorageSync('token'))
+    const res = await WXAPI.userAmount(getApp().globalData.token)
     if (res.code == 0) {
       this.setData({
         totleConsumed: res.data.totleConsumed

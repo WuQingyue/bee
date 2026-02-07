@@ -8,7 +8,8 @@ const $t = i18n.$t()
  */
 function wxpay(type, money, orderId, redirectUrl, data) {
   const postData = {
-    token: wx.getStorageSync('token'),
+    // token: wx.getStorageSync('token'),
+    token: getApp().globalData.token,
     money: money,
     remark: "在线充值",
   }

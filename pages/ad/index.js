@@ -44,7 +44,8 @@ Page({
       id:id,
     })
     if (id) { // 修改初始化数据库数据
-      const res = await WXAPI.addressDetail(wx.getStorageSync('token'), id)
+      // const res = await WXAPI.addressDetail(wx.getStorageSync('token'), id)
+      const res = await WXAPI.addressDetail(getApp().globalData.token, id)
       if (res.code == 0) {
         var addressData = res.data.info
         console.log(addressData)
@@ -89,7 +90,8 @@ Page({
   selectTap: function(e) {
     var id = e.currentTarget.dataset.id;
     WXAPI.updateAddress({
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       id: id,
       isDefault: 'true'
     }).then(function(res) {
@@ -107,7 +109,8 @@ Page({
       content: this.data.$t.ad_index.deleteProfile,
       success: function (res) {
         if (res.confirm) {
-          WXAPI.deleteAddress(wx.getStorageSync('token'), id).then(function () {
+          // WXAPI.deleteAddress(wx.getStorageSync('token'), id).then(function () {
+          WXAPI.deleteAddress(getApp().globalData.token, id).then(function () {
             _this.setData({
               addressEdit: false,
               cancelBtn: false,
@@ -136,7 +139,8 @@ Page({
     wx.showLoading({
       title: '',
     })
-    const res = await WXAPI.queryAddress(wx.getStorageSync('token'))
+    // const res = await WXAPI.queryAddress(wx.getStorageSync('token'))
+    const res = await WXAPI.queryAddress(getApp().globalData.token)
     wx.hideLoading({
       success: (res) => {},
     })
@@ -357,7 +361,8 @@ Page({
     }
     
     const postData = {
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       linkMan: linkMan,
       address: address,
       mobile: mobile,
@@ -419,7 +424,8 @@ Page({
     const _this = this
     this.initRegionPicker() // 初始化省市区选择器
     if (e.id) { // 修改初始化数据库数据
-      WXAPI.addressDetail(e.id, wx.getStorageSync('token')).then(function (res) {
+      // WXAPI.addressDetail(e.id, wx.getStorageSync('token')).then(function (res) {
+      WXAPI.addressDetail(e.id, getApp().globalData.token).then(function (res) {
         if (res.code === 0) {
           _this.setData({
             id: e.id,

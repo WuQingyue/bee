@@ -105,7 +105,8 @@ Page({
     })
   },
   async getGoodsDetailAndKanjieInfo(goodsId) {
-    const token = wx.getStorageSync('token')
+    // const token = wx.getStorageSync('token')
+    const token = getApp().globalData.token
     const that = this;
     const goodsDetailRes = await WXAPI.goodsDetail(goodsId, token ? token : '')
     const goodsKanjiaSetRes = await WXAPI.kanjiaSet(goodsId)
@@ -146,7 +147,8 @@ Page({
           that.data.kjJoinUid = wx.getStorageSync('uid')
         }
         const curKanjiaprogress = await WXAPI.kanjiaDetail(_data.curGoodsKanjia.id, that.data.kjJoinUid)
-        const myHelpDetail = await WXAPI.kanjiaHelpDetail(wx.getStorageSync('token'), _data.curGoodsKanjia.id, that.data.kjJoinUid)
+        // const myHelpDetail = await WXAPI.kanjiaHelpDetail(wx.getStorageSync('token'), _data.curGoodsKanjia.id, that.data.kjJoinUid)
+        const myHelpDetail = await WXAPI.kanjiaHelpDetail(getApp().globalData.token, _data.curGoodsKanjia.id, that.data.kjJoinUid)
         if (curKanjiaprogress.code == 0) {
           _data.curKanjiaprogress = curKanjiaprogress.data
         }
@@ -268,7 +270,8 @@ Page({
     let buyNumber = this.data.goodsDetail.basicInfo.minBuyNumber
     // 计算 sku 价格
     if (this.data.canSubmit) {
-      const token = wx.getStorageSync('token')
+      // const token = wx.getStorageSync('token')
+      const token = getApp().globalData.token
       const res = await WXAPI.goodsPriceV2({
         token: token ? token : '',
         goodsId: this.data.goodsDetail.basicInfo.id,
@@ -424,7 +427,8 @@ Page({
     if (!isLogined) {
       return
     }
-    const token = wx.getStorageSync('token')
+    // const token = wx.getStorageSync('token')
+    const token = getApp().globalData.token
     const goodsId = this.data.goodsDetail.basicInfo.id
     const sku = []
     if (this.data.goodsDetail.properties) {
@@ -543,7 +547,8 @@ Page({
   },
   helpKanjiaDone() {
     const _this = this;
-    WXAPI.kanjiaHelp(wx.getStorageSync('token'), _this.data.kjId, _this.data.kjJoinUid, '').then(function (res) {
+    // WXAPI.kanjiaHelp(wx.getStorageSync('token'), _this.data.kjId, _this.data.kjJoinUid, '').then(function (res) {
+    WXAPI.kanjiaHelp(getApp().globalData.token, _this.data.kjId, _this.data.kjJoinUid, '').then(function (res) {
       if (res.code != 0) {
         wx.showToast({
           title: res.msg,
@@ -730,7 +735,8 @@ Page({
     wx.showLoading({
       title: ''
     })
-    WXAPI.kanjiaJoin(wx.getStorageSync('token'), _this.data.curGoodsKanjia.id).then(function (res) {
+    // WXAPI.kanjiaJoin(wx.getStorageSync('token'), _this.data.curGoodsKanjia.id).then(function (res) {
+    WXAPI.kanjiaJoin(getApp().globalData.token, _this.data.curGoodsKanjia.id).then(function (res) {
       wx.hideLoading()
       if (res.code == 0) {
         _this.setData({

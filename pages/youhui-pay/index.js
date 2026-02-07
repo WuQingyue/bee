@@ -37,7 +37,8 @@ Page({
       })
       return
     }
-    const userMoney = await WXAPI.userAmount(wx.getStorageSync('token'))
+    // const userMoney = await WXAPI.userAmount(wx.getStorageSync('token'))
+    const userMoney = await WXAPI.userAmount(getApp().globalData.token)
     if (userMoney.code == 2000) {
       AUTH.login(this)
       return
@@ -96,7 +97,8 @@ Page({
         }
       })
     } else {
-      WXAPI.payBill(wx.getStorageSync('token'), amount).then(function (res) {
+      // WXAPI.payBill(wx.getStorageSync('token'), amount).then(function (res) {
+      WXAPI.payBill(getApp().globalData.token, amount).then(function (res) {
         if (res.code == 0) {
           wx.showModal({
             confirmText: _this.data.$t.common.confirm,

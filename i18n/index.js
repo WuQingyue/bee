@@ -2,21 +2,33 @@
  * 获取当前使用的语言
  */
 function getLanguage() {
-  const Language = wx.getStorageSync('Language')
-  if (Language) {
-    return Language
-  }
-  const allowLanguage = ['zh_CN', 'en'] // 目前支持的语言包
-  const appBaseInfo = wx.getAppBaseInfo()
-  let _language = appBaseInfo.language || 'zh_CN'
-  if (!allowLanguage.includes(_language)) {
-    _language = 'zh_CN'
-  }
-  wx.setStorageSync('Language', _language)
-  return _language
+  // const Language = wx.getStorageSync('Language')
+  // let Language
+  // const app = getApp && getApp()
+  // try {
+  //   if (app && app.globalData && app.globalData.Language) {
+  //     Language = app.globalData.Language
+  //   }
+  // } catch (e) {
+  //   Language = 'zh_CN'
+  // }
+  
+  // if (Language) {
+  //   return Language
+  // }
+  // const allowLanguage = ['zh_CN', 'en'] // 目前支持的语言包
+  // const appBaseInfo = wx.getAppBaseInfo()
+  // let _language = appBaseInfo.language || 'zh_CN'
+  // if (!allowLanguage.includes(_language)) {
+  //   _language = 'zh_CN'
+  // }
+  // wx.setStorageSync('Language', _language)
+  // return _language
 }
+
 function $t(){
-  return require(getLanguage() + '.js');
+  // return require(getLanguage() + '.js');
+  return require('zh_CN.js')
 }
 
 function setTabBarLanguage(){

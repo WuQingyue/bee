@@ -29,7 +29,8 @@ Page({
       content: this.data.$t.order.cancelProfile,
       success: function(res) {
         if (res.confirm) {
-          WXAPI.orderClose(wx.getStorageSync('token'), orderId).then(function(res) {
+          // WXAPI.orderClose(wx.getStorageSync('token'), orderId).then(function(res) {
+          WXAPI.orderClose(getApp().globalData.token, orderId).then(function(res) {
             if (res.code == 0) {
               that.onShow();
             }
@@ -56,7 +57,8 @@ Page({
     const orderId = e.currentTarget.dataset.id;
     let money = e.currentTarget.dataset.money;
     const needScore = e.currentTarget.dataset.score;
-    WXAPI.userAmount(wx.getStorageSync('token')).then(function(res) {
+    // WXAPI.userAmount(wx.getStorageSync('token')).then(function(res) {
+    WXAPI.userAmount(getApp().globalData.token).then(function(res) {
       if (res.code == 0) {
         // 增加提示框
         if (res.data.score < needScore) {
@@ -102,7 +104,8 @@ Page({
     const _this = this
     if (money <= 0) {
       // 直接使用余额支付
-      WXAPI.orderPay(wx.getStorageSync('token'), orderId).then(function (res) {
+      // WXAPI.orderPay(wx.getStorageSync('token'), orderId).then(function (res) {
+      WXAPI.orderPay(getApp().globalData.token, orderId).then(function (res) {
         _this.onShow();
       })
     } else {
@@ -167,7 +170,8 @@ Page({
       title: '',
     })
     const res = await WXAPI.orderList({
-      token: wx.getStorageSync('token')
+      // token: wx.getStorageSync('token')
+      token: getApp().globalData.token
     })
     wx.hideLoading()
     if (res.code == 0) {
@@ -269,7 +273,8 @@ Page({
       content: this.data.$t.order.deleteProfile,
       success: function (res) {
         if (res.confirm) {
-          WXAPI.orderDelete(wx.getStorageSync('token'), id).then(function (res) {  
+          // WXAPI.orderDelete(wx.getStorageSync('token'), id).then(function (res) {  
+          WXAPI.orderDelete(getApp().globalData.token, id).then(function (res) {  
             if (res.code == 0) {
               that.onShow(); //重新获取订单列表
             }              

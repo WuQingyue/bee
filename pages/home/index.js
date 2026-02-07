@@ -57,9 +57,9 @@ Page({
       imageUrl: wx.getStorageSync('share_pic')
     }
   },
-  changeLang() {
-    getApp().changeLang(this)
-  },
+  // changeLang() {
+  //   getApp().changeLang(this)
+  // },
   huiyuan() {
     wx.navigateTo({
       url: '/pages/member-center/index',

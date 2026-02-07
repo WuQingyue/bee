@@ -54,7 +54,8 @@ Page({
     this.couponStatistics()
   },
   async couponStatistics() {
-    const res = await WXAPI.couponStatistics(wx.getStorageSync('token'))
+    // const res = await WXAPI.couponStatistics(wx.getStorageSync('token'))
+    const res = await WXAPI.couponStatistics(getApp().globalData.token)
     if (res.code == 0) {
       this.setData({
         couponStatistics: res.data
@@ -62,7 +63,8 @@ Page({
     }
   },
   async getUserAmount() {
-    const res = await WXAPI.userAmount(wx.getStorageSync('token'))
+    // const res = await WXAPI.userAmount(wx.getStorageSync('token'))
+    const res = await WXAPI.userAmount(getApp().globalData.token)
     if (res.code == 0) {
       this.setData({
         balance: res.data.balance,
@@ -105,7 +107,8 @@ Page({
   goadmin() {
     wx.navigateToMiniProgram({
       appId: 'wx5e5b0066c8d3f33d',
-      path: 'pages/autoLogin?token=' + wx.getStorageSync('token'),
+      // path: 'pages/autoLogin?token=' + wx.getStorageSync('token'),
+      path: 'pages/autoLogin?token=' + getApp().globalData.token,
     })
   },
   clearStorage() {
@@ -133,7 +136,8 @@ Page({
       return
     }
     const postData = {
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       nick: this.data.nick,
     }
     // https://www.yuque.com/apifm/nu0f75/ykr2zr
@@ -155,7 +159,8 @@ Page({
   async onChooseAvatar(e) {
     console.log(e);
     const avatarUrl = e.detail.avatarUrl
-    let res = await WXAPI.uploadFileV2(wx.getStorageSync('token'), avatarUrl)
+    // let res = await WXAPI.uploadFileV2(wx.getStorageSync('token'), avatarUrl)
+    let res = await WXAPI.uploadFileV2(getApp().globalData.token, avatarUrl)
     if (res.code != 0) {
       wx.showToast({
         title: res.msg,
@@ -165,7 +170,8 @@ Page({
     }
     // https://www.yuque.com/apifm/nu0f75/ykr2zr
     res = await WXAPI.modifyUserInfoV2({
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       avatarUrl: res.data.url,
     })
     if (res.code != 0) {

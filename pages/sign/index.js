@@ -26,7 +26,8 @@ Page({
   async scoreSignLogs() {
     const _this = this
     const res = await WXAPI.scoreSignLogs({
-      token: wx.getStorageSync('token')
+      // token: wx.getStorageSync('token')
+      token: getApp().globalData.token
     })
     if (res.code == 0) {
       this.setData({
@@ -54,7 +55,8 @@ Page({
     }
   },
   async sign() {
-    const res = await WXAPI.scoreSign(wx.getStorageSync('token'))
+    // const res = await WXAPI.scoreSign(wx.getStorageSync('token'))
+    const res = await WXAPI.scoreSign(getApp().globalData.token)
     if (res.code == 10000) {
       wx.showToast({
         title: this.data.$t.sign.signSuccess,

@@ -39,7 +39,8 @@ Page({
     })
     // https://www.yuque.com/apifm/nu0f75/twoctygmpqlhnfkm
     const res = await WXAPI.cardExchangeFromPwd({
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       number: this.data.number
     })
     wx.hideLoading()

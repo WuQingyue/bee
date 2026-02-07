@@ -79,7 +79,8 @@ Page({
     wx.showLoading({
       title: '',
     })
-    const res = await WXAPI.cardMyList(wx.getStorageSync('token'))
+    // const res = await WXAPI.cardMyList(wx.getStorageSync('token'))
+    const res = await WXAPI.cardMyList(getApp().globalData.token)
     wx.hideLoading()
     if (res.code == 0) {
       this.setData({
@@ -130,7 +131,8 @@ Page({
     })
     // https://www.yuque.com/apifm/nu0f75/cz1urg3208qiu5um
     const res = await WXAPI.cardShareClose({
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       id: item.id
     })
     wx.hideLoading()

@@ -26,7 +26,8 @@ Page({
     })
     // https://www.yuque.com/apifm/nu0f75/xevcthfroio6xnc0
     const res = await WXAPI.cardShareOpen({
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       id: this.data.cardUser.id,
       remark: this.data.remark,
     })
@@ -40,7 +41,8 @@ Page({
   onShareAppMessage(e) {
     const promise = new Promise(resolve => {
       WXAPI.cardShareOpen({
-        token: wx.getStorageSync('token'),
+        // token: wx.getStorageSync('token'),
+        token: getApp().globalData.token,
         id: this.data.cardUser.id,
         remark: this.data.remark,
       }).then( res => {

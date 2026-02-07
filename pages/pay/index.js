@@ -108,7 +108,8 @@ Page({
   },
   async doneShow() {
     let goodsList = [];
-    const token = wx.getStorageSync('token') 
+    // const token = wx.getStorageSync('token') 
+    const token = getApp().globalData.token
     //立即购买下单
     // if ("buyNow" == this.data.orderType) {
     //   goodsList = wx.getStorageSync('pingtuanGoodsList')
@@ -263,7 +264,8 @@ Page({
     }
     // 清空购物车
     try {
-      const token = wx.getStorageSync('token')
+      // const token = wx.getStorageSync('token')
+      const token = getApp().globalData.token
       const currentCategory = wx.getStorageSync('currentCategory')
       const hotpotId = Number(wx.getStorageSync('hotpotId'))
       if (token) {
@@ -284,7 +286,8 @@ Page({
   },
   async createOrder(e) {
     var that = this;
-    var loginToken = wx.getStorageSync('token') // 用户登录 token
+    // var loginToken = wx.getStorageSync('token') // 用户登录 token
+    var loginToken = getApp().globalData.token // 用户登录 token
     var remark = this.data.remark; // 备注信息
     
     const postData = {
@@ -442,7 +445,8 @@ Page({
     })
   },
   async processAfterCreateOrder(res) {
-    const token = wx.getStorageSync('token')
+    // const token = wx.getStorageSync('token')
+    const token = getApp().globalData.token
     if (res.data.status != 0) {
       // 待支付状态才需要支付
       wx.redirectTo({
@@ -541,7 +545,8 @@ Page({
     }
   },
   async initShippingAddress() {
-    const res = await WXAPI.defaultAddress(wx.getStorageSync('token'))
+    // const res = await WXAPI.defaultAddress(wx.getStorageSync('token'))
+    const res = await WXAPI.defaultAddress(getApp().globalData.token)
     const hotpotId = Number(wx.getStorageSync('hotpotId'))
     if (res.code == 0) {
       // 计算距离
@@ -664,7 +669,8 @@ Page({
       })
       return;
     }
-    const res = await WXAPI.bindMobileWxapp(wx.getStorageSync('token'), this.data.code, e.detail.encryptedData, e.detail.iv)
+    // const res = await WXAPI.bindMobileWxapp(wx.getStorageSync('token'), this.data.code, e.detail.encryptedData, e.detail.iv)
+    const res = await WXAPI.bindMobileWxapp(getApp().globalData.token, this.data.code, e.detail.encryptedData, e.detail.iv)
     AUTH.wxaCode().then(code => {
       this.data.code = code
     })
@@ -724,7 +730,8 @@ Page({
   },
   async _updateUserInfo(userInfo) {
     const postData = {
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       nick: userInfo.nickName,
       avatarUrl: userInfo.avatarUrl,
       city: userInfo.city,

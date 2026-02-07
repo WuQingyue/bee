@@ -4,7 +4,8 @@ const AUTH = require('utils/auth')
 const i18n = require("i18n/index")
 App({
   onLaunch: function() {
-    i18n.getLanguage()
+    // i18n.getLanguage()
+    // this.globalData.Language = i18n.getLanguage()
     this.setTabBarLanguage()
     const $t = i18n.$t()
     WXAPI.init(CONFIG.subDomain)
@@ -71,6 +72,7 @@ App({
   },
   onShow (e) {AUTH.checkHasLogined().then(isLogined => {
     if (!isLogined) {
+      console.log("onShow",isLogined)
       AUTH.authorize().then(() => {
         this.getUserApiInfo()
       })
@@ -161,28 +163,30 @@ App({
       $t: i18n.$t(),
     })
   },
-  changeLang(_this) {
-    const langs = i18n.langs
-    const nameArray = []
-    langs.forEach(ele => nameArray.push(ele.name))
-    wx.showActionSheet({
-      itemList: nameArray,
-      success: (e) => {
-        const lang = langs[e.tapIndex]
-        wx.setStorageSync('Language', lang.code)
-        _this.setData({
-          language: i18n.getLanguage(),
-          $t: i18n.$t(),
-        })
-        this.setTabBarLanguage()
-      }
-    })
-  },
+  // changeLang(_this) {
+  //   const langs = i18n.langs
+  //   const nameArray = []
+  //   langs.forEach(ele => nameArray.push(ele.name))
+  //   wx.showActionSheet({
+  //     itemList: nameArray,
+  //     success: (e) => {
+  //       const lang = langs[e.tapIndex]
+  //       // wx.setStorageSync('Language', lang.code)
+  //       this.globalData.Language = lang.code
+  //       _this.setData({
+  //         language: i18n.getLanguage(),
+  //         $t: i18n.$t(),
+  //       })
+  //       this.setTabBarLanguage()
+  //     }
+  //   })
+  // },
   setTabBarLanguage() {
     i18n.setTabBarLanguage()
   },
   async getUserApiInfo() {
-    const token = wx.getStorageSync('token')
+    // const token = wx.getStorageSync('token')
+    const token = this.globalData.token
     if (!token) {
       return null
     }
@@ -198,6 +202,7 @@ App({
     }
   },
   globalData: {
-    isConnected: true
+    isConnected: true,
+    token:""
   }
 })

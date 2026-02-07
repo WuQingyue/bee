@@ -93,7 +93,8 @@ Page({
     extJsonStr['到店时间'] = this.data.time
     extJsonStr['用餐人数'] = this.data.persionNum['zh_CN'][this.data.persionNumIndex]
     const res = await WXAPI.yuyueJoin({
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       yuyueId: wx.getStorageSync('zxdz'),
       extJsonStr: JSON.stringify(extJsonStr)
     })

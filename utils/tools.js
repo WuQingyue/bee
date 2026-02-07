@@ -2,7 +2,8 @@ const WXAPI = require('apifm-wxapi')
 
 // 显示购物车tabBar的Badge
 async function showTabBarBadge(noTabBarPage){
-  const token = wx.getStorageSync('token')
+  // const token = wx.getStorageSync('token')
+  const token = getApp().globalData.token
   if (!token) {
     return 0
   }

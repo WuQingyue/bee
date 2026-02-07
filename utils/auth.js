@@ -16,7 +16,8 @@ async function checkSession(){
 }
 
 async function bindSeller() {
-  const token = wx.getStorageSync('token')
+  // const token = wx.getStorageSync('token')
+  const token = getApp().globalData.token
   const referrer = wx.getStorageSync('referrer')
   if (!token) {
     return
@@ -32,20 +33,38 @@ async function bindSeller() {
 
 // 检测登录状态，返回 true / false
 async function checkHasLogined() {
-  const token = wx.getStorageSync('token')
+  // const token = wx.getStorageSync('token')
+  let token
+  try {
+    const app = getApp && getApp()
+    if (app && app.globalData && app.globalData.token) {
+      token = app.globalData.token
+      console.log("checkHasLogined1",token)
+    }
+  } catch (e) {
+    token = ""
+    console.error(e)
+  }
+  
   if (!token) {
+    console.log("checkHasLogined2",token)
     return false
   }
   const loggined = await checkSession()
   if (!loggined) {
-    wx.removeStorageSync('token')
+    // wx.removeStorageSync('token')
+    console.log("checkHasLogined3",token)
+    getApp().globalData.token = ""
     return false
   }
   const checkTokenRes = await WXAPI.checkToken(token)
   if (checkTokenRes.code != 0) {
-    wx.removeStorageSync('token')
+    // wx.removeStorageSync('token')
+    console.log("checkHasLogined",token)
+     getApp().globalData.token = ""
     return false
   }
+  console.log("checkHasLogined5",token)
   return true
 }
 
@@ -180,7 +199,8 @@ async function authorize() {
         }).then(function (res) {
           if (res.code == 0) {
             console.log("authorize",res)
-            wx.setStorageSync('token', res.data.token)
+            // wx.setStorageSync('token', res.data.token)
+            getApp().globalData.token = res.data.token
             wx.setStorageSync('uid', res.data.uid)
             resolve(res)
           } else {

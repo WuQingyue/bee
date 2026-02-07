@@ -128,7 +128,8 @@ Page({
     })
     WXAPI.fetchCoupons({
       id: e.currentTarget.dataset.id,
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       pwd: this.data.couponPwd
     }).then(function (res) {
       if (res.code == 20001 || res.code == 20002) {
@@ -188,7 +189,8 @@ Page({
       title: '',
     })
     WXAPI.myCoupons({
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       status: 0
     }).then(function (res) {
       wx.hideLoading({
@@ -216,7 +218,8 @@ Page({
       title: '',
     })
     WXAPI.myCoupons({
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       status: '1,2,3'
     }).then(function (res) {
       wx.hideLoading({
@@ -314,7 +317,8 @@ Page({
     wx.showLoading({
       title: '',
     })
-    const res = await WXAPI.exchangeCoupons(wx.getStorageSync('token'), this.data.number, this.data.pwd)
+    // const res = await WXAPI.exchangeCoupons(wx.getStorageSync('token'), this.data.number, this.data.pwd)
+    const res = await WXAPI.exchangeCoupons(getApp().globalData.token, this.data.number, this.data.pwd)
     wx.hideLoading({
       success: (res) => {},
     })

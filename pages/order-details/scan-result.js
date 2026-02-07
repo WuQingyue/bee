@@ -20,7 +20,8 @@ Page({
   },
   onShow: function () {
     var that = this;
-    WXAPI.orderDetail(wx.getStorageSync('token'), '', this.data.hxNumber).then(function (res) {
+    // WXAPI.orderDetail(wx.getStorageSync('token'), '', this.data.hxNumber).then(function (res) {
+    WXAPI.orderDetail(getApp().globalData.token, '', this.data.hxNumber).then(function (res) {
       if (res.code != 0) {
         wx.showModal({
           confirmText: this.data.$t.common.confirm,
@@ -50,7 +51,8 @@ Page({
       cancelText: this.data.$t.common.cancel,
       success: function (res) {
         if (res.confirm) {
-          WXAPI.orderDelivery(wx.getStorageSync('token'), orderId).then(function (res) {
+          // WXAPI.orderDelivery(wx.getStorageSync('token'), orderId).then(function (res) {
+          WXAPI.orderDelivery(getApp().globalData.token, orderId).then(function (res) {
             if (res.code == 0) {
               that.onShow();
             }
@@ -62,7 +64,8 @@ Page({
   submitReputation: function (e) {
     let that = this;
     let postJsonString = {};
-    postJsonString.token = wx.getStorageSync('token');
+    // postJsonString.token = wx.getStorageSync('token');
+    postJsonString.token = getApp().globalData.token;
     postJsonString.orderId = this.data.orderId;
     let reputations = [];
     let i = 0;
@@ -94,7 +97,8 @@ Page({
     })
     // https://www.yuque.com/apifm/nu0f75/sq4sma
     const res = await WXAPI.orderHXV2({
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       hxNumber: this.data.hxNumber
     })
     wx.hideLoading()

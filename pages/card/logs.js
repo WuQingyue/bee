@@ -17,7 +17,8 @@ Page({
     })
     // https://www.yuque.com/apifm/nu0f75/gp7sey
     const res = await WXAPI.cardMyLogs({
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       cardId: this.data.cardId,
       page: this.data.page
     })

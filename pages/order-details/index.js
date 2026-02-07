@@ -34,7 +34,8 @@ Page({
         title: '',
       })
       const res = await WXAPI.payLogs({
-        token: wx.getStorageSync('token'),
+        // token: wx.getStorageSync('token'),
+        token: getApp().globalData.token,
         orderNo: this.data.payOrderNo
       })
       wx.hideLoading()
@@ -71,7 +72,8 @@ Page({
       wx.showLoading({
         title: '',
       })
-      const res = await WXAPI.orderDetail(wx.getStorageSync('token'), this.data.orderId)
+      // const res = await WXAPI.orderDetail(wx.getStorageSync('token'), this.data.orderId)
+      const res = await WXAPI.orderDetail(getApp().globalData.token, this.data.orderId)
       wx.hideLoading()
       if (res.code != 0) {
         wx.showModal({
@@ -103,7 +105,8 @@ Page({
     },
     async toPayTap() {
       // 立即支付
-      let res = await WXAPI.userAmount(wx.getStorageSync('token'))
+      // let res = await WXAPI.userAmount(wx.getStorageSync('token'))
+      let res = await WXAPI.userAmount(getApp().globalData.token)
       if (res.code != 0) {
         wx.showToast({
           title: res.msg,
@@ -116,7 +119,8 @@ Page({
       needPay = needPay.toFixed(2)
       if (needPay <= 0) {
         // 余额足够
-        WXAPI.orderPay(wx.getStorageSync('token'), this.data.orderDetail.orderInfo.id).then(res => {
+        // WXAPI.orderPay(wx.getStorageSync('token'), this.data.orderDetail.orderInfo.id).then(res => {
+        WXAPI.orderPay(getApp().globalData.token, this.data.orderDetail.orderInfo.id).then(res => {
           wx.showToast({
             title: this.data.$t.asset.success,
             icon: 'success'
@@ -170,7 +174,8 @@ Page({
           content: this.data.$t.order.askConfirm,
           success: function(res) {
             if (res.confirm) {
-              WXAPI.orderDelivery(wx.getStorageSync('token'), orderId).then(function (res) {
+              // WXAPI.orderDelivery(wx.getStorageSync('token'), orderId).then(function (res) {
+              WXAPI.orderDelivery(getApp().globalData.token, orderId).then(function (res) {
                 if (res.code == 0) {
                   that.onShow();                  
                 }
@@ -182,7 +187,8 @@ Page({
     submitReputation: function (e) {
       let that = this;
       let postJsonString = {};
-      postJsonString.token = wx.getStorageSync('token');
+      // postJsonString.token = wx.getStorageSync('token');
+      postJsonString.token = getApp().globalData.token;
       postJsonString.orderId = this.data.orderId;
       let reputations = [];
       let i = 0;

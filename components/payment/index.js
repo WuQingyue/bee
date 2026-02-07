@@ -85,7 +85,8 @@ Component({
       console.log("支付调用的接口");
       let token = wx.getStorageSync('payToken')
       if (!token) {
-        token = wx.getStorageSync('token')
+        // token = wx.getStorageSync('token')
+        token = getApp().globalData.token
       }
       const postData = {
         token,

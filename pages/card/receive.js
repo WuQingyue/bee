@@ -22,7 +22,8 @@ Page({
     })
     // https://www.yuque.com/apifm/nu0f75/gmfdsdag0gxv8tp0
     const res = await WXAPI.cardShareFetch({
-      token: wx.getStorageSync('token'),
+      // token: wx.getStorageSync('token'),
+      token: getApp().globalData.token,
       id: this.data.id,
       shareToken: this.data.shareToken,
       calculate

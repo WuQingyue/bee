@@ -298,7 +298,8 @@ Page({
     }
     // 检测是否需要弹出优惠券的福袋
     const res = await WXAPI.coupons({
-      token: wx.getStorageSync('token')
+      // token: wx.getStorageSync('token')
+      token: getApp().globalData.token
     })
     if (res.code == 0) {
       this.data.showCouponPop = true
@@ -784,10 +785,12 @@ Page({
     let res = null
     const hotpotId = Number(wx.getStorageSync('hotpotId'))
     if(this.data.currentCategory.id == hotpotId){
-      res = await WXAPI.shippingCarInfo(wx.getStorageSync('token'),"delivery")
+      // res = await WXAPI.shippingCarInfo(wx.getStorageSync('token'),"delivery")
+      res = await WXAPI.shippingCarInfo(getApp().globalData.token,"delivery")
     }
     else {
-      res = await WXAPI.shippingCarInfo(wx.getStorageSync('token'),"self-pickup")
+      // res = await WXAPI.shippingCarInfo(wx.getStorageSync('token'),"self-pickup")
+      res = await WXAPI.shippingCarInfo(getApp().globalData.token,"self-pickup")
     }
     // const res = await WXAPI.shippingCarInfo(wx.getStorageSync('token'))
     console.log("获取购物车结果",res)
@@ -823,7 +826,8 @@ Page({
     })
   },
   async addCart1(e) {
-    const token = wx.getStorageSync('token')
+    // const token = wx.getStorageSync('token')
+    const token = getApp().globalData.token
     const index = e.currentTarget.dataset.idx
     console.log("点击的商品",index)
     const item = this.data.goods[index]
@@ -1010,7 +1014,8 @@ Page({
     return canSubmit
   },
   async addCart2() {
-    const token = wx.getStorageSync('token')
+    // const token = wx.getStorageSync('token')
+    const token = getApp().globalData.token
     const curGoodsMap = this.data.curGoodsMap
     const canSubmit = this.skuCanSubmit()
     const additionCanSubmit = this.additionCanSubmit()
@@ -1110,7 +1115,8 @@ Page({
     this.shippingCarInfo()
   },
   async cartStepChange(e) {
-    const token = wx.getStorageSync('token')
+    // const token = wx.getStorageSync('token')
+    const token = getApp().globalData.token
     console.log("进入了移除商品")
     const index = e.currentTarget.dataset.idx
     const item = this.data.shippingCarInfo.items[index]
@@ -1189,10 +1195,12 @@ Page({
     let res = null
     const hotpotId = Number(wx.getStorageSync('hotpotId'))
     if(this.data.currentCategory.id == hotpotId){
-      res = await WXAPI.shippingCarInfoRemoveAll(wx.getStorageSync('token'),"delivery")
+      // res = await WXAPI.shippingCarInfoRemoveAll(wx.getStorageSync('token'),"delivery")
+      res = await WXAPI.shippingCarInfoRemoveAll(getApp().globalData.token,"delivery")
     }
     else {
-      res = await WXAPI.shippingCarInfoRemoveAll(wx.getStorageSync('token'),"self-pickup")
+      // res = await WXAPI.shippingCarInfoRemoveAll(wx.getStorageSync('token'),"self-pickup")
+      res = await WXAPI.shippingCarInfoRemoveAll(getApp().globalData.token,"self-pickup")
     }
     wx.hideLoading()
     if (res.code != 0) {
@@ -1221,7 +1229,8 @@ Page({
     this._goodsTimesSchedule(goodsId)
   },
   async _showGoodsDetailPOP(goodsId) {
-    const token = wx.getStorageSync('token')
+    // const token = wx.getStorageSync('token')
+    const token = getApp().globalData.token
     const res = await WXAPI.goodsDetail(goodsId)
     if (res.code != 0) {
       wx.showToast({
@@ -1616,9 +1625,9 @@ Page({
     })
     this.calculateGoodsPrice()
   },
-  changeLang() {
-    getApp().changeLang(this)
-  },
+  // changeLang() {
+  //   getApp().changeLang(this)
+  // },
   waimai() {
     wx.clearStorageSync()
     wx.showTabBar()
