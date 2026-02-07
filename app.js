@@ -57,7 +57,7 @@ App({
         wx.hideToast()
       }
     })
-    WXAPI.queryConfigBatch('mallName,myBg,mapPos,order_hx_uids,subscribe_ids,share_profile,zxdz,admin_uids,shop_goods_split,QQ_MAP_KEY,shop_join_open,create_order_select_time,packaging_fee,customerServiceChatCorpId,customerServiceChatUrl,alipay,share_pic,tihuodianOpen').then(res => {
+    WXAPI.queryConfigBatch('hotpotId,mallName,myBg,mapPos,order_hx_uids,subscribe_ids,share_profile,zxdz,admin_uids,shop_goods_split,QQ_MAP_KEY,shop_join_open,create_order_select_time,packaging_fee,customerServiceChatCorpId,customerServiceChatUrl,alipay,share_pic,tihuodianOpen').then(res => {
       if (res.code == 0) {
         res.data.forEach(config => {
           console.log(config.key, config.value);
@@ -69,69 +69,77 @@ App({
       }
     })
   },
-  onShow (e) {
-    if (e && e.query && e.query.scene) {
-      const scene = decodeURIComponent(e.query.scene) // 处理扫码进商品详情页面的逻辑
-      if (scene && scene.split(',').length == 3) {
-        // 扫码点餐
-      } else {
-        AUTH.checkHasLogined().then(isLogined => {
-          if (!isLogined) {
-            AUTH.authorize().then(() => {
-              this.getUserApiInfo()
-            })
-          } else {
-            this.getUserApiInfo()
-          }
-        })
-      }
-    } else {
-      AUTH.checkHasLogined().then(isLogined => {
-        if (!isLogined) {
-          AUTH.authorize().then(() => {
-            this.getUserApiInfo()
-          })
-        } else {
-          this.getUserApiInfo()
-        }
+  onShow (e) {AUTH.checkHasLogined().then(isLogined => {
+    if (!isLogined) {
+      AUTH.authorize().then(() => {
+        this.getUserApiInfo()
       })
+    } else {
+      this.getUserApiInfo()
     }
-    // 保存邀请人
-    if (e && e.query && e.query.inviter_id) {
-      wx.setStorageSync('referrer', e.query.inviter_id)
-      if (e.shareTicket) {
-        wx.getShareInfo({
-          shareTicket: e.shareTicket,
-          success: res => {
-            console.log(res)
-            console.log({
-              referrer: e.query.inviter_id,
-              encryptedData: res.encryptedData,
-              iv: res.iv
-            })
-            wx.login({
-              success(loginRes) {
-                if (loginRes.code) {
-                  WXAPI.shareGroupGetScore(
-                    loginRes.code,
-                    e.query.inviter_id,
-                    res.encryptedData,
-                    res.iv
-                  ).then(_res => {
-                    console.log(_res)
-                  }).catch(err => {
-                    console.error(err)
-                  })
-                } else {
-                  console.error(loginRes.errMsg)
-                }
-              }
-            })
-          }
-        })
-      }
-    }
-    this.refreshStorageShopInfo()
+  })
+    // if (e && e.query && e.query.scene) {
+    //   const scene = decodeURIComponent(e.query.scene) // 处理扫码进商品详情页面的逻辑
+    //   if (scene && scene.split(',').length == 3) {
+    //     // 扫码点餐
+    //   } else {
+    //     AUTH.checkHasLogined().then(isLogined => {
+    //       if (!isLogined) {
+    //         AUTH.authorize().then(() => {
+    //           this.getUserApiInfo()
+    //         })
+    //       } else {
+    //         this.getUserApiInfo()
+    //       }
+    //     })
+    //   }
+    // } else {
+    //   AUTH.checkHasLogined().then(isLogined => {
+    //     if (!isLogined) {
+    //       AUTH.authorize().then(() => {
+    //         this.getUserApiInfo()
+    //       })
+    //     } else {
+    //       this.getUserApiInfo()
+    //     }
+    //   })
+    // }
+    // // 保存邀请人
+    // if (e && e.query && e.query.inviter_id) {
+    //   wx.setStorageSync('referrer', e.query.inviter_id)
+    //   if (e.shareTicket) {
+    //     wx.getShareInfo({
+    //       shareTicket: e.shareTicket,
+    //       success: res => {
+    //         console.log(res)
+    //         console.log({
+    //           referrer: e.query.inviter_id,
+    //           encryptedData: res.encryptedData,
+    //           iv: res.iv
+    //         })
+    //         wx.login({
+    //           success(loginRes) {
+    //             if (loginRes.code) {
+    //               WXAPI.shareGroupGetScore(
+    //                 loginRes.code,
+    //                 e.query.inviter_id,
+    //                 res.encryptedData,
+    //                 res.iv
+    //               ).then(_res => {
+    //                 console.log(_res)
+    //               }).catch(err => {
+    //                 console.error(err)
+    //               })
+    //             } else {
+    //               console.error(loginRes.errMsg)
+    //             }
+    //           }
+    //         })
+    //       }
+    //     })
+    //   }
+    // }
+    // this.refreshStorageShopInfo()
   },
   async refreshStorageShopInfo() {
     // 刷新本地缓存的门店信息 https://www.yuque.com/apifm/nu0f75/cu4cfi
@@ -180,6 +188,7 @@ App({
     }
     // https://www.yuque.com/apifm/nu0f75/zgf8pu
     const res = await WXAPI.userDetail(token)
+    console.log("getUserApiInfo",res)
     if (res.code == 0) {
       this.globalData.apiUserInfoMap = res.data
       if (this.getUserDetailOK) {

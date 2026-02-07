@@ -36,6 +36,9 @@ Page({
     minMinute:"",
     maxHour: 23, // 最大小时为23点（今日24点）
     maxMinute: 59, // 最大分钟为59分
+
+    hotpotId:Number(wx.getStorageSync('hotpotId')),
+
     formatter(type, value) {
       if (type === 'hour') {
         return `${value}点`;
@@ -124,7 +127,8 @@ Page({
     this.setData({
       currentCategory
     })
-    if(currentCategory && currentCategory.id == 559239){
+    const hotpotId = Number(wx.getStorageSync('hotpotId'))
+    if(currentCategory && currentCategory.id == hotpotId){
       const res = await WXAPI.shippingCarInfo(token, "delivery")
       if (res.code == 0) {
         goodsList = res.data.items
@@ -141,7 +145,7 @@ Page({
     })
     this.initShippingAddress()
     // // 计算预计到达时间（如果是配送模式）
-    // if (currentLevel1Category && currentLevel1Category.id == 559239) {
+    // if (currentLevel1Category && currentLevel1Category.id == hotpotId) {
     //   this.calculateEstimatedArrivalTime()
     // }
   },
@@ -261,10 +265,10 @@ Page({
     try {
       const token = wx.getStorageSync('token')
       const currentCategory = wx.getStorageSync('currentCategory')
-      
+      const hotpotId = Number(wx.getStorageSync('hotpotId'))
       if (token) {
         // 根据当前分类判断是配送还是自提
-        if (currentCategory && currentCategory.id == 559239) {
+        if (currentCategory && currentCategory.id == hotpotId) {
           // 配送模式
           WXAPI.shippingCarInfoRemoveAll(token, "delivery")
         } else {
@@ -538,6 +542,7 @@ Page({
   },
   async initShippingAddress() {
     const res = await WXAPI.defaultAddress(wx.getStorageSync('token'))
+    const hotpotId = Number(wx.getStorageSync('hotpotId'))
     if (res.code == 0) {
       // 计算距离
       console.log("调用了initShippingAddress函数")
@@ -555,7 +560,7 @@ Page({
       })
       
       // 如果有地址，重新计算预计到达时间
-      // if (this.data.currentLevel1Category && this.data.currentLevel1Category.id == 559239) {
+      // if (this.data.currentLevel1Category && this.data.currentLevel1Category.id == hotpotId) {
       if (this.data.peisongType == 'kd') {
         this.calculateEstimatedArrivalTime()
       }
@@ -706,7 +711,7 @@ Page({
       lang: 'zh_CN',
       desc: this.data.$t.pay.memberinformation,
       success: res => {
-        console.log(res);
+        console.log("wx.getUserProfile",res);
         this._updateUserInfo(res.userInfo)
       },
       fail: err => {

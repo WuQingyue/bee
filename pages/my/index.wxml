@@ -22,18 +22,18 @@
             <text class="uid-label">{{ $t.my.uid }}</text>
             <text class="uid-value">{{ apiUserInfoMap.base.id }}</text>
           </view>
-          <view class="vip-badge" bindtap="govip">
+          <!-- <view class="vip-badge" bindtap="govip">
             <text wx:if="{{apiUserInfoMap.userLevel}}" class="vip-text">{{apiUserInfoMap.userLevel.name}}</text>
             <text wx:else class="vip-text">{{ $t.vip.notVIP }}</text>
-          </view>
+          </view> -->
         </view>
         
-        <view class="qr-section" bindtap="goUserCode">
+        <!-- <view class="qr-section" bindtap="goUserCode">
           <view class="qr-icon-wrapper">
             <van-icon name="qr" size="48rpx" color="#8B7355" />
           </view>
           <view class="qr-text">{{ $t.my.userCode }}</view>
-        </view>
+        </view> -->
       </view>
     </view>
   </view>
@@ -91,14 +91,14 @@
             <text class="menu-text">{{ $t.my.signDaily }}</text>
           </navigator>
         </view>
-        <view class="menu-item">
+        <!-- <view class="menu-item">
           <navigator url="/pages/booking/index" hover-class="none">
             <view class="menu-icon-wrapper booking-icon">
               <van-icon name="clock-o" size="44rpx" />
             </view>
             <text class="menu-text">{{ $t.booking.title }}</text>
           </navigator>
-        </view>
+        </view> -->
         <view class="menu-item">
           <navigator url="/pages/youhui-pay/index" hover-class="none">
             <view class="menu-icon-wrapper pay-icon">
@@ -117,7 +117,7 @@
         <text>我的服务</text>
       </view>
       <view class="menu-list">
-        <navigator url="/pages/member-center/index" hover-class="none">
+        <!-- <navigator url="/pages/member-center/index" hover-class="none">
           <view class="menu-list-item">
             <view class="item-left">
               <view class="list-icon vip-icon">
@@ -127,7 +127,7 @@
             </view>
             <van-icon name="arrow" size="32rpx" color="#999" />
           </view>
-        </navigator>
+        </navigator> -->
         <navigator url="/pages/all-orders/index" hover-class="none">
           <view class="menu-list-item">
             <view class="item-left">

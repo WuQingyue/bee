@@ -24,7 +24,6 @@
     "pages/queue/index"
   ],
   "requiredPrivateInfos": [
-    "getLocation",
     "chooseLocation",
     "chooseAddress"
   ],
@@ -49,7 +48,7 @@
         "pagePath": "pages/index/index",
         "iconPath": "images/nav/index-off.png",
         "selectedIconPath": "images/nav/index-on.png",
-        "text": "点餐"
+        "text": "分类"
       },
       {
         "pagePath": "pages/my/index",
@@ -58,11 +57,6 @@
         "text": "我的"
       }
     ]
-  },
-  "permission": {
-    "scope.userLocation": {
-      "desc": "获取离你最近的门店"
-    }
   },
   "usingComponents": {
     "parser":"/components/parser.20200731.min/parser",

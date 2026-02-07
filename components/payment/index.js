@@ -1,5 +1,5 @@
 const WXAPI = require('apifm-wxapi');
-const { wxaCode } = require('../../utils/auth');
+// const { wxaCode } = require('../../utils/auth');
 Component({
   options: {
     addGlobalClass: true,

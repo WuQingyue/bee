@@ -125,9 +125,7 @@ Page({
   },
   onShow: function(){
     const peisongType = wx.getStorageSync('peisongType')
-    const shouldAdjustCategoryByPeisongType = wx.getStorageSync('shouldAdjustCategoryByPeisongType')
     console.log("peisongType",peisongType)
-    console.log("shouldAdjustCategoryByPeisongType",shouldAdjustCategoryByPeisongType)
     if (peisongType) {
       this.setData({
         peisongType
@@ -140,19 +138,21 @@ Page({
       if (categories.length === 0) {
         return // 分类数据未加载，无法调整
       }
-      
+      const hotpotId = Number(wx.getStorageSync('hotpotId')) 
       let currentCategory = this.data.currentCategory
+      console.log("currentCategory",currentCategory)
       const storedPeisongType = wx.getStorageSync('peisongType')
-      console.log("shouldAdjustCategoryByPeisongType",shouldAdjustCategoryByPeisongType)
-      if(shouldAdjustCategoryByPeisongType){
-        // 根据 peisongType 调整分类
-        if (storedPeisongType === 'zq' && (!currentCategory || currentCategory.id === 559239)) {
-          // 自提模式：如果不是第一个分类，切换到第一个
-          currentCategory = categories.length > 0 ? categories[0] : null
-        } else if (storedPeisongType === 'kd' && (!currentCategory || currentCategory.id !== 559239)) {
-          // 配送模式：如果不是火锅分类(id=559239)，切换到火锅分类
-          currentCategory = categories.find(cat => cat.id === 559239) || categories
-        }
+      console.log("storedPeisongType",storedPeisongType)
+      // 根据 peisongType 调整分类
+      if (storedPeisongType === 'zq' && (!currentCategory || currentCategory.id === hotpotId)) {
+        console.log("zq")
+        // 自提模式：如果不是第一个分类，切换到第一个
+        currentCategory = categories.length > 0 ? categories[0] : null
+      } else if (storedPeisongType === 'kd' && (!currentCategory || currentCategory.id !== hotpotId)) {
+        console.log("kd")
+        // 配送模式：如果不是火锅分类(id=this.data.hotpotId)，切换到火锅分类
+        currentCategory = categories.find(cat => cat.id === hotpotId) || null
+        console.log("配送模式：",currentCategory)
       }
       
       // 如果分类发生变化，更新相关状态
@@ -162,13 +162,11 @@ Page({
         this.setData({
           currentCategory,
           categoryIndex: categoryIndex >= 0 ? categoryIndex : 0,
-          page: 1,
-          shouldAdjustCategoryByPeisongType: false
+          page: 1
         })
         
         // 保存到本地存储
         wx.setStorageSync('currentCategory', currentCategory)
-        wx.setStorageSync('shouldAdjustCategoryByPeisongType', false)
 
         // 重新加载商品列表
         this._getGoodsListContinuous && this._getGoodsListContinuous()
@@ -202,7 +200,7 @@ Page({
     }
     const refreshIndex = wx.getStorageSync('refreshIndex')
     if (refreshIndex) {
-      this.getshopInfo()
+      // this.getshopInfo()
       wx.removeStorageSync('refreshIndex')
     }
   },
@@ -342,6 +340,7 @@ Page({
     }
     const categories = res.data
     const currentCategory = categories.length > 0 ? categories[0] : null
+    console.log("categories",categories)
     this.setData({
       page: 1,
       categories: res.data,
@@ -703,12 +702,13 @@ Page({
   categoryClick(e) {
     const index = e.currentTarget.dataset.idx
     console.log("点击的类别",index)
+    const hotpotId = Number(wx.getStorageSync('hotpotId'))
     if (!this.data.isContinuousMode) {
       // 原有的单分类模式
       // const categorySelected = this.data.categories[index]
       const currentCategory = this.data.categories[index]
       // peisongType
-      if(currentCategory.id == 559239){
+      if(currentCategory.id == hotpotId){
         this.setData({
           peisongType:'kd'
         })
@@ -782,7 +782,8 @@ Page({
     console.log("进入了shippingCarInfo")
     console.log("currentCategory",this.data.currentCategory)
     let res = null
-    if(this.data.currentCategory.id == 559239){
+    const hotpotId = Number(wx.getStorageSync('hotpotId'))
+    if(this.data.currentCategory.id == hotpotId){
       res = await WXAPI.shippingCarInfo(wx.getStorageSync('token'),"delivery")
     }
     else {
@@ -841,7 +842,8 @@ Page({
     }
     console.log("addCart1的currentCategory",this.data.currentCategory.id)
     let res = null
-    if(this.data.currentCategory.id == 559239){
+    const hotpotId = Number(wx.getStorageSync('hotpotId'))
+    if(this.data.currentCategory.id == hotpotId){
       res = await WXAPI.shippingCarInfoAddItem(token, item.id, number, [], [], "delivery")
     }
     else {
@@ -1049,7 +1051,8 @@ Page({
     })
    
     let d = null
-    if(this.data.currentCategory.id == 559239){
+    const hotpotId = Number(wx.getStorageSync('hotpotId'))
+    if(this.data.currentCategory.id == hotpotId){
       d = {
         token,
         goodsId: curGoodsMap.basicInfo.id,
@@ -1119,7 +1122,8 @@ Page({
         title: '',
       })
       let res = null
-      if(currentCategory.id == 559239){
+      const hotpotId = Number(wx.getStorageSync('hotpotId'))
+      if(currentCategory.id == hotpotId){
         res = await WXAPI.shippingCarInfoRemoveItem(token, item.key, "delivery")
       }
       else {
@@ -1149,7 +1153,8 @@ Page({
         title: '',
       })
       let res = null
-      if(currentCategory.id == 559239){
+      const hotpotId = Number(wx.getStorageSync('hotpotId'))
+      if(currentCategory.id == hotpotId){
         res = await WXAPI.shippingCarInfoModifyNumber(token, item.key, e.detail, "delivery")
       }
       else {
@@ -1182,7 +1187,8 @@ Page({
     console.log("清空购物车")
     console.log("currentCategory",this.data.currentCategory)
     let res = null
-    if(this.data.currentCategory.id == 559239){
+    const hotpotId = Number(wx.getStorageSync('hotpotId'))
+    if(this.data.currentCategory.id == hotpotId){
       res = await WXAPI.shippingCarInfoRemoveAll(wx.getStorageSync('token'),"delivery")
     }
     else {
@@ -1637,8 +1643,9 @@ Page({
 //     if (currentLevel1Category) {
 //       wx.setStorageSync('currentLevel1Category', currentLevel1Category)
 //     }
+//     const hotpotId = Number(wx.getStorageSync('hotpotId'))
 //     // peisongType
-//     if(currentLevel1Category.id == 559239){
+//     if(currentLevel1Category.id == hotpotId){
 //       this.setData({
 //         peisongType:'kd'
 //       })

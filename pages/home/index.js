@@ -72,9 +72,23 @@ Page({
   },
   changePeisongType(e) {
     const peisongType = e.currentTarget.dataset.type
+    const hotpotId = Number(wx.getStorageSync('hotpotId')) 
+    console.log("hotpotId",hotpotId)
+    console.log("typeof hotpotId ",typeof hotpotId )
+    // 检查是否是配送模式且 hotpotId 不存在
+    if (peisongType === 'kd' && hotpotId === 0 ) {
+      wx.showModal({
+        title: '提示',
+        content: '目前暂不支持配送',
+        showCancel: false,
+        confirmText: '我知道了'
+      })
+      return
+    }
+
     wx.setStorageSync('peisongType', peisongType)
-    wx.setStorageSync('shouldAdjustCategoryByPeisongType', true)
     console.log("peisongType", peisongType)
+    
     // kd: 配送, zq: 自取
     wx.switchTab({
       url: '/pages/index/index',

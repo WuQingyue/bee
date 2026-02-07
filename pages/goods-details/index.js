@@ -441,7 +441,8 @@ Page({
     }
     let d = null
     const currentCategory = wx.getStorageSync('currentCategory')
-    if(currentCategory.id == 559239){
+    const hotpotId = Number(wx.getStorageSync('hotpotId'))
+    if(currentCategory.id == hotpotId){
       d = {
         token,
         goodsId,

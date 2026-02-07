@@ -191,7 +191,9 @@ Page({
     wx.openCustomerServiceChat({
       extInfo: {url: wx.getStorageSync('customerServiceChatUrl')},
       corpId: wx.getStorageSync('customerServiceChatCorpId'),
-      success: res => {},
+      success: res => {
+        console.log(res)
+      },
       fail: err => {
         console.error(err)
       }

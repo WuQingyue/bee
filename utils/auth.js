@@ -133,48 +133,64 @@ async function authorize() {
     wx.login({
       success: function (res) {
         const code = res.code
-        let referrer = '' // 推荐人
-        let referrer_storge = wx.getStorageSync('referrer');
-        if (referrer_storge) {
-          referrer = referrer_storge;
-        }
+        // let referrer = '' // 推荐人
+        // let referrer_storge = wx.getStorageSync('referrer');
+        // if (referrer_storge) {
+        //   referrer = referrer_storge;
+        // }
         // 下面开始调用注册接口
-        const componentAppid = wx.getStorageSync('componentAppid')
-        if (componentAppid) {
-          WXAPI.wxappServiceAuthorize({
-            code: code,
-            referrer: referrer
-          }).then(function (res) {
-            if (res.code == 0) {
-              wx.setStorageSync('token', res.data.token)
-              wx.setStorageSync('uid', res.data.uid)
-              resolve(res)
-            } else {
-              wx.showToast({
-                title: res.msg,
-                icon: 'none'
-              })
-              reject(res.msg)
-            }
-          })
-        } else {
-          WXAPI.authorize({
-            code: code,
-            referrer: referrer
-          }).then(function (res) {
-            if (res.code == 0) {
-              wx.setStorageSync('token', res.data.token)
-              wx.setStorageSync('uid', res.data.uid)
-              resolve(res)
-            } else {
-              wx.showToast({
-                title: res.msg,
-                icon: 'none'
-              })
-              reject(res.msg)
-            }
-          })
-        }
+        // const componentAppid = wx.getStorageSync('componentAppid')
+        // if (componentAppid) {
+        //   WXAPI.wxappServiceAuthorize({
+        //     code: code,
+        //     referrer: referrer
+        //   }).then(function (res) {
+        //     if (res.code == 0) {
+        //       wx.setStorageSync('token', res.data.token)
+        //       wx.setStorageSync('uid', res.data.uid)
+        //       resolve(res)
+        //     } else {
+        //       wx.showToast({
+        //         title: res.msg,
+        //         icon: 'none'
+        //       })
+        //       reject(res.msg)
+        //     }
+        //   })
+        // } else {
+        //   WXAPI.authorize({
+        //     code: code,
+        //     referrer: referrer
+        //   }).then(function (res) {
+        //     if (res.code == 0) {
+        //       wx.setStorageSync('token', res.data.token)
+        //       wx.setStorageSync('uid', res.data.uid)
+        //       resolve(res)
+        //     } else {
+        //       wx.showToast({
+        //         title: res.msg,
+        //         icon: 'none'
+        //       })
+        //       reject(res.msg)
+        //     }
+        //   })
+        // }
+        WXAPI.authorize({
+          code: code
+        }).then(function (res) {
+          if (res.code == 0) {
+            console.log("authorize",res)
+            wx.setStorageSync('token', res.data.token)
+            wx.setStorageSync('uid', res.data.uid)
+            resolve(res)
+          } else {
+            wx.showToast({
+              title: res.msg,
+              icon: 'none'
+            })
+            reject(res.msg)
+          }
+        })
       },
       fail: err => {
         reject(err)
