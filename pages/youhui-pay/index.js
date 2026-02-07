@@ -23,7 +23,8 @@ Page({
   },
   onShow () {
     this.setData({
-      shopInfo: wx.getStorageSync('shopInfo')
+      // shopInfo: wx.getStorageSync('shopInfo')
+      shopInfo: getApp().globalData.shopInfo
     })  
   },
   async bindSave(e) {
@@ -92,7 +93,8 @@ Page({
         money: wxpayAmount,
         nextAction: {
           type: 4,
-          uid: wx.getStorageSync('uid'),
+          // uid: wx.getStorageSync('uid'),
+          uid: getApp().globalData.uid,
           money: amount
         }
       })

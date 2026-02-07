@@ -64,7 +64,6 @@ async function checkHasLogined() {
      getApp().globalData.token = ""
     return false
   }
-  console.log("checkHasLogined5",token)
   return true
 }
 
@@ -112,7 +111,8 @@ async function login(page){
             return;
           }
           wx.setStorageSync('token', res.data.token)
-          wx.setStorageSync('uid', res.data.uid)
+          // wx.setStorageSync('uid', res.data.uid)
+          getApp().globalData.uid = res.data.uid
           _this.bindSeller()
           if ( page ) {
             page.onShow()
@@ -136,7 +136,8 @@ async function login(page){
             return;
           }
           wx.setStorageSync('token', res.data.token)
-          wx.setStorageSync('uid', res.data.uid)
+          // wx.setStorageSync('uid', res.data.uid)
+          getApp().globalData.uid = res.data.uid
           _this.bindSeller()
           if ( page ) {
             page.onShow()
@@ -201,7 +202,8 @@ async function authorize() {
             console.log("authorize",res)
             // wx.setStorageSync('token', res.data.token)
             getApp().globalData.token = res.data.token
-            wx.setStorageSync('uid', res.data.uid)
+            // wx.setStorageSync('uid', res.data.uid)
+            getApp().globalData.uid = res.data.uid
             resolve(res)
           } else {
             wx.showToast({

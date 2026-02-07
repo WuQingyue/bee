@@ -31,7 +31,8 @@ Component({
     'show': function(show) {
       this.setData({
         alipayQrcode: null,
-        alipayOpenMod: wx.getStorageSync('alipay')
+        // alipayOpenMod: wx.getStorageSync('alipay')
+        alipayOpenMod: getApp().globalData.config.alipay
       })
     }
   },
@@ -83,7 +84,8 @@ Component({
     },
     async submit() {
       console.log("支付调用的接口");
-      let token = wx.getStorageSync('payToken')
+      // let token = wx.getStorageSync('payToken')
+      let token = getApp().globalData.payToken
       if (!token) {
         // token = wx.getStorageSync('token')
         token = getApp().globalData.token
@@ -103,7 +105,8 @@ Component({
         postData.nextAction = JSON.stringify(this.data.nextAction)
       }
       postData.payName = postData.remark
-      const url = wx.getStorageSync('wxpay_api_url')
+      // const url = wx.getStorageSync('wxpay_api_url')
+      const url = getApp().globalData.wxpay_api_url
       let res
       if (this.data.payType == 'wx') {
         // https://www.yuque.com/apifm/nu0f75/ppadt8

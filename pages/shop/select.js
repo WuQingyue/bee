@@ -21,7 +21,8 @@ Page({
     })
     this.setData({
       type: options.type,
-      shop_join_open: wx.getStorageSync('shop_join_open')
+      // shop_join_open: wx.getStorageSync('shop_join_open')
+      shop_join_open: getApp().globalData.config.shop_join_open
     })
   },
   onShow: function () {
@@ -71,9 +72,11 @@ Page({
   },
   goShop(e){
     const idx = e.currentTarget.dataset.idx    
-    wx.setStorageSync('shopInfo', this.data.shops[idx])
+    // wx.setStorageSync('shopInfo', this.data.shops[idx])
+    getApp().globalData.shopInfo = this.data.shops[idx]
     if (this.data.type == 'index') {
-      wx.setStorageSync('refreshIndex', 1)
+      // wx.setStorageSync('refreshIndex', 1)
+      getApp().globalData.refreshIndex = 1
     }
     if (this.data.type == 'pay') {
       wx.navigateBack()

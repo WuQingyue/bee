@@ -95,7 +95,8 @@ Page({
     const res = await WXAPI.yuyueJoin({
       // token: wx.getStorageSync('token'),
       token: getApp().globalData.token,
-      yuyueId: wx.getStorageSync('zxdz'),
+      // yuyueId: wx.getStorageSync('zxdz'),
+      yuyueId: getApp().globalData.config.zxdz,
       extJsonStr: JSON.stringify(extJsonStr)
     })
     if (res.code != 0) {

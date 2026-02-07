@@ -58,7 +58,8 @@ Page({
       })
       return
     }
-    wx.setStorageSync('payToken', res.data.token) // 支付用户的token
+    // wx.setStorageSync('payToken', res.data.token) // 支付用户的token
+    getApp().globalData.payToken = res.data.token  // 支付用户的token
     this.setData({
       paymentShow: true,
       money: this.data.orderInfo.amountReal,

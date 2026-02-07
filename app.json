@@ -14,13 +14,10 @@
     "pages/order-details/index",
     "pages/order-details/scan-result",
     "pages/order-details/doing",
-    "pages/about/index",
-    "pages/booking/index",
     "pages/cart/index",
     "pages/cart/order",
     "pages/goods-details/index",
     "pages/goods/list",
-    "pages/sign/index",
     "pages/queue/index"
   ],
   "requiredPrivateInfos": [

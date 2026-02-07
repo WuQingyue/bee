@@ -45,16 +45,22 @@ Page({
   },
   onShareAppMessage() {
     return {
-      title: wx.getStorageSync('mallName') + ' ' + wx.getStorageSync('share_profile'),
-      path: '/pages/home/index?inviter_id=' + (wx.getStorageSync('uid') || ''),
-      imageUrl: wx.getStorageSync('share_pic')
+      // title: wx.getStorageSync('mallName') + ' ' + wx.getStorageSync('share_profile'),
+      title: getApp().globalData.config.mallName + ' ' + getApp().globalData.config.share_profile,
+      // path: '/pages/home/index?inviter_id=' + (wx.getStorageSync('uid') || ''),
+      path: '/pages/home/index?inviter_id=' + (getApp().globalData.uid || ''),
+      // imageUrl: wx.getStorageSync('share_pic')
+      imageUrl: getApp().globalData.config.share_pic
     }
   },
   onShareTimeline() {
     return {
-      title: wx.getStorageSync('mallName') + ' ' + wx.getStorageSync('share_profile'),
-      query: 'inviter_id=' + (wx.getStorageSync('uid') || ''),
-      imageUrl: wx.getStorageSync('share_pic')
+      // title: wx.getStorageSync('mallName') + ' ' + wx.getStorageSync('share_profile'),
+      title: getApp().globalData.config.mallName + ' ' + getApp().globalData.config.share_profile,
+      // query: 'inviter_id=' + (wx.getStorageSync('uid') || ''),
+      query: 'inviter_id=' + (getApp().globalData.uid || ''),
+      // imageUrl: wx.getStorageSync('share_pic')
+      imageUrl: getApp().globalData.config.share_pic
     }
   },
   // changeLang() {
@@ -72,7 +78,7 @@ Page({
   },
   changePeisongType(e) {
     const peisongType = e.currentTarget.dataset.type
-    const hotpotId = Number(wx.getStorageSync('hotpotId')) 
+    const hotpotId = Number(getApp().globalData.config.hotpotId) 
     console.log("hotpotId",hotpotId)
     console.log("typeof hotpotId ",typeof hotpotId )
     // 检查是否是配送模式且 hotpotId 不存在
@@ -86,7 +92,7 @@ Page({
       return
     }
 
-    wx.setStorageSync('peisongType', peisongType)
+    getApp().globalData.peisongType = peisongType
     console.log("peisongType", peisongType)
     
     // kd: 配送, zq: 自取

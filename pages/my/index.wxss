@@ -302,6 +302,11 @@
   margin-bottom: 32rpx;
 }
 
+/* 第一个菜单组（我的服务）减少上边距 */
+.menu-group:first-of-type {
+  margin-top: 16rpx;
+}
+
 .menu-title {
   display: flex;
   align-items: center;

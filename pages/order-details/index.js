@@ -2,7 +2,8 @@ const APP = getApp();
 const WXAPI = require('apifm-wxapi')
 APP.configLoadOK = () => {
   wx.setNavigationBarTitle({
-    title: wx.getStorageSync('mallName')
+    // title: wx.getStorageSync('mallName')
+    title: getApp().globalData.config.mallName
   })
 }
 const wxbarcode = require('wxbarcode')

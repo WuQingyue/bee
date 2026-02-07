@@ -37,7 +37,7 @@ Page({
     maxHour: 23, // 最大小时为23点（今日24点）
     maxMinute: 59, // 最大分钟为59分
 
-    hotpotId:Number(wx.getStorageSync('hotpotId')),
+    hotpotId:Number(getApp().globalData.config.hotpotId),
 
     formatter(type, value) {
       if (type === 'hour') {
@@ -56,7 +56,7 @@ Page({
     packaging_fee_use: '1', // 自提需要包装费
     tihuodianOpen: false, // 是否开启提货点，后台系统开关参数控制
     selectedPickPointId: null, // 选择的提货点ID
-    currentCategory: wx.getStorageSync('currentCategory'), // 当前一级分类
+    currentCategory: getApp().globalData.currentCategory, // 当前一级分类
     estimatedArrivalTime: '' ,// 预计到达时间
   },
   diningTimeChange(a) {
@@ -78,7 +78,7 @@ Page({
   },
   onShow(){
     // const shopInfo = wx.getStorageSync('shopInfo')
-    let peisongType = wx.getStorageSync('peisongType')
+    let peisongType = getApp().globalData.peisongType
     console.log("peisongType",peisongType)
     // if (!peisongType) {
     //   peisongType = 'zq' // 此处修改默认值
@@ -122,13 +122,13 @@ Page({
     // }
     //购物车下单
     // 从本地存储获取 currentCategory，并同步到 data，供模板和后续逻辑使用
-    const currentCategory = wx.getStorageSync('currentCategory') || null
+    const currentCategory = getApp().globalData.currentCategory || null
     console.log("doneShow")
     console.log("currentCategory", currentCategory)
     this.setData({
       currentCategory
     })
-    const hotpotId = Number(wx.getStorageSync('hotpotId'))
+    const hotpotId = Number(getApp().globalData.config.hotpotId)
     if(currentCategory && currentCategory.id == hotpotId){
       const res = await WXAPI.shippingCarInfo(token, "delivery")
       if (res.code == 0) {
@@ -158,10 +158,13 @@ Page({
     })
     let _data = {
       kjId: e.kjId,
-      create_order_select_time: wx.getStorageSync('create_order_select_time'),
-      packaging_fee: wx.getStorageSync('packaging_fee'),
+      // create_order_select_time: wx.getStorageSync('create_order_select_time'),
+      create_order_select_time: getApp().globalData.config.create_order_select_time,
+      // packaging_fee: wx.getStorageSync('packaging_fee'),
+      packaging_fee: getApp().globalData.config.packaging_fee,
       curCouponShowText: this.data.$t.pay.choose,
-      tihuodianOpen: wx.getStorageSync('tihuodianOpen'),
+      // tihuodianOpen: wx.getStorageSync('tihuodianOpen'),
+      tihuodianOpen: getApp().globalData.config.tihuodianOpen,
     }
     if (e.orderType) {
       _data.orderType = e.orderType
@@ -194,7 +197,7 @@ Page({
     this.setData({
       peisongType
     })
-    wx.setStorageSync('peisongType', peisongType)
+    getApp().globalData.peisongType = peisongType
     console.log("调用了selected函数")
     this.createOrder()
   },
@@ -235,7 +238,8 @@ Page({
     this.setData({
       submitLoding: true
     })
-    const subscribe_ids = wx.getStorageSync('subscribe_ids')
+    // const subscribe_ids = wx.getStorageSync('subscribe_ids')
+    const subscribe_ids = getApp().globalData.config.subscribe_ids
     if (subscribe_ids) {
       wx.requestSubscribeMessage({
         tmplIds: subscribe_ids.split(','),
@@ -266,8 +270,8 @@ Page({
     try {
       // const token = wx.getStorageSync('token')
       const token = getApp().globalData.token
-      const currentCategory = wx.getStorageSync('currentCategory')
-      const hotpotId = Number(wx.getStorageSync('hotpotId'))
+      const currentCategory = getApp().globalData.currentCategory
+      const hotpotId = Number(getApp().globalData.config.hotpotId)
       if (token) {
         // 根据当前分类判断是配送还是自提
         if (currentCategory && currentCategory.id == hotpotId) {
@@ -509,7 +513,9 @@ Page({
     }
     console.log("this.data.shopInfo",this.data.shopInfo)
     let distance = 0
-    const QQ_MAP_KEY = wx.getStorageSync('QQ_MAP_KEY')
+    // const QQ_MAP_KEY = wx.getStorageSync('QQ_MAP_KEY')
+    const QQ_MAP_KEY = getApp().globalData.config.QQ_MAP_KEY
+    console.log("QQ_MAP_KEY",QQ_MAP_KEY)
     if (QQ_MAP_KEY == '1') {
       const distanceRes = await WXAPI.gpsDistance({
         key: QQ_MAP_KEY,
@@ -547,7 +553,7 @@ Page({
   async initShippingAddress() {
     // const res = await WXAPI.defaultAddress(wx.getStorageSync('token'))
     const res = await WXAPI.defaultAddress(getApp().globalData.token)
-    const hotpotId = Number(wx.getStorageSync('hotpotId'))
+    const hotpotId = Number(getApp().globalData.config.hotpotId)
     if (res.code == 0) {
       // 计算距离
       console.log("调用了initShippingAddress函数")

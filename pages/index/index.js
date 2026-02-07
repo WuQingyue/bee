@@ -111,7 +111,7 @@ Page({
     //   }
     // }
     // 读取默认配送方式
-    let peisongType = wx.getStorageSync('peisongType')
+    let peisongType = getApp().globalData.peisongType
     if(peisongType){
       this.setData({
         peisongType,
@@ -124,7 +124,7 @@ Page({
     // this.banners()
   },
   onShow: function(){
-    const peisongType = wx.getStorageSync('peisongType')
+    const peisongType = getApp().globalData.peisongType
     console.log("peisongType",peisongType)
     if (peisongType) {
       this.setData({
@@ -138,10 +138,10 @@ Page({
       if (categories.length === 0) {
         return // 分类数据未加载，无法调整
       }
-      const hotpotId = Number(wx.getStorageSync('hotpotId')) 
+      const hotpotId = Number(getApp().globalData.config.hotpotId) 
       let currentCategory = this.data.currentCategory
       console.log("currentCategory",currentCategory)
-      const storedPeisongType = wx.getStorageSync('peisongType')
+      const storedPeisongType = getApp().globalData.peisongType
       console.log("storedPeisongType",storedPeisongType)
       // 根据 peisongType 调整分类
       if (storedPeisongType === 'zq' && (!currentCategory || currentCategory.id === hotpotId)) {
@@ -166,7 +166,7 @@ Page({
         })
         
         // 保存到本地存储
-        wx.setStorageSync('currentCategory', currentCategory)
+        getApp().globalData.currentCategory = currentCategory
 
         // 重新加载商品列表
         this._getGoodsListContinuous && this._getGoodsListContinuous()
@@ -198,7 +198,7 @@ Page({
         this.shippingCarInfo()
       })
     }
-    const refreshIndex = wx.getStorageSync('refreshIndex')
+    const refreshIndex = getApp().globalData.refreshIndex
     if (refreshIndex) {
       // this.getshopInfo()
       wx.removeStorageSync('refreshIndex')
@@ -216,11 +216,13 @@ Page({
       return
     }
     wx.hideTabBar()
-    wx.setStorageSync('uid', res.data.uid)
+    // wx.setStorageSync('uid', res.data.uid)
+    getApp().globalData.uid = res.data.uid
     wx.setStorageSync('token', res.data.token)
   },
   async getshopInfo(){
-    let shopInfo = wx.getStorageSync('shopInfo')
+    // let shopInfo = wx.getStorageSync('shopInfo')
+    let shopInfo = getApp().globalData.shopInfo
     if (shopInfo) {
       this.setData({
         shopInfo: shopInfo,
@@ -288,7 +290,8 @@ Page({
       shopInfo: res.data[0],
       shopIsOpened: this.checkIsOpened(res.data[0].openingHours)
     })
-    wx.setStorageSync('shopInfo', res.data[0])
+    // wx.setStorageSync('shopInfo', res.data[0])
+    getApp().globalData.shopInfo =  res.data[0]
     this.categories()
   },
   async _showCouponPop() {
@@ -316,7 +319,7 @@ Page({
     this.setData({
       peisongType
     })
-    wx.setStorageSync('peisongType', peisongType)
+    getApp().globalData.peisongType = peisongType
   },
   // 获取分类
   async categories() {
@@ -351,7 +354,7 @@ Page({
     })
     // 保存到本地存储，供其他页面使用
     if (currentCategory) {
-      wx.setStorageSync('currentCategory', currentCategory)
+      getApp().globalData.currentCategory = currentCategory
     }
     // if (shop_goods_split == '1') {
     //   wx.setStorageSync('shopIds', shopInfo.id)
@@ -703,7 +706,7 @@ Page({
   categoryClick(e) {
     const index = e.currentTarget.dataset.idx
     console.log("点击的类别",index)
-    const hotpotId = Number(wx.getStorageSync('hotpotId'))
+    const hotpotId = Number(getApp().globalData.config.hotpotId)
     if (!this.data.isContinuousMode) {
       // 原有的单分类模式
       // const categorySelected = this.data.categories[index]
@@ -718,8 +721,8 @@ Page({
           peisongType:'zq'
         })
       }
-      wx.setStorageSync('peisongType', this.data.peisongType)
-      wx.setStorageSync('currentCategory', currentCategory)
+      getApp().globalData.peisongType = this.data.peisongType
+      getApp().globalData.currentCategory = currentCategory
       this.setData({
         page: 1,
         currentCategory,
@@ -783,7 +786,7 @@ Page({
     console.log("进入了shippingCarInfo")
     console.log("currentCategory",this.data.currentCategory)
     let res = null
-    const hotpotId = Number(wx.getStorageSync('hotpotId'))
+    const hotpotId = Number(getApp().globalData.config.hotpotId)
     if(this.data.currentCategory.id == hotpotId){
       // res = await WXAPI.shippingCarInfo(wx.getStorageSync('token'),"delivery")
       res = await WXAPI.shippingCarInfo(getApp().globalData.token,"delivery")
@@ -846,7 +849,7 @@ Page({
     }
     console.log("addCart1的currentCategory",this.data.currentCategory.id)
     let res = null
-    const hotpotId = Number(wx.getStorageSync('hotpotId'))
+    const hotpotId = Number(getApp().globalData.config.hotpotId)
     if(this.data.currentCategory.id == hotpotId){
       res = await WXAPI.shippingCarInfoAddItem(token, item.id, number, [], [], "delivery")
     }
@@ -1056,7 +1059,7 @@ Page({
     })
    
     let d = null
-    const hotpotId = Number(wx.getStorageSync('hotpotId'))
+    const hotpotId = Number(getApp().globalData.config.hotpotId)
     if(this.data.currentCategory.id == hotpotId){
       d = {
         token,
@@ -1128,7 +1131,7 @@ Page({
         title: '',
       })
       let res = null
-      const hotpotId = Number(wx.getStorageSync('hotpotId'))
+      const hotpotId = Number(getApp().globalData.config.hotpotId)
       if(currentCategory.id == hotpotId){
         res = await WXAPI.shippingCarInfoRemoveItem(token, item.key, "delivery")
       }
@@ -1159,7 +1162,7 @@ Page({
         title: '',
       })
       let res = null
-      const hotpotId = Number(wx.getStorageSync('hotpotId'))
+      const hotpotId = Number(getApp().globalData.config.hotpotId)
       if(currentCategory.id == hotpotId){
         res = await WXAPI.shippingCarInfoModifyNumber(token, item.key, e.detail, "delivery")
       }
@@ -1193,7 +1196,7 @@ Page({
     console.log("清空购物车")
     console.log("currentCategory",this.data.currentCategory)
     let res = null
-    const hotpotId = Number(wx.getStorageSync('hotpotId'))
+    const hotpotId = Number(getApp().globalData.config.hotpotId)
     if(this.data.currentCategory.id == hotpotId){
       // res = await WXAPI.shippingCarInfoRemoveAll(wx.getStorageSync('token'),"delivery")
       res = await WXAPI.shippingCarInfoRemoveAll(getApp().globalData.token,"delivery")
@@ -1328,10 +1331,10 @@ Page({
     
     // 支付前把当前一级分类写入本地，供支付页使用
     if (this.data.currentCategory) {
-      wx.setStorageSync('currentCategory', this.data.currentCategory)
+      getApp().globalData.currentCategory = this.data.currentCategory
     }
     if(this.data.peisongType){
-      wx.setStorageSync('peisongType', this.data.peisongType)
+      getApp().globalData.peisongType = this.data.peisongType
       console.log("this.data.peisongType",this.data.peisongType)
     }
     if (this.data.scanDining) {
@@ -1346,7 +1349,8 @@ Page({
     }
   },
   onShareAppMessage: function() {
-    let uid = wx.getStorageSync('uid')
+    // let uid = wx.getStorageSync('uid')
+    let uid = getApp().globalData.uid
     if (!uid) {
       uid = ''
     }
@@ -1355,7 +1359,8 @@ Page({
       path = path + '&share_goods_id=' +  this.data.curGoodsMap.basicInfo.id + '&share_pingtuan_open_id=' +  this.data.pingtuan_open_id
     }
     return {
-      title: '"' + wx.getStorageSync('mallName') + '" ' + wx.getStorageSync('share_profile'),
+      // title: '"' + wx.getStorageSync('mallName') + '" ' + wx.getStorageSync('share_profile'),
+      title: '"' +  getApp().globalData.config.mallName + '" ' +  getApp().globalData.config.share_profile,
       path
     }
   },
@@ -1652,7 +1657,7 @@ Page({
 //     if (currentLevel1Category) {
 //       wx.setStorageSync('currentLevel1Category', currentLevel1Category)
 //     }
-//     const hotpotId = Number(wx.getStorageSync('hotpotId'))
+//     const hotpotId = Number(getApp().globalData.config.hotpotId)
 //     // peisongType
 //     if(currentLevel1Category.id == hotpotId){
 //       this.setData({

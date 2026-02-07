@@ -31,7 +31,8 @@ Page({
       const marker = {
         latitude: res.data.info.latitude,
         longitude: res.data.info.longitude,
-        iconPath: wx.getStorageSync('mapPos'),
+        // iconPath: wx.getStorageSync('mapPos'),
+        iconPath: getApp().globalData.config.mapPos,
         height: 30,
         width: 30,
       }

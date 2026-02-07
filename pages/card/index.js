@@ -33,15 +33,19 @@ Page({
   onShareAppMessage() {
     return {
       title: this.data.$t.card.title,
-      path: '/pages/card/index?inviter_id=' + (wx.getStorageSync('uid') || ''),
-      imageUrl: wx.getStorageSync('share_pic')
+      // path: '/pages/card/index?inviter_id=' + (wx.getStorageSync('uid') || ''),
+      path: '/pages/card/index?inviter_id=' + (getApp().globalData.uid || ''),
+      // imageUrl: wx.getStorageSync('share_pic')
+      imageUrl: getApp().globalData.config.share_pic
     }
   },
   onShareTimeline() {
     return {
       title: this.data.$t.card.title,
-      query: 'inviter_id=' + (wx.getStorageSync('uid') || ''),
-      imageUrl: wx.getStorageSync('share_pic')
+      // query: 'inviter_id=' + (wx.getStorageSync('uid') || ''),
+      query: 'inviter_id=' + (getApp().globalData.uid || ''),
+      // imageUrl: wx.getStorageSync('share_pic')
+      imageUrl: getApp().globalData.config.share_pic
     }
   },
   async banners() {

@@ -24,7 +24,8 @@ function wxpay(type, money, orderId, redirectUrl, data) {
     postData.remark = $t.my.youhuimaidan + " ：" + data.money;
     postData.nextAction = {
       type: 4,
-      uid: wx.getStorageSync('uid'),
+      // uid: wx.getStorageSync('uid'),
+      uid: getApp().globalData.uid,
       money: data.money
     };
   }

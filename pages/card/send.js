@@ -52,7 +52,8 @@ Page({
           })
           resolve({
             title: this.data.remark,
-            path: '/pages/card/receive?inviter_id=' + (wx.getStorageSync('uid') || '') + '&id='+ this.data.cardUser.id +'&shareToken=' + this.data.shareToken,
+            // path: '/pages/card/receive?inviter_id=' + (wx.getStorageSync('uid') || '') + '&id='+ this.data.cardUser.id +'&shareToken=' + this.data.shareToken,
+            path: '/pages/card/receive?inviter_id=' + (getApp().globalData.uid || '') + '&id='+ this.data.cardUser.id +'&shareToken=' + this.data.shareToken,
             imageUrl: this.data.cardUser.cardInfo.pic,
           })
         }
@@ -60,7 +61,8 @@ Page({
     })
     return {
       title: this.data.remark,
-      path: '/pages/card/receive?inviter_id=' + (wx.getStorageSync('uid') || '') + '&id='+ this.data.cardUser.id +'&shareToken=' + this.data.shareToken,
+      // path: '/pages/card/receive?inviter_id=' + (wx.getStorageSync('uid') || '') + '&id='+ this.data.cardUser.id +'&shareToken=' + this.data.shareToken,
+      path: '/pages/card/receive?inviter_id=' + (getApp().globalData.uid || '') + '&id='+ this.data.cardUser.id +'&shareToken=' + this.data.shareToken,
       imageUrl: this.data.cardUser.cardInfo.pic,
       promise
     }

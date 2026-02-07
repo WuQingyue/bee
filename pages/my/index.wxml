@@ -38,7 +38,7 @@
     </view>
   </view>
 
-  <!-- 资产卡片区域 -->
+  <!-- 资产卡片区域
   <view wx:if="{{apiUserInfoMap}}" class="assets-section">
     <view class="asset-card" bindtap="goCoupons">
       <view class="asset-icon coupon-icon">
@@ -66,11 +66,11 @@
       <view class="asset-value">{{score}}</view>
       <view class="asset-label">{{ $t.my.score }}</view>
     </view>
-  </view>
+  </view> -->
 
   <!-- 功能菜单区域 -->
   <view class="menu-section">
-    <!-- 常用功能 -->
+    <!-- 常用功能
     <view class="menu-group">
       <view class="menu-title">
         <view class="title-dot"></view>
@@ -91,14 +91,14 @@
             <text class="menu-text">{{ $t.my.signDaily }}</text>
           </navigator>
         </view>
-        <!-- <view class="menu-item">
+        <view class="menu-item">
           <navigator url="/pages/booking/index" hover-class="none">
             <view class="menu-icon-wrapper booking-icon">
               <van-icon name="clock-o" size="44rpx" />
             </view>
             <text class="menu-text">{{ $t.booking.title }}</text>
           </navigator>
-        </view> -->
+        </view>
         <view class="menu-item">
           <navigator url="/pages/youhui-pay/index" hover-class="none">
             <view class="menu-icon-wrapper pay-icon">
@@ -108,7 +108,7 @@
           </navigator>
         </view>
       </view>
-    </view>
+    </view> -->
 
     <!-- 我的服务 -->
     <view class="menu-group">
@@ -160,7 +160,7 @@
         <text>其他设置</text>
       </view>
       <view class="menu-list">
-        <navigator url="/pages/about/index" hover-class="none">
+        <!-- <navigator url="/pages/about/index" hover-class="none">
           <view class="menu-list-item">
             <view class="item-left">
               <view class="list-icon about-icon">
@@ -190,7 +190,7 @@
             </view>
             <van-icon name="arrow" size="32rpx" color="#999" />
           </view>
-        </navigator>
+        </navigator> -->
         <view class="menu-list-item" bindtap="clearStorage">
           <view class="item-left">
             <view class="list-icon clear-icon">
@@ -200,7 +200,7 @@
           </view>
           <van-icon name="arrow" size="32rpx" color="#999" />
         </view>
-        <!--<view class="menu-list-item" bindtap="goadmin">
+        <!-- <view class="menu-list-item" bindtap="goadmin">
           <view class="item-left">
             <view class="list-icon admin-icon">
               <van-icon name="manager-o" size="40rpx" />
@@ -213,8 +213,8 @@
     </view>
   </view>
 
-  <!-- 版本信息 -->
-  <view class="version-text">v{{version}}</view>
+  <!-- 版本信息
+  <view class="version-text">v{{version}}</view> -->
 </view>
 
 <!-- 编辑昵称弹窗 -->

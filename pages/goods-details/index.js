@@ -49,7 +49,8 @@ Page({
     }
     this.setData({
       goodsDetailSkuShowType,
-      curuid: wx.getStorageSync('uid')
+      // curuid: wx.getStorageSync('uid')
+      curuid: getApp().globalData.uid
     })
     this.readConfigVal()
     this.getGoodsDetailAndKanjieInfo(this.data.goodsId)
@@ -144,7 +145,8 @@ Page({
         that.data.kjId = _data.curGoodsKanjia.id
         // 获取当前砍价进度
         if (!that.data.kjJoinUid) {
-          that.data.kjJoinUid = wx.getStorageSync('uid')
+          // that.data.kjJoinUid = wx.getStorageSync('uid')
+          that.data.kjJoinUid = getApp().globalData.uid
         }
         const curKanjiaprogress = await WXAPI.kanjiaDetail(_data.curGoodsKanjia.id, that.data.kjJoinUid)
         // const myHelpDetail = await WXAPI.kanjiaHelpDetail(wx.getStorageSync('token'), _data.curGoodsKanjia.id, that.data.kjJoinUid)
@@ -444,8 +446,8 @@ Page({
       await WXAPI.shippingCarInfoRemoveAll(token)
     }
     let d = null
-    const currentCategory = wx.getStorageSync('currentCategory')
-    const hotpotId = Number(wx.getStorageSync('hotpotId'))
+    const currentCategory = getApp().globalData.currentCategory
+    const hotpotId = Number(getApp().globalData.config.hotpotId)
     if(currentCategory.id == hotpotId){
       d = {
         token,
@@ -508,7 +510,8 @@ Page({
   onShareAppMessage() {
     let _data = {
       title: this.data.goodsDetail.basicInfo.name,
-      path: '/pages/goods-details/index?id=' + this.data.goodsDetail.basicInfo.id + '&inviter_id=' + wx.getStorageSync('uid'),
+      // path: '/pages/goods-details/index?id=' + this.data.goodsDetail.basicInfo.id + '&inviter_id=' + wx.getStorageSync('uid'),
+      path: '/pages/goods-details/index?id=' + this.data.goodsDetail.basicInfo.id + '&inviter_id=' + getApp().globalData.uid,
       success: function (res) {
         // 转发成功
       },
@@ -576,7 +579,8 @@ Page({
   async drawSharePic() {
     const _this = this
     const qrcodeRes = await WXAPI.wxaQrcode({
-      scene: _this.data.goodsDetail.basicInfo.id + ',' + wx.getStorageSync('uid'),
+      // scene: _this.data.goodsDetail.basicInfo.id + ',' + wx.getStorageSync('uid'),
+      scene: _this.data.goodsDetail.basicInfo.id + ',' + getApp().globalData.uid,
       page: 'pages/goods-details/index',
       is_hyaline: true,
       autoColor: true,
@@ -740,7 +744,8 @@ Page({
       wx.hideLoading()
       if (res.code == 0) {
         _this.setData({
-          kjJoinUid: wx.getStorageSync('uid'),
+          // kjJoinUid: wx.getStorageSync('uid'),
+          kjJoinUid: getApp().globalData.uid,
           myHelpDetail: null
         })
         _this.getGoodsDetailAndKanjieInfo(_this.data.goodsDetail.basicInfo.id)

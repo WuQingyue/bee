@@ -21,7 +21,8 @@ Page({
       title: this.data.$t.my.title,
     })
     this.setData({
-      myBg: wx.getStorageSync('myBg'),
+      // myBg: wx.getStorageSync('myBg'),
+      myBg: getApp().globalData.config.myBg,
       version: CONFIG.version,
       customerServiceType: CONFIG.customerServiceType
     })
@@ -38,14 +39,16 @@ Page({
     if (!apiUserInfoMap) {
       return
     }
-    const order_hx_uids = wx.getStorageSync('order_hx_uids')
+    // const order_hx_uids = wx.getStorageSync('order_hx_uids')
+    const order_hx_uids = getApp().globalData.config.order_hx_uids
     const _data = {}
     _data.apiUserInfoMap = apiUserInfoMap
     _data.nick = apiUserInfoMap.base.nick
     if (order_hx_uids && order_hx_uids.indexOf(apiUserInfoMap.base.id) != -1) {
       _data.canHX = true // 具有扫码核销的权限
     }
-    const admin_uids = wx.getStorageSync('admin_uids')
+    // const admin_uids = wx.getStorageSync('admin_uids')
+    const admin_uids = getApp().globalData.config.admin_uids
     if (admin_uids && admin_uids.indexOf(apiUserInfoMap.base.id) != -1) {
       _data.isAdmin = true
     }
@@ -195,8 +198,10 @@ Page({
   },
   customerService() {
     wx.openCustomerServiceChat({
-      extInfo: {url: wx.getStorageSync('customerServiceChatUrl')},
-      corpId: wx.getStorageSync('customerServiceChatCorpId'),
+      // extInfo: {url: wx.getStorageSync('customerServiceChatUrl')},
+      extInfo: {url: getApp().globalData.config.customerServiceChatUrl},
+      // corpId: wx.getStorageSync('customerServiceChatCorpId'),
+      corpId: getApp().globalData.config.customerServiceChatCorpId,
       success: res => {
         console.log(res)
       },

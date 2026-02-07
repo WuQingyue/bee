@@ -61,8 +61,13 @@ App({
     WXAPI.queryConfigBatch('hotpotId,mallName,myBg,mapPos,order_hx_uids,subscribe_ids,share_profile,zxdz,admin_uids,shop_goods_split,QQ_MAP_KEY,shop_join_open,create_order_select_time,packaging_fee,customerServiceChatCorpId,customerServiceChatUrl,alipay,share_pic,tihuodianOpen').then(res => {
       if (res.code == 0) {
         res.data.forEach(config => {
-          console.log(config.key, config.value);
-          wx.setStorageSync(config.key, config.value);
+          
+          // 存储到本地缓存（保持原有逻辑）
+          // wx.setStorageSync(config.key, config.value);
+          
+          // 存储到全局变量
+          this.globalData.config[config.key] = config.value;
+          console.log(config.key, this.globalData.config[config.key]);
         })
         if (this.configLoadOK) {
           this.configLoadOK()
@@ -145,7 +150,8 @@ App({
   },
   async refreshStorageShopInfo() {
     // 刷新本地缓存的门店信息 https://www.yuque.com/apifm/nu0f75/cu4cfi
-    let shopInfo = wx.getStorageSync('shopInfo')
+    // let shopInfo = wx.getStorageSync('shopInfo')
+    let shopInfo = this.globalData.shopInfo
     if (!shopInfo) {
       return
     }
@@ -154,7 +160,8 @@ App({
       const distance = shopInfo.distance
       shopInfo = res.data.info
       shopInfo.distance = distance
-      wx.setStorageSync('shopInfo',  shopInfo)
+      // wx.setStorageSync('shopInfo',  shopInfo)
+      this.globalData.shopInfo = shopInfo
     }
   },
   initLanguage(_this) {
@@ -203,6 +210,14 @@ App({
   },
   globalData: {
     isConnected: true,
-    token:""
+    token:"",
+    payToken:"",
+    wxpay_api_url:"",
+    uid:"",
+    currentCategory:"",
+    peisongType:"",
+    shopInfo:"",
+    refreshIndex:"",
+    config: {} // 存储配置数据的全局对象
   }
 })

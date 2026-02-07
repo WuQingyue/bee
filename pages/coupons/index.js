@@ -338,15 +338,20 @@ Page({
   },
   onShareAppMessage: function() {    
     return {
-      title: wx.getStorageSync('mallName') + this.data.$t.coupons.Invitingcoupons,
-      path: '/pages/coupons/index?inviter_id=' + wx.getStorageSync('uid')
+      // title: wx.getStorageSync('mallName') + this.data.$t.coupons.Invitingcoupons,
+      title: getApp().globalData.config.mallName + this.data.$t.coupons.Invitingcoupons,
+      // path: '/pages/coupons/index?inviter_id=' + wx.getStorageSync('uid')
+      path: '/pages/coupons/index?inviter_id=' + getApp().globalData.uid
     }
   },
   onShareTimeline() {    
     return {
-      title: wx.getStorageSync('mallName') + this.data.$t.coupons.Invitingcoupons,
-      query: 'inviter_id=' + wx.getStorageSync('uid'),
-      imageUrl: wx.getStorageSync('share_pic')
+      // title: wx.getStorageSync('mallName') + this.data.$t.coupons.Invitingcoupons,
+      title: getApp().globalData.config.mallName + this.data.$t.coupons.Invitingcoupons,
+      // query: 'inviter_id=' + wx.getStorageSync('uid'),
+      query: 'inviter_id=' + getApp().globalData.uid,
+      // imageUrl: wx.getStorageSync('share_pic')
+      imageUrl: getApp().globalData.config.share_pic
     }
   },
 })
