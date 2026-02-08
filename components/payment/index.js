@@ -63,7 +63,7 @@ Component({
           } else if (res.cancel) {
             console.log('用户选择放弃付款');
             wx.redirectTo({
-              url: '/pages/all-orders/index?activeTab=pending'
+              url: '/package-order/pages/all-orders/index?activeTab=pending'
             });
           }
         }

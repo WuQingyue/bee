@@ -1,0 +1,7 @@
+{
+    "navigationBarTitleText": "",
+    "usingComponents": {
+        "payment": "/components/payment/index",
+        "van-icon": "@vant/weapp/icon/index"
+    }
+}

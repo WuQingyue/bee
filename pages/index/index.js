@@ -815,7 +815,7 @@ Page({
     if (this.data.scanDining) {
       // 扫码点餐，前往购物车页面
       wx.navigateTo({
-        url: '/pages/cart/index',
+        url: '/package-cart/pages/cart/index',
       })
     } else {
       this.setData({
@@ -1340,11 +1340,11 @@ Page({
     if (this.data.scanDining) {
       // 扫码点餐，前往购物车
       wx.navigateTo({
-        url: '/pages/cart/index',
+        url: '/package-cart/pages/cart/index',
       })
     } else {
       wx.navigateTo({
-        url: '/pages/pay/index',
+        url: '/package-cart/pages/pay/index',
       })
     }
   },
@@ -1371,7 +1371,7 @@ Page({
   },
   couponImageClick() {
     wx.navigateTo({
-      url: '/pages/coupons/index',
+      url: '/package-other/pages/coupons/index',
     })
   },
   async noticeLastOne() {
@@ -1385,7 +1385,7 @@ Page({
   goNotice(e) {
     const id = e.currentTarget.dataset.id
     wx.navigateTo({
-      url: '/pages/notice/detail?id=' + id,
+      url: '/package-other/pages/notice/detail?id=' + id,
     })
   },
   async banners() {
@@ -1505,7 +1505,7 @@ Page({
     wx.setStorageSync('pingtuanGoodsList', pingtuanGoodsList)
     // 跳转
     wx.navigateTo({
-      url: '/pages/pay/index?orderType=buyNow&pingtuanOpenId=' + this.data.pingtuan_open_id,
+      url: '/package-cart/pages/pay/index?orderType=buyNow&pingtuanOpenId=' + this.data.pingtuan_open_id,
     })
   },
   _lijipingtuanbuy2() {
@@ -1527,12 +1527,12 @@ Page({
   tabbarChange(e) {
     if (e.detail == 1) {
       wx.navigateTo({
-        url: '/pages/cart/index',
+        url: '/package-cart/pages/cart/index',
       })
     }
     if (e.detail == 2) {
       wx.navigateTo({
-        url: '/pages/cart/order',
+        url: '/package-cart/pages/cart/order',
       })
     }
   },
@@ -1574,14 +1574,14 @@ Page({
   },
   selectshop() {
     wx.navigateTo({
-      url: '/pages/shop/select?type=index',
+      url: '/package-shop/pages/shop/select?type=index',
     })
   },
   goGoodsDetail(e) {
     const index = e.currentTarget.dataset.idx
     const goodsId = this.data.goods[index].id
     wx.navigateTo({
-      url: '/pages/goods-details/index?id=' + goodsId,
+      url: '/package-goods/pages/goods-details/index?id=' + goodsId,
     })
   },
   async _goodsTimesSchedule(goodsId) {

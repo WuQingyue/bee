@@ -80,7 +80,7 @@ Page({
       onlyFromCamera: true,
       success(res) {
         wx.navigateTo({
-          url: '/pages/order-details/scan-result?hxNumber=' + res.result,
+          url: '/package-order/pages/order-details/scan-result?hxNumber=' + res.result,
         })
       },
       fail(err) {
@@ -94,17 +94,17 @@ Page({
   },
   goCoupons() {
     wx.navigateTo({
-      url: '/pages/coupons/index?tabIndex=1',
+      url: '/package-other/pages/coupons/index?tabIndex=1',
     })
   },
   goBalance() {
     wx.navigateTo({
-      url: '/pages/asset/index',
+      url: '/package-other/pages/asset/index',
     })
   },
   goScorelog() {
     wx.navigateTo({
-      url: '/pages/score/logs',
+      url: '/package-other/pages/score/logs',
     })
   },
   goadmin() {
@@ -122,7 +122,7 @@ Page({
   },
   govip() {
     wx.navigateTo({
-      url: '/pages/member-center/index',
+      url: '/package-other/pages/member-center/index',
     })
   },
   editNick() {
@@ -193,7 +193,7 @@ Page({
   },
   goUserCode() {
     wx.navigateTo({
-      url: '/pages/my/user-code',
+      url: '/package-user/pages/user/user-code',
     })
   },
   customerService() {

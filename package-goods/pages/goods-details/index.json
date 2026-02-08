@@ -1,0 +1,14 @@
+{
+  "navigationBarTitleText": "",
+  "usingComponents": {
+    "poster": "wxa-plugin-canvas/poster",
+    "van-cell-group": "@vant/weapp/cell-group/index",
+    "van-cell": "@vant/weapp/cell/index",
+    "van-progress": "@vant/weapp/progress/index",
+    "van-stepper": "@vant/weapp/stepper/index",
+    "van-button": "@vant/weapp/button/index",
+    "van-goods-action": "@vant/weapp/goods-action/index",
+    "van-goods-action-button": "@vant/weapp/goods-action-button/index",
+    "van-popup": "@vant/weapp/popup/index"
+  }
+}

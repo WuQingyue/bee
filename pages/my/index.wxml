@@ -83,8 +83,8 @@
           </view>
           <text class="menu-text">{{ $t.my.scanHx }}</text>
         </view>
-        <view class="menu-item" url="/pages/sign/index">
-          <navigator url="/pages/sign/index" hover-class="none">
+        <view class="menu-item" url="/package-other/pages/sign/index">
+          <navigator url="/package-other/pages/sign/index" hover-class="none">
             <view class="menu-icon-wrapper sign-icon">
               <van-icon name="calendar-o" size="44rpx" />
             </view>
@@ -92,7 +92,7 @@
           </navigator>
         </view>
         <view class="menu-item">
-          <navigator url="/pages/booking/index" hover-class="none">
+          <navigator url="/package-other/pages/booking/index" hover-class="none">
             <view class="menu-icon-wrapper booking-icon">
               <van-icon name="clock-o" size="44rpx" />
             </view>
@@ -100,7 +100,7 @@
           </navigator>
         </view>
         <view class="menu-item">
-          <navigator url="/pages/youhui-pay/index" hover-class="none">
+          <navigator url="/package-other/pages/youhui-pay/index" hover-class="none">
             <view class="menu-icon-wrapper pay-icon">
               <van-icon name="gold-coin-o" size="44rpx" />
             </view>
@@ -117,7 +117,7 @@
         <text>我的服务</text>
       </view>
       <view class="menu-list">
-        <!-- <navigator url="/pages/member-center/index" hover-class="none">
+        <!-- <navigator url="/package-other/pages/member-center/index" hover-class="none">
           <view class="menu-list-item">
             <view class="item-left">
               <view class="list-icon vip-icon">
@@ -128,7 +128,7 @@
             <van-icon name="arrow" size="32rpx" color="#999" />
           </view>
         </navigator> -->
-        <navigator url="/pages/all-orders/index" hover-class="none">
+        <navigator url="/package-order/pages/all-orders/index" hover-class="none">
           <view class="menu-list-item">
             <view class="item-left">
               <view class="list-icon order-icon">
@@ -139,7 +139,7 @@
             <van-icon name="arrow" size="32rpx" color="#999" />
           </view>
         </navigator>
-        <navigator url="/pages/ad/index" hover-class="none">
+        <navigator url="/package-user/pages/ad/index" hover-class="none">
           <view class="menu-list-item">
             <view class="item-left">
               <view class="list-icon address-icon">
@@ -153,14 +153,14 @@
       </view>
     </view>
 
-    <!-- 其他设置 -->
+    <!-- 其他设置
     <view class="menu-group">
       <view class="menu-title">
         <view class="title-dot"></view>
         <text>其他设置</text>
       </view>
       <view class="menu-list">
-        <!-- <navigator url="/pages/about/index" hover-class="none">
+        <navigator url="/package-other/pages/about/index" hover-class="none">
           <view class="menu-list-item">
             <view class="item-left">
               <view class="list-icon about-icon">
@@ -180,7 +180,7 @@
           </view>
           <van-icon name="arrow" size="32rpx" color="#999" />
         </view>
-        <navigator url="/pages/my/feedback" hover-class="none">
+        <navigator url="/package-user/pages/user/feedback" hover-class="none">
           <view class="menu-list-item">
             <view class="item-left">
               <view class="list-icon feedback-icon">
@@ -190,7 +190,7 @@
             </view>
             <van-icon name="arrow" size="32rpx" color="#999" />
           </view>
-        </navigator> -->
+        </navigator>
         <view class="menu-list-item" bindtap="clearStorage">
           <view class="item-left">
             <view class="list-icon clear-icon">
@@ -200,7 +200,7 @@
           </view>
           <van-icon name="arrow" size="32rpx" color="#999" />
         </view>
-        <!-- <view class="menu-list-item" bindtap="goadmin">
+        <view class="menu-list-item" bindtap="goadmin">
           <view class="item-left">
             <view class="list-icon admin-icon">
               <van-icon name="manager-o" size="40rpx" />
@@ -208,9 +208,9 @@
             <text class="list-text">{{ $t.auth.goAdmin }}</text>
           </view>
           <van-icon name="arrow" size="32rpx" color="#999" />
-        </view> -->
+        </view>
       </view>
-    </view>
+    </view> -->
   </view>
 
   <!-- 版本信息

@@ -229,13 +229,13 @@ https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/getPhone
 
 ## 小程序订单中心path 怎么填
 
-请填写 `pages/all-orders/index`
+请填写 `package-order/all-orders/index`
 
 ## 小程序订单发货的地址怎么填
 
 小程序订单管理 -> 订单信息录入 -> 小程序商品订单详情path
 
-`pages/order-details/index?payOrderNo=${商品订单号}`
+`package-order/order-details/index?payOrderNo=${商品订单号}`
 
 直接一模一样复制上面的这个填进去就行
 
@@ -249,5 +249,5 @@ https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/getPhone
 
 ## 商家入驻申请页面
 
-1. app.json 中，添加一个页面路径： `pages/shop/join-apply`
-2. pages/shop/select 页面最下面的入口代码放开
+1. app.json 中，添加一个页面路径： `package-shop/shop/join-apply`
+2. package-shop/shop/select 页面最下面的入口代码放开

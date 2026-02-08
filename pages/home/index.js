@@ -68,12 +68,12 @@ Page({
   // },
   huiyuan() {
     wx.navigateTo({
-      url: '/pages/member-center/index',
+      url: '/package-other/pages/member-center/index',
     })
   },
   coupon() {
     wx.navigateTo({
-      url: '/pages/coupons/index',
+      url: '/package-other/pages/coupons/index',
     })
   },
   changePeisongType(e) {
@@ -102,22 +102,17 @@ Page({
   },
   about() {
     wx.navigateTo({
-      url: '/pages/about/index',
-    })
-  },
-  about() {
-    wx.navigateTo({
-      url: '/pages/about/index',
+      url: '/package-other/pages/about/index',
     })
   },
   touming() {
     wx.navigateTo({
-      url: '/pages/about/index?key=toumingshicai',
+      url: '/package-other/pages/about/index?key=toumingshicai',
     })
   },
   card() {
     wx.navigateTo({
-      url: '/pages/card/index',
+      url: '/package-other/pages/card/index',
     })
   },
 })

@@ -1,24 +1,46 @@
 {
-  "pages": [
-    "pages/home/index",
-    "pages/index/index",
-    "pages/all-orders/index",
-    "pages/my/index",
-    "pages/my/feedback",
-    "pages/my/user-code",
-    "pages/ad/index",
-    "pages/pay/index",
-    "pages/shop/select",
-    "pages/shop/detail",
-    "pages/shop/join-apply",
-    "pages/order-details/index",
-    "pages/order-details/scan-result",
-    "pages/order-details/doing",
-    "pages/cart/index",
-    "pages/cart/order",
-    "pages/goods-details/index",
-    "pages/goods/list",
-    "pages/queue/index"
+   "pages": [
+    "pages/home/index",    
+    "pages/index/index",   
+    "pages/my/index"    
+  ],
+  "subPackages": [
+    {
+      "root": "package-order",
+      "name": "order",
+      "pages": [
+        "pages/all-orders/index",
+        "pages/order-details/index",
+        "pages/order-details/scan-result", 
+        "pages/order-details/doing"
+      ]
+    },
+    {
+      "root": "package-cart",
+      "name": "cart",
+      "pages": [
+        "pages/cart/index",
+        "pages/pay/index"   
+      ]
+    },
+    {
+      "root": "package-goods",
+      "name": "goods", 
+      "pages": [
+        "pages/goods-details/index",
+        "pages/goods/list"
+      ]
+    },
+    {
+      "root": "package-user",
+      "name": "user",
+      "pages": [
+        "pages/queue/index",
+        "pages/ad/index",   
+        "pages/user/feedback",    
+        "pages/user/user-code"           
+      ]
+    }
   ],
   "requiredPrivateInfos": [
     "chooseLocation",
@@ -57,44 +79,9 @@
   },
   "usingComponents": {
     "parser":"/components/parser.20200731.min/parser",
-    "payment": "/components/payment/index",
-    "van-button": "@vant/weapp/button/index",
-    "van-sidebar": "@vant/weapp/sidebar/index",
-    "van-sidebar-item": "@vant/weapp/sidebar-item/index",
-    "van-swipe-cell": "@vant/weapp/swipe-cell/index",
-    "van-card": "@vant/weapp/card/index",
-    "van-submit-bar": "@vant/weapp/submit-bar/index",
-    "van-popup": "@vant/weapp/popup/index",
-    "van-stepper": "@vant/weapp/stepper/index",
-    "van-row": "@vant/weapp/row/index",
-    "van-col": "@vant/weapp/col/index",
-    "van-divider": "@vant/weapp/divider/index",
     "van-icon": "@vant/weapp/icon/index",
-    "van-empty": "@vant/weapp/empty/index",
     "van-field": "@vant/weapp/field/index",
-    "van-cell": "@vant/weapp/cell/index",
-    "van-cell-group": "@vant/weapp/cell-group/index",
-    "van-dialog": "@vant/weapp/dialog/index",
-    "van-overlay": "@vant/weapp/overlay/index",
-    "van-tab": "@vant/weapp/tab/index",
-    "van-tabs": "@vant/weapp/tabs/index",
-    "van-datetime-picker": "@vant/weapp/datetime-picker/index",
-    "van-calendar": "@vant/weapp/calendar/index",
-    "van-notice-bar": "@vant/weapp/notice-bar/index",
-    "van-tabbar": "@vant/weapp/tabbar/index",
-    "van-tabbar-item": "@vant/weapp/tabbar-item/index",
-    "van-tag": "@vant/weapp/tag/index",
-    "van-goods-action": "@vant/weapp/goods-action/index",
-    "van-goods-action-icon": "@vant/weapp/goods-action-icon/index",
-    "van-goods-action-button": "@vant/weapp/goods-action-button/index",
-    "van-uploader": "@vant/weapp/uploader/index",
-    "van-grid": "@vant/weapp/grid/index",
-    "van-grid-item": "@vant/weapp/grid-item/index",
-    "van-count-down": "@vant/weapp/count-down/index",
-    "van-progress": "@vant/weapp/progress/index",
-    "van-radio": "@vant/weapp/radio/index",
-    "van-radio-group": "@vant/weapp/radio-group/index",
-    "van-sticky": "@vant/weapp/sticky/index"
+    "van-button": "@vant/weapp/button/index"
   },
   "sitemapLocation": "sitemap.json"
 }

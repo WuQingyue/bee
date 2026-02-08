@@ -50,7 +50,7 @@ function setTabBarLanguage(){
 
   // wx.setTabBarItem({
   //   index: 2,
-  //   pagePath: "pages/queue/index",
+  //   pagePath: "package-user/queue/index",
   //   iconPath: "images/nav/qh-off.png",
   //   selectedIconPath: "images/nav/qh-on.png",
   //   text: $t.queue.t
@@ -58,7 +58,7 @@ function setTabBarLanguage(){
 
   // wx.setTabBarItem({
   //   index: 3,
-  //   pagePath: "pages/order-details/doing",
+  //   pagePath: "package-order/order-details/doing",
   //   iconPath: "images/nav/qc-off.png",
   //   selectedIconPath: "images/nav/qc-on.png",
   //   text: $t.index.PickingUp
