@@ -6,6 +6,7 @@
     "van-radio": "@vant/weapp/radio/index",
     "van-submit-bar": "@vant/weapp/submit-bar/index",
     "van-popup": "@vant/weapp/popup/index",
-    "van-datetime-picker": "@vant/weapp/datetime-picker/index"
+    "van-datetime-picker": "@vant/weapp/datetime-picker/index",
+    "payment": "/components/payment/index"
   }
 }

@@ -1,93 +1,66 @@
-const WXAPI = require('apifm-wxapi')
-const AUTH = require('../../../utils/auth')
-
+// package-user/pages/queue/index.js
 Page({
+
+  /**
+   * 页面的初始数据
+   */
   data: {
 
   },
-  onLoad: function (options) {
-    
+
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad(options) {
+
   },
-  onShow: function () {
-    getApp().initLanguage(this)
-    wx.setNavigationBarTitle({
-      title: this.data.$t.queue.t,
-    })
-    AUTH.checkHasLogined().then(isLogin => {
-      if (isLogin) {
-        this.queuingTypes()
-        this.queuingMy()
-        AUTH.bindSeller()
-      } else {
-        AUTH.authorize().then(res => {
-          this.queuingTypes()
-          this.queuingMy()
-          AUTH.bindSeller()
-        })
-      }
-    })
-    
+
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady() {
+
   },
-  async queuingTypes() {
-    wx.showLoading({
-      title: '',
-    })
-    const res = await WXAPI.queuingTypes()
-    wx.hideLoading({
-      success: (res) => {},
-    })
-    if (res.code == 0) {
-      this.setData({
-        list: res.data
-      })
-    }
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow() {
+
   },
-  async queuingMy() {
-    // const res = await WXAPI.queuingMy(wx.getStorageSync('token'))
-    const res = await WXAPI.queuingMy(getApp().globalData.token)
-    if (res.code == 0) {
-      const mylist = []
-      res.data.forEach(ele => {
-        const queuingLog  = ele.queuingLog
-        const queuingUpType = ele.queuingUpType
-        const waitMinitus = (queuingLog.number - queuingUpType.curNumber -1) * queuingUpType.minitus
-        if (waitMinitus) {
-          queuingLog.waitMinitus = waitMinitus
-        }
-        queuingLog.typeEntity = queuingUpType
-        mylist.push(queuingLog)
-      })
-      this.setData({
-        mylist
-      })
-    }
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide() {
+
   },
-  async queuingGet(e) {
-    const index = e.currentTarget.dataset.index
-    const queueType = this.data.list[index]
-    const isLogined = await AUTH.checkHasLogined()
-    if (!isLogined) {
-      AUTH.login(this)
-      return
-    }
-    wx.showLoading({
-      title: '',
-    })
-    // const res = await WXAPI.queuingGet(wx.getStorageSync('token'), queueType.id)
-    const res = await WXAPI.queuingGet(getApp().globalData.token, queueType.id)
-    wx.hideLoading({
-      success: (res) => {},
-    })
-    if (res.code != 0) {
-      wx.showToast({
-        title: res.msg,
-        icon: 'none'
-      })
-    } else {
-      wx.showToast({
-        title: this.data.$t.queue.success
-      })
-      this.queuingMy()
-    }
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload() {
+
   },
+
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh() {
+
+  },
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom() {
+
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage() {
+
+  }
 })

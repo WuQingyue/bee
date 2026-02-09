@@ -58,7 +58,6 @@
   },
   "usingComponents": {
     "van-icon": "@vant/weapp/icon/index",
-    "payment": "/components/payment/index",
     "van-field": "@vant/weapp/field/index",
     "van-button": "@vant/weapp/button/index"
   },

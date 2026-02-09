@@ -3,7 +3,6 @@
   "usingComponents": {
     "poster": "wxa-plugin-canvas/poster",
     "van-cell-group": "@vant/weapp/cell-group/index",
-    "parser":"/components/parser.20200731.min/parser",
     "van-cell": "@vant/weapp/cell/index",
     "van-progress": "@vant/weapp/progress/index",
     "van-stepper": "@vant/weapp/stepper/index",
