@@ -503,7 +503,7 @@ Page({
     // 砍价的话跳转到下单页面
     if (this.data.curKanjiaprogress && this.data.curKanjiaprogress.kanjiaInfo.uid == this.data.curuid) {
       wx.navigateTo({
-        url: '/package-cart/pages/pay/index?kjId=' + this.data.curGoodsKanjia.id,
+        url: '/package-pay/pages/pay/index?kjId=' + this.data.curGoodsKanjia.id,
       })
     }
   },
@@ -536,8 +536,8 @@ Page({
     })
   },
   goIndex() {
-    wx.switchTab({
-      url: '/pages/index/index',
+    wx.navigateTo({
+      url: '/package-index/pages/index/index',
     });
   },
   helpKanjia() {
@@ -720,8 +720,8 @@ Page({
     })
   },
   backToHome() {
-    wx.switchTab({
-      url: '/pages/index/index',
+    wx.navigateTo({
+      url: '/package-index/pages/index/index',
     })
   },
   joinKanjia() {

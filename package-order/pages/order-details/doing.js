@@ -28,8 +28,8 @@ Page({
     })
   },
   toIndexPage: function() {
-    wx.switchTab({
-      url: "/pages/index/index"
+    wx.navigateTo({
+      url: "/package-index/pages/index/index"
     });
   },
   async orderList() {

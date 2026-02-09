@@ -1,7 +1,10 @@
 const WXAPI = require('apifm-wxapi')
 Page({
   data: {
-    
+    banners:[],
+    apiUserInfoMap:{},
+    nick: '',
+    nickShow: false
   },
   onLoad(e) {
     getApp().initLanguage(this)
@@ -45,42 +48,22 @@ Page({
   },
   onShareAppMessage() {
     return {
-      // title: wx.getStorageSync('mallName') + ' ' + wx.getStorageSync('share_profile'),
       title: getApp().globalData.config.mallName + ' ' + getApp().globalData.config.share_profile,
-      // path: '/pages/home/index?inviter_id=' + (wx.getStorageSync('uid') || ''),
       path: '/pages/home/index?inviter_id=' + (getApp().globalData.uid || ''),
-      // imageUrl: wx.getStorageSync('share_pic')
       imageUrl: getApp().globalData.config.share_pic
     }
   },
   onShareTimeline() {
     return {
-      // title: wx.getStorageSync('mallName') + ' ' + wx.getStorageSync('share_profile'),
       title: getApp().globalData.config.mallName + ' ' + getApp().globalData.config.share_profile,
-      // query: 'inviter_id=' + (wx.getStorageSync('uid') || ''),
       query: 'inviter_id=' + (getApp().globalData.uid || ''),
-      // imageUrl: wx.getStorageSync('share_pic')
       imageUrl: getApp().globalData.config.share_pic
     }
-  },
-  // changeLang() {
-  //   getApp().changeLang(this)
-  // },
-  huiyuan() {
-    wx.navigateTo({
-      url: '/package-other/pages/member-center/index',
-    })
-  },
-  coupon() {
-    wx.navigateTo({
-      url: '/package-other/pages/coupons/index',
-    })
   },
   changePeisongType(e) {
     const peisongType = e.currentTarget.dataset.type
     const hotpotId = Number(getApp().globalData.config.hotpotId) 
     console.log("hotpotId",hotpotId)
-    console.log("typeof hotpotId ",typeof hotpotId )
     // 检查是否是配送模式且 hotpotId 不存在
     if (peisongType === 'kd' && hotpotId === 0 ) {
       wx.showModal({
@@ -93,26 +76,58 @@ Page({
     }
 
     getApp().globalData.peisongType = peisongType
-    console.log("peisongType", peisongType)
     
     // kd: 配送, zq: 自取
-    wx.switchTab({
-      url: '/pages/index/index',
-    })
-  },
-  about() {
     wx.navigateTo({
-      url: '/package-other/pages/about/index',
+      url: '/package-index/pages/index/index',
     })
   },
+
   touming() {
     wx.navigateTo({
       url: '/package-other/pages/about/index?key=toumingshicai',
     })
   },
-  card() {
+  goOrders() {
     wx.navigateTo({
-      url: '/package-other/pages/card/index',
+      url: '/package-order/pages/all-orders/index',
+    })
+  },
+  goAddress() {
+    wx.navigateTo({
+      url: '/package-user/pages/ad/index',
+    })
+  },
+  editNick() {
+    this.setData({
+      nickShow: true
+    })
+  },
+  async _editNick() {
+    if (!this.data.nick) {
+      wx.showToast({
+        title: this.data.$t.my.nickRequired,
+        icon: 'none'
+      })
+      return
+    }
+    const postData = {
+      token: getApp().globalData.token,
+      nick: this.data.nick,
+    }
+    const res = await WXAPI.modifyUserInfoV2(postData)
+    if (res.code != 0) {
+      wx.showToast({
+        title: res.msg,
+        icon: 'none'
+      })
+      return
+    }
+    wx.showToast({
+      title: this.data.$t.common.submitSuccess,
+    })
+    getApp().getUserApiInfo().then(apiUserInfoMap => {
+      this.processGotUserDetail(apiUserInfoMap)
     })
   },
 })

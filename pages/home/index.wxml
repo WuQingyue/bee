@@ -13,11 +13,12 @@
     <view class="user-main" bind:tap="huiyuan">
       <image class="user-avatar" src="{{ apiUserInfoMap.base.avatarUrl ? apiUserInfoMap.base.avatarUrl : '/images/who.png' }}" mode="aspectFill"></image>
       <view class="user-info">
-        <view class="user-nick">{{ nick ? nick : $t.my.nickSet }}</view>
+        <view class="user-nick" bindtap="editNick">{{ nick ? nick : $t.my.nickSet }}</view>
         <!-- <view class="user-member">
           <van-tag type="warning" round size="medium">{{ $t.home.huiyuan }}</van-tag>
         </view> -->
       </view>
+
     </view>
     <!-- <view class="user-actions">
       <view wx:if="{{ language }}" class="language-btn" bind:tap="changeLang">
@@ -69,6 +70,18 @@
         </view>
         <view class="feature-name">{{ $t.home.lpk }}</view>
       </view>
+      <view class="feature-item" bind:tap="goOrders">
+        <view class="feature-icon-box">
+          <van-icon name="orders-o" size="48rpx" color="#ff6b9d" />
+        </view>
+        <view class="feature-name">全部订单</view>
+      </view>
+      <view class="feature-item" bind:tap="goAddress">
+        <view class="feature-icon-box">
+          <van-icon name="location-o" size="48rpx" color="#ff6b9d" />
+        </view>
+        <view class="feature-name">地址管理</view>
+      </view>
       <view class="feature-item">
         <view class="feature-icon-box">
           <image class="feature-icon" src="/images/tg.png"></image>
@@ -91,3 +104,21 @@
     <view class="brand-line"></view>
   </view>
 </view>
+
+<!-- 编辑昵称弹窗 -->
+<van-dialog
+  use-slot
+  title="{{ $t.my.nickEdit }}"
+  show="{{ nickShow }}"
+  show-cancel-button
+  bind:confirm="_editNick"
+>
+  <van-field
+    model:value="{{ nick }}"
+    type="nickname"
+    placeholder="{{ $t.my.nickRequired }}"
+    size="large"
+    clearable
+  />
+</van-dialog>
+

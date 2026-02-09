@@ -1,6 +1,3 @@
 {
-  "navigationBarTitleText": "",
-  "usingComponents": {
-    "payment": "/components/payment/index"
-  }
+  "navigationBarTitleText": ""
 }

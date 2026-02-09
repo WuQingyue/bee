@@ -106,40 +106,18 @@ Page({
     },
     async toPayTap() {
       // 立即支付
-      // let res = await WXAPI.userAmount(wx.getStorageSync('token'))
-      let res = await WXAPI.userAmount(getApp().globalData.token)
-      if (res.code != 0) {
-        wx.showToast({
-          title: res.msg,
-          icon: 'none'
-        })
-        return
-      }
-      const balance = res.data.balance // 当前用户的余额
-      let needPay = this.data.orderDetail.orderInfo.amountReal*1 - balance*1
+      let needPay = this.data.orderDetail.orderInfo.amountReal
       needPay = needPay.toFixed(2)
-      if (needPay <= 0) {
-        // 余额足够
-        // WXAPI.orderPay(wx.getStorageSync('token'), this.data.orderDetail.orderInfo.id).then(res => {
-        WXAPI.orderPay(getApp().globalData.token, this.data.orderDetail.orderInfo.id).then(res => {
-          wx.showToast({
-            title: this.data.$t.asset.success,
-            icon: 'success'
-          })
-          this.orderDetail();
-        })
-      } else {
-        // 微信支付
-        this.setData({
-          paymentShow: true,
-          money: needPay,
-          orderId: this.data.orderDetail.orderInfo.id,
-          nextAction: {
-            type: 0,
-            id: this.data.orderDetail.orderInfo.id
-          }
-        })
-      }
+      // 微信支付
+      this.setData({
+        paymentShow: true,
+        money: needPay,
+        orderId: this.data.orderDetail.orderInfo.id,
+        nextAction: {
+          type: 0,
+          id: this.data.orderDetail.orderInfo.id
+        }
+      })
     },
     paymentOk(e) {
       console.log(e.detail); // 这里是组件里data的数据

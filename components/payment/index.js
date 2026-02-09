@@ -12,7 +12,10 @@ Component({
     remark: String,
     nextAction: Object,
     extData: Object,
-    show: Boolean,
+    show: {
+      type: Boolean,
+      value: false
+    },
     useCard: {
       type: Boolean,
       value: true
@@ -174,15 +177,5 @@ Component({
         })
       }
     },
-    // async submit() {
-    //   // 模拟支付，无后端调用
-    //   wx.showToast({
-    //     title: '支付成功'
-    //   })
-    //   this.triggerEvent('ok', {
-    //     success: true,
-    //     mock: true
-    //   })
-    // },
   }
 })

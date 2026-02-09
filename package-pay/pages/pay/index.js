@@ -77,20 +77,8 @@ Page({
     }
   },
   onShow(){
-    // const shopInfo = wx.getStorageSync('shopInfo')
     let peisongType = getApp().globalData.peisongType
-    console.log("peisongType",peisongType)
-    // if (!peisongType) {
-    //   peisongType = 'zq' // 此处修改默认值
-    // }
-    // if (shopInfo.openWaimai && !shopInfo.openZiqu) {
-    //   peisongType = 'kd'
-    // }
-    // if (!shopInfo.openWaimai && shopInfo.openZiqu) {
-    //   peisongType = 'zq'
-    // }
     this.setData({
-      // shopInfo,
       peisongType
     })
     this._pickPoints()
@@ -108,23 +96,8 @@ Page({
   },
   async doneShow() {
     let goodsList = [];
-    // const token = wx.getStorageSync('token') 
     const token = getApp().globalData.token
-    //立即购买下单
-    // if ("buyNow" == this.data.orderType) {
-    //   goodsList = wx.getStorageSync('pingtuanGoodsList')
-    // } else {
-      // //购物车下单
-      // const res = await WXAPI.shippingCarInfo(token)
-      // if (res.code == 0) {
-      //   goodsList = res.data.items
-      // }
-    // }
-    //购物车下单
-    // 从本地存储获取 currentCategory，并同步到 data，供模板和后续逻辑使用
     const currentCategory = getApp().globalData.currentCategory || null
-    console.log("doneShow")
-    console.log("currentCategory", currentCategory)
     this.setData({
       currentCategory
     })
@@ -145,10 +118,6 @@ Page({
       goodsList: goodsList
     })
     this.initShippingAddress()
-    // // 计算预计到达时间（如果是配送模式）
-    // if (currentLevel1Category && currentLevel1Category.id == hotpotId) {
-    //   this.calculateEstimatedArrivalTime()
-    // }
   },
 
   onLoad(e) {
@@ -198,7 +167,6 @@ Page({
       peisongType
     })
     getApp().globalData.peisongType = peisongType
-    console.log("调用了selected函数")
     this.createOrder()
   },
   
@@ -218,16 +186,6 @@ Page({
   goCreateOrder(){
     console.log("调用了goCreateOrder函数")
     if (this.data.submitLoding) return
-    // const mobile = this.data.mobile
-    // console.log("mobile",mobile);
-    // if (this.data.peisongType == 'zq' && !mobile) {
-    // if (this.data.peisongType == 'zq') {
-    //   wx.showToast({
-    //     title: this.data.$t.pay.inputphoneNO,
-    //     icon: 'none'
-    //   })
-    //   return
-    // }
     if (!this.data.diningTime && this.data.create_order_select_time == '1' && this.data.peisongType == 'kd') {
       wx.showToast({
         title: this.data.$t.pay.select,
@@ -238,7 +196,6 @@ Page({
     this.setData({
       submitLoding: true
     })
-    // const subscribe_ids = wx.getStorageSync('subscribe_ids')
     const subscribe_ids = getApp().globalData.config.subscribe_ids
     if (subscribe_ids) {
       wx.requestSubscribeMessage({
@@ -251,7 +208,6 @@ Page({
           console.error(e)
         },
         complete: (e) => {
-          console.log("调用了goCreateOrder函数")
           this.createOrder(true)
         },
       })
@@ -263,12 +219,10 @@ Page({
         })
         return
       }
-      console.log("调用了goCreateOrder函数")
       this.createOrder(true)
     }
     // 清空购物车
     try {
-      // const token = wx.getStorageSync('token')
       const token = getApp().globalData.token
       const currentCategory = getApp().globalData.currentCategory
       const hotpotId = Number(getApp().globalData.config.hotpotId)
@@ -290,7 +244,6 @@ Page({
   },
   async createOrder(e) {
     var that = this;
-    // var loginToken = wx.getStorageSync('token') // 用户登录 token
     var loginToken = getApp().globalData.token // 用户登录 token
     var remark = this.data.remark; // 备注信息
     
@@ -301,39 +254,8 @@ Page({
       peisongType: that.data.peisongType,
       isCanHx: true
     }
-    // if (e && that.data.peisongType == 'zq' && that.data.tihuodianOpen == '1') {
-    //   // 开启了自提点的功能
-    //   if (!that.data.selectedPickPointId) {
-    //     wx.showToast({
-    //       title: '请选择提货点',
-    //       icon: 'none'
-    //     })
-    //     return
-    //   }
-    //   postData.pickPointId = that.data.selectedPickPointId
-    // }
-    // if (this.data.shopInfo) {
-    //   if (!this.data.shopInfo.openWaimai && !this.data.shopInfo.openZiqu) {
-    //     wx.showModal({
-    //       confirmText: this.data.$t.common.confirm,
-    //       cancelText: this.data.$t.common.cancel,
-    //       content: this.data.$t.pay.servicesclosed,
-    //       showCancel: false
-    //     })
-    //     return;
-    //   }
-    //   postData.shopIdZt = this.data.shopInfo.id
-    //   postData.shopNameZt = this.data.shopInfo.name
-    // }
-    // if (that.data.kjId) {
-    //   postData.kjid = that.data.kjId
-    // }
-    // if (that.data.pingtuanOpenId) {
-    //   postData.pingtuanOpenId = that.data.pingtuanOpenId
-    // }
     const extJsonStr = {}
     if (postData.peisongType == 'zq') {
-      // extJsonStr['联系电话'] = this.data.mobile
       if (this.data.packaging_fee && this.data.packaging_fee_use == '1') {
         postData.trips = this.data.packaging_fee
       }
@@ -449,7 +371,6 @@ Page({
     })
   },
   async processAfterCreateOrder(res) {
-    // const token = wx.getStorageSync('token')
     const token = getApp().globalData.token
     if (res.data.status != 0) {
       // 待支付状态才需要支付
@@ -458,7 +379,7 @@ Page({
       })
       return
     }
-    // 直接弹出支付，取消支付的话，去订单列表
+    // 直接弹出支付弹窗，让用户选择支付方式
     const res1 = await WXAPI.userAmount(token)
     if (res1.code != 0) {
       wx.showToast({
@@ -470,25 +391,16 @@ Page({
       });
       return
     }
-    const money = res.data.amountReal * 1 - res1.data.balance*1
-    if (money <= 0) {
-      // 使用余额支付
-      await WXAPI.orderPay(token, res.data.id)
-      // 跳到订单列表
-      wx.redirectTo({
-        url: "/package-order/pages/all-orders/index"
-      })
-    } else {
-      this.setData({
-        paymentShow: true,
-        money,
-        orderId: res.data.id,
-        nextAction: {
-          type: 0,
-          id: res.data.id
-        }
-      })
-    }
+    // 直接显示支付弹窗，让用户选择支付方式
+    this.setData({
+      paymentShow: true,
+      money: res.data.amountReal,
+      orderId: res.data.id,
+      nextAction: {
+        type: 0,
+        id: res.data.id
+      }
+    })
   },
   paymentOk(e) {
     console.log(e.detail); // 这里是组件里data的数据
@@ -551,9 +463,7 @@ Page({
     }
   },
   async initShippingAddress() {
-    // const res = await WXAPI.defaultAddress(wx.getStorageSync('token'))
     const res = await WXAPI.defaultAddress(getApp().globalData.token)
-    const hotpotId = Number(getApp().globalData.config.hotpotId)
     if (res.code == 0) {
       // 计算距离
       console.log("调用了initShippingAddress函数")
@@ -571,7 +481,6 @@ Page({
       })
       
       // 如果有地址，重新计算预计到达时间
-      // if (this.data.currentLevel1Category && this.data.currentLevel1Category.id == hotpotId) {
       if (this.data.peisongType == 'kd') {
         this.calculateEstimatedArrivalTime()
       }
@@ -786,10 +695,6 @@ Page({
   },
   async _pickPoints() {
     // 获取提货点列表 https://www.yuque.com/apifm/nu0f75/hm3exv
-    // const res = await WXAPI.pickPoints({
-    //   shopIds: '0,' + this.data.shopInfo.id
-    // })
-    // const res = await WXAPI.shopSubdetail(1027146)
     const res = await WXAPI.fetchShops()
     if (res.code == 0) {
       const shopInfo = res.data.find(shop => shop.status === 1) || null
