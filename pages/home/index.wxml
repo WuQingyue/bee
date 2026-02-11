@@ -28,7 +28,7 @@
   >
     <view class="user-card">
       <view class="user-main" bind:tap="huiyuan">
-        <image class="user-avatar" src="{{ apiUserInfoMap.base.avatarUrl ? apiUserInfoMap.base.avatarUrl : '/images/who.png' }}" mode="aspectFill"></image>
+        <image class="user-avatar" src="{{ apiUserInfoMap.base.avatarUrl ? apiUserInfoMap.base.avatarUrl : 'https://polarbear123456.oss-cn-beijing.aliyuncs.com/yun_dian_gou/images/who.png' }}" mode="aspectFill"></image>
         <view class="user-info">
           <view class="user-nick" bindtap="editNick">{{ nick ? nick : $t.my.nickSet }}</view>
           <!-- <view class="user-member">
@@ -38,7 +38,7 @@
       </view>
       <!-- <view class="user-actions">
         <view wx:if="{{ language }}" class="language-btn" bind:tap="changeLang">
-          <image class="language-icon" src="/images/lang/{{language}}.png" mode="aspectFill"></image>
+          <image class="language-icon" src="https://polarbear123456.oss-cn-beijing.aliyuncs.com/yun_dian_gou/images/lang/{{language}}.png" mode="aspectFill"></image>
         </view>
         <view class="coupon-btn" bind:tap="coupon">
           <text>{{ $t.coupons.title }}</text>
@@ -54,7 +54,7 @@
     <view class="delivery-types">
       <view class="delivery-card" data-type="zq" bind:tap="changePeisongType">
         <view class="delivery-icon-wrapper">
-          <image class="delivery-icon" src="/images/zq.png"></image>
+          <image class="delivery-icon" src="https://polarbear123456.oss-cn-beijing.aliyuncs.com/yun_dian_gou/images/zq.png"></image>
         </view>
         <view class="delivery-text">{{ $t.home.zq }}</view>
         <!--<view class="delivery-desc">除火锅食材可配送,其余商品均需到店自提哦</view> -->
@@ -62,7 +62,7 @@
       </view>
       <view class="delivery-card" data-type="kd" bind:tap="changePeisongType">
         <view class="delivery-icon-wrapper">
-          <image class="delivery-icon" src="/images/ps.png"></image>
+          <image class="delivery-icon" src="https://polarbear123456.oss-cn-beijing.aliyuncs.com/yun_dian_gou/images/ps.png"></image>
         </view>
         <view class="delivery-text">{{ $t.home.ps }}</view>
         <!--<view class="delivery-desc">仅支持火锅食材配送哦</view> -->
@@ -77,13 +77,13 @@
     <view class="features-grid">
       <!-- <view class="feature-item" bind:tap="touming">
         <view class="feature-icon-box">
-          <image class="feature-icon" src="/images/sc.png"></image>
+          <image class="feature-icon" src="https://polarbear123456.oss-cn-beijing.aliyuncs.com/yun_dian_gou/images/sc.png"></image>
         </view>
         <view class="feature-name">{{ $t.home.sc }}</view>
       </view> -->
       <view class="feature-item" bind:tap="card">
         <view class="feature-icon-box">
-          <image class="feature-icon" src="/images/lp.png"></image>
+          <image class="feature-icon" src="https://polarbear123456.oss-cn-beijing.aliyuncs.com/yun_dian_gou/images/lp.png"></image>
         </view>
         <view class="feature-name">{{ $t.home.lpk }}</view>
       </view>
@@ -101,13 +101,13 @@
       </view>
       <view class="feature-item">
         <view class="feature-icon-box">
-          <image class="feature-icon" src="/images/tg.png"></image>
+          <image class="feature-icon" src="https://polarbear123456.oss-cn-beijing.aliyuncs.com/yun_dian_gou/images/tg.png"></image>
         </view>
         <view class="feature-name">{{ $t.home.tg }}</view>
       </view>
       <view class="feature-item">
         <view class="feature-icon-box">
-          <image class="feature-icon" src="/images/bh.png"></image>
+          <image class="feature-icon" src="https://polarbear123456.oss-cn-beijing.aliyuncs.com/yun_dian_gou/images/bh.png"></image>
         </view>
         <view class="feature-name">{{ $t.home.bh }}</view>
       </view>

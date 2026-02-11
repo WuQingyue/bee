@@ -2,9 +2,9 @@
   <view class="header">
     <view class="search">
       <input type="text" placeholder="{{ $t.common.searchPlaceholder }}" value="{{name}}" bindinput="bindinput" bindconfirm="bindconfirm"></input>
-      <image src="/images/icon/search.svg" bindtap="search"></image>
+      <image src="https://polarbear123456.oss-cn-beijing.aliyuncs.com/yun_dian_gou/images/icon/search.svg" bindtap="search"></image>
     </view>
-    <image class="show-type" src="/images/icon/list{{listType}}.svg" bindtap="changeShowType"></image>
+    <image class="show-type" src="https://polarbear123456.oss-cn-beijing.aliyuncs.com/yun_dian_gou/images/icon/list{{listType}}.svg" bindtap="changeShowType"></image>
   </view>
   <view class="filters">
     <view class="item {{orderBy==''?'active':''}}" data-val="" bindtap="filter">{{ $t.goodsList.sort.zh }}</view>
@@ -47,7 +47,7 @@ module.exports = {
       </view>
       <view class="buy-info">
         <view wx:if="{{ show_seller_number == '1' }}" class="num">已售 {{item.numberSells}}</view>
-        <image class="car" src="/images/icon/car.svg" data-id="{{item.id}}" bindtap="addShopCar"></image>
+        <image class="car" src="https://polarbear123456.oss-cn-beijing.aliyuncs.com/yun_dian_gou/images/icon/car.svg" data-id="{{item.id}}" bindtap="addShopCar"></image>
       </view>
     </view>
   </view>
@@ -68,7 +68,7 @@ module.exports = {
       </view>
       <view class="buy-info">
         <view wx:if="{{ show_seller_number == '1' }}" class="num">已售 {{item.numberSells}}</view>
-        <image class="car" src="/images/icon/car.svg" data-id="{{item.id}}" bindtap="addShopCar"></image>
+        <image class="car" src="https://polarbear123456.oss-cn-beijing.aliyuncs.com/yun_dian_gou/images/icon/car.svg" data-id="{{item.id}}" bindtap="addShopCar"></image>
       </view>
     </view>
   </view>
@@ -78,7 +78,7 @@ module.exports = {
 <block wx:if="{{skuCurGoods}}">
   <view class="sku-mask"></view>
   <view class="sku-container">
-    <image class="close" src="/images/icon/close.svg" bindtap="closeSku"></image>
+    <image class="close" src="https://polarbear123456.oss-cn-beijing.aliyuncs.com/yun_dian_gou/images/icon/close.svg" bindtap="closeSku"></image>
     <view class="sku" wx:for="{{skuCurGoods.properties}}" wx:key="id">
       <view class="t">{{item.name}}</view>
       <view class="items">

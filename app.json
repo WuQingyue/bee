@@ -8,9 +8,7 @@
       "name": "order",
       "pages": [
         "pages/all-orders/index",
-        "pages/order-details/index",
-        "pages/order-details/scan-result", 
-        "pages/order-details/doing"
+        "pages/order-details/index"
       ]
     },
     {
@@ -38,10 +36,8 @@
       "root": "package-user",
       "name": "user",
       "pages": [
-        "pages/queue/index",
         "pages/ad/index",   
-        "pages/user/feedback",    
-        "pages/user/user-code"           
+        "pages/user/feedback"         
       ]
     }
   ],
