@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "",
   "usingComponents": {
-      "van-uploader": "@vant/weapp/uploader/index"
+      "van-uploader": "@vant/weapp/uploader/index",
+      "van-field": "@vant/weapp/field/index"
   }
 }

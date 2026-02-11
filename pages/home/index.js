@@ -4,7 +4,11 @@ Page({
     banners:[],
     apiUserInfoMap:{},
     nick: '',
-    nickShow: false
+    nickShow: false,
+    loading: {
+      banner: true,
+      userInfo: true
+    }
   },
   onLoad(e) {
     getApp().initLanguage(this)
@@ -20,11 +24,15 @@ Page({
   },
   async processGotUserDetail(apiUserInfoMap) {
     if (!apiUserInfoMap) {
+      this.setData({
+        'loading.userInfo': false
+      })
       return
     }
     this.setData({
       apiUserInfoMap,
-      nick: apiUserInfoMap.base.nick
+      nick: apiUserInfoMap.base.nick,
+      'loading.userInfo': false
     })
   },
   async banners() {
@@ -34,7 +42,12 @@ Page({
     })
     if (res.code == 0) {
       this.setData({
-        banners: res.data
+        banners: res.data,
+        'loading.banner': false
+      })
+    } else {
+      this.setData({
+        'loading.banner': false
       })
     }
   },

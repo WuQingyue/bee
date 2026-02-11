@@ -375,6 +375,8 @@ module.exports = {
     lpk: '礼品好卡',
     tg: '超值团购',
     bh: '精选百货',
+    allOrders: '全部订单',
+    addressManagement: '地址管理',
   },
   card: {
     title: '礼品卡',

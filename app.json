@@ -31,8 +31,7 @@
       "root": "package-goods",
       "name": "goods", 
       "pages": [
-        "pages/goods-details/index",
-        "pages/goods/list"
+        "pages/goods-details/index"
       ]
     },
     {
@@ -50,16 +49,12 @@
     "chooseLocation",
     "chooseAddress"
   ],
+  "lazyCodeLoading": "requiredComponents",
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle": "black"
-  },
-  "usingComponents": {
-    "van-icon": "@vant/weapp/icon/index",
-    "van-field": "@vant/weapp/field/index",
-    "van-button": "@vant/weapp/button/index"
   },
   "sitemapLocation": "sitemap.json"
 }

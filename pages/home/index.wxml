@@ -1,35 +1,52 @@
 <view class="home-container">
   <!-- 轮播图区域 -->
-  <view class="banner-section">
-    <swiper wx:if="{{banners}}" class="banner-swiper" indicator-dots indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#ff6b9d" autoplay circular>
-      <swiper-item wx:for="{{banners}}" wx:key="id">
-        <image class="banner-image" mode="aspectFill" bindtap="tapBanner" data-url="{{item.linkUrl}}" src="{{item.picUrl}}" />
-      </swiper-item>
-    </swiper>
-  </view>
+  <van-skeleton 
+    loading="{{ loading.banner }}" 
+    animate="{{ true }}"
+    row="1"
+    title-width="100%"
+  >
+    <view class="banner-section">
+      <swiper wx:if="{{banners}}" class="banner-swiper" indicator-dots indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#ff6b9d" autoplay circular>
+        <swiper-item wx:for="{{banners}}" wx:key="id">
+          <image class="banner-image" mode="aspectFill" bindtap="tapBanner" data-url="{{item.linkUrl}}" src="{{item.picUrl}}" />
+        </swiper-item>
+      </swiper>
+    </view>
+  </van-skeleton>
 
   <!-- 用户信息卡片 -->
-  <view class="user-card">
-    <view class="user-main" bind:tap="huiyuan">
-      <image class="user-avatar" src="{{ apiUserInfoMap.base.avatarUrl ? apiUserInfoMap.base.avatarUrl : '/images/who.png' }}" mode="aspectFill"></image>
-      <view class="user-info">
-        <view class="user-nick" bindtap="editNick">{{ nick ? nick : $t.my.nickSet }}</view>
-        <!-- <view class="user-member">
-          <van-tag type="warning" round size="medium">{{ $t.home.huiyuan }}</van-tag>
-        </view> -->
+  <van-skeleton 
+    loading="{{ loading.userInfo }}" 
+    animate="{{ true }}"
+    avatar
+    title
+    row="1"
+    avatar-shape="round"
+    avatar-size="100rpx"
+    title-width="120rpx"
+  >
+    <view class="user-card">
+      <view class="user-main" bind:tap="huiyuan">
+        <image class="user-avatar" src="{{ apiUserInfoMap.base.avatarUrl ? apiUserInfoMap.base.avatarUrl : '/images/who.png' }}" mode="aspectFill"></image>
+        <view class="user-info">
+          <view class="user-nick" bindtap="editNick">{{ nick ? nick : $t.my.nickSet }}</view>
+          <!-- <view class="user-member">
+            <van-tag type="warning" round size="medium">{{ $t.home.huiyuan }}</van-tag>
+          </view> -->
+        </view>
       </view>
-
+      <!-- <view class="user-actions">
+        <view wx:if="{{ language }}" class="language-btn" bind:tap="changeLang">
+          <image class="language-icon" src="/images/lang/{{language}}.png" mode="aspectFill"></image>
+        </view>
+        <view class="coupon-btn" bind:tap="coupon">
+          <text>{{ $t.coupons.title }}</text>
+          <van-icon name="arrow" />
+        </view>
+      </view> -->
     </view>
-    <!-- <view class="user-actions">
-      <view wx:if="{{ language }}" class="language-btn" bind:tap="changeLang">
-        <image class="language-icon" src="/images/lang/{{language}}.png" mode="aspectFill"></image>
-      </view>
-      <view class="coupon-btn" bind:tap="coupon">
-        <text>{{ $t.coupons.title }}</text>
-        <van-icon name="arrow" />
-      </view>
-    </view> -->
-  </view>
+  </van-skeleton>
 
   <!-- 配送方式选择 -->
   <view class="delivery-section">

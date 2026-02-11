@@ -13,6 +13,13 @@ Page({
     // 连续滚动模式相关数据
     isContinuousMode: false, // 是否启用连续滚动模式
     scrollTop: 0, // 当前滚动位置
+
+    // 骨架屏loading状态
+    loading: {
+      categories: true,
+      goods: true,
+      cart: true
+    }
   },  
   onLoad: function (e) {
     getApp().initLanguage(this)
@@ -203,6 +210,9 @@ Page({
         title: res.msg,
         icon: 'none'
       })
+      this.setData({
+        'loading.categories': false
+      })
       return
     }
     const categories = res.data
@@ -212,13 +222,13 @@ Page({
       page: 1,
       categories: res.data,
       categoryIndex: 0,
-      currentCategory: currentCategory // 初始化 currentCategory
+      currentCategory: currentCategory, // 初始化 currentCategory
+      'loading.categories': false
     })
     // 保存到本地存储，供其他页面使用
     if (currentCategory) {
       getApp().globalData.currentCategory = currentCategory
     }
-    this.data.page = 1
     await this._getGoodsListContinuous()
   },
   async getGoodsList() {
@@ -306,6 +316,7 @@ Page({
 
     this.setData({
       goods: allGoods,
+      'loading.goods': false
     })
 
     console.log('商品数据加载完成:', allGoods)
@@ -485,18 +496,21 @@ Page({
     }
     if (res.code == 0) {
       this.setData({
-        shippingCarInfo: res.data
+        shippingCarInfo: res.data,
+        'loading.cart': false
       })
     } else {
       this.setData({
         shippingCarInfo: null,
-        showCartPop: false
+        showCartPop: false,
+        'loading.cart': false
       })
     }
     
 
     this.processBadge()
   },
+
   showCartPop() {
     if (this.data.scanDining) {
       // 扫码点餐，前往购物车页面

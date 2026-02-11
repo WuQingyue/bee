@@ -1,31 +1,37 @@
-<view class="container" wx:if="{{addressList.length > 0 && addressEdit == false}}">
-  <view class="address-list">
-    <view class="a-address" wx:for="{{addressList}}" wx:key="id">
-      <view class="left-text" bindtap="selectTap" data-id="{{item.id}}">
-        <view class="name-tel">
-          {{item.linkMan}} {{item.mobile}}
+<view class="container" wx:if="{{!addressEdit}}">
+  <van-skeleton 
+    loading="{{ loading.addressList }}" 
+    animate="{{ true }}"
+    row="2"
+    title
+  >
+    <view class="address-list" wx:if="{{addressList && addressList.length > 0}}">
+      <view class="a-address" wx:for="{{addressList}}" wx:key="id">
+        <view class="left-text" bindtap="selectTap" data-id="{{item.id}}">
+          <view class="name-tel">
+            {{item.linkMan}} {{item.mobile}}
+          </view>
+          <view class="address-box">
+            {{item.address}}
+          </view>
         </view>
-        <view class="address-box">
-          {{item.address}}
-        </view>
+  			<van-icon name="edit" custom-class="right-edit" size="36rpx" bind:click="editAddress" data-id="{{item.id}}" />
+  			<van-icon name="delete" custom-class="right-edit" size="36rpx" bind:click="deleteAddress" data-id="{{item.id}}" />
       </view>
-			<van-icon name="edit" custom-class="right-edit" size="36rpx" bind:click="editAddress" data-id="{{item.id}}" />
-			<van-icon name="delete" custom-class="right-edit" size="36rpx" bind:click="deleteAddress" data-id="{{item.id}}" />
     </view>
-  </view>
-  <view class="bottom-box" bindtap="addAddress" wx:if="{{addressList.length > 0 && addressEdit == false}}">
+    <view wx:elif="{{!loading.addressList && addressList == null}}" class="empty-state">
+      <view class="content-1">{{ $t.ad_index.empty }}</view>
+      <view class="content-2">{{ $t.ad_index.pleaseAdd }}</view>
+      <van-button color="#e64340" custom-class="button" bindtap="addAddress">{{ $t.ad_index.add }}</van-button>
+    </view>
+  </van-skeleton>
+  <view class="bottom-box" bindtap="addAddress" wx:if="{{addressList && addressList.length > 0}}">
     <view class="add-btn">
       <van-icon name="add" color="#e64340" size="36rpx" />
       <view>{{ $t.ad_index.add }}</view>
     </view>
     <van-icon name="arrow" size="36rpx" />
   </view>
-</view>
-
-<view class="" wx:if="{{addressList == null && addressEdit == false}}">
-	<view class="content-1">{{ $t.ad_index.empty }}</view>
-	<view class="content-2">{{ $t.ad_index.pleaseAdd }}</view>
-	<van-button color="#e64340" custom-class="button" bindtap="addAddress">{{ $t.ad_index.add }}</van-button>
 </view>
 
 <view class="addressEdit" wx:if="{{addressEdit}}">

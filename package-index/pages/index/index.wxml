@@ -1,76 +1,93 @@
 <!-- 顶部横向分类视图 -->
-<view class="top-category-scroll">
-  <scroll-view class="category-scroll-view" scroll-x="true" show-scrollbar="false">
-    <view class="category-scroll-content">
-      <view 
-        wx:for="{{categories}}" 
-        wx:key="id" 
-        class="category-item {{index === categoryIndex ? 'active' : ''}}"
-        data-idx="{{index}}"
-        bindtap="categoryClick">
-        <view class="category-icon-wrapper">
-          <view class="category-icon">
-            <image wx:if="{{item.icon}}" class="category-icon-img" src="{{item.icon}}" mode="aspectFill"></image>
-            <text wx:else class="category-icon-text">{{item.name}}</text>
+<van-skeleton 
+  loading="{{ loading.categories }}" 
+  animate="{{ true }}"
+  row="1"
+>
+  <view class="top-category-scroll">
+    <scroll-view class="category-scroll-view" scroll-x="true" show-scrollbar="false">
+      <view class="category-scroll-content">
+        <view 
+          wx:for="{{categories}}" 
+          wx:key="id" 
+          class="category-item {{index === categoryIndex ? 'active' : ''}}"
+          data-idx="{{index}}"
+          bindtap="categoryClick">
+          <view class="category-icon-wrapper">
+            <view class="category-icon">
+              <image wx:if="{{item.icon}}" class="category-icon-img" src="{{item.icon}}" mode="aspectFill"></image>
+              <text wx:else class="category-icon-text">{{item.name}}</text>
+            </view>
           </view>
+          <view class="category-name">{{item.name}}</view>
         </view>
-        <view class="category-name">{{item.name}}</view>
       </view>
-    </view>
-  </scroll-view>
-</view>
+    </scroll-view>
+  </view>
+</van-skeleton>
 
 <view class="box1">
   <scroll-view class="box-2" scroll-y="true" scroll-top="{{scrollTop}}" bindscroll="onScroll" bindscrolltolower="_onReachBottom">
-    <van-empty wx:if="{{!goods || goods.length == 0}}" description="{{ $t.common.empty }}" />
-    <van-card
-      wx:for="{{goods}}" wx:key="id"
-      centered="true"
-      lazy-load="true"
-      origin-price="{{ (item.originalPrice > 0 && item.originalPrice != item.minPrice) ? item.originalPrice : '' }}"
-      price="{{item.minPrice}}"
-      thumb-mode="aspectFill"
-      tag="{{ item.badge ? item.badge : '' }}"
-      title="{{item.name}}"
-      thumb-link="/package-goods/pages/goods-details/index?id={{ item.id }}"
-      thumb="{{item.pic}}">
-      <view slot="desc">
-        <view wx:if="{{ item.miaosha && item.dateStartInt > 0 }}">
-          <van-count-down class="count-downno-start" time="{{ item.dateStartInt }}" format="HH时mm分ss秒"></van-count-down>
+    <van-skeleton 
+      loading="{{ loading.goods }}" 
+      animate="{{ true }}"
+      row="3"
+      avatar
+      title
+    >
+      <van-empty wx:if="{{!goods || goods.length == 0}}" description="{{ $t.common.empty }}" />
+      <van-card
+        wx:for="{{goods}}" wx:key="id"
+        centered="true"
+        lazy-load="true"
+        origin-price="{{ (item.originalPrice > 0 && item.originalPrice != item.minPrice) ? item.originalPrice : '' }}"
+        price="{{item.minPrice}}"
+        thumb-mode="aspectFill"
+        tag="{{ item.badge ? item.badge : '' }}"
+        title="{{item.name}}"
+        thumb-link="/package-goods/pages/goods-details/index?id={{ item.id }}"
+        thumb="{{item.pic}}">
+        <view slot="desc">
+          <view wx:if="{{ item.miaosha && item.dateStartInt > 0 }}">
+            <van-count-down class="count-downno-start" time="{{ item.dateStartInt }}" format="HH时mm分ss秒"></van-count-down>
+          </view>
+          <view wx:elif="{{ item.miaosha && item.dateStartInt <= 0 && item.dateEndInt > 0 }}">
+            <van-count-down class="count-downno-start" time="{{ item.dateEndInt }}" format="HH时mm分ss秒"></van-count-down>
+          </view>
+          <view wx:elif="{{ item.kanjia }}">
+            {{ $t.index.minPrice }} {{ item.kanjiaPrice }}
+          </view>
+          <view wx:else>{{ item.characteristic }}</view>
         </view>
-        <view wx:elif="{{ item.miaosha && item.dateStartInt <= 0 && item.dateEndInt > 0 }}">
-          <van-count-down class="count-downno-start" time="{{ item.dateEndInt }}" format="HH时mm分ss秒"></van-count-down>
+        <view class="goods-btn" slot="footer">
+          <van-button wx:if="{{ item.stores < item.minBuyNumber }}" size="small" color="#e64340" round disabled>{{ $t.goodsDetail.storeing }}</van-button>
+          <van-button wx:elif="{{ item.miaosha && item.dateStartInt > 0 }}" size="small" color="#e64340" round disabled>{{ $t.index.noStart }}</van-button>
+          <van-button wx:elif="{{ item.miaosha && item.dateEndInt <= 0 }}" size="small" color="#e64340" round disabled>{{ $t.index.miaoshaEnd }}</van-button>
+          <van-button wx:elif="{{item.kanjia}}" size="small" color="#e64340" round data-idx="{{index}}" bind:click="goGoodsDetail">{{ $t.goodsDetail.kanjia }}</van-button>
+          <van-button wx:elif="{{item.pingtuan}}" size="small" color="#e64340" round data-idx="{{index}}" bind:click="showGoodsDetailPOP">{{ $t.index.pingtuan }}</van-button>
+          <van-button wx:elif="{{item.propertyIds || item.hasAddition || item.hasGoodsTimes}}" size="small" color="#e64340" round data-idx="{{index}}" bind:click="showGoodsDetailPOP">{{ $t.index.selectSku }}</van-button>
+          <van-icon wx:else name="add" color="#e64340" size="50rpx" data-idx="{{index}}" bind:click="addCart1" />
         </view>
-        <view wx:elif="{{ item.kanjia }}">
-          {{ $t.index.minPrice }} {{ item.kanjiaPrice }}
-        </view>
-        <view wx:else>{{ item.characteristic }}</view>
-      </view>
-      <view class="goods-btn" slot="footer">
-        <van-button wx:if="{{ item.stores < item.minBuyNumber }}" size="small" color="#e64340" round disabled>{{ $t.goodsDetail.storeing }}</van-button>
-        <van-button wx:elif="{{ item.miaosha && item.dateStartInt > 0 }}" size="small" color="#e64340" round disabled>{{ $t.index.noStart }}</van-button>
-        <van-button wx:elif="{{ item.miaosha && item.dateEndInt <= 0 }}" size="small" color="#e64340" round disabled>{{ $t.index.miaoshaEnd }}</van-button>
-        <van-button wx:elif="{{item.kanjia}}" size="small" color="#e64340" round data-idx="{{index}}" bind:click="goGoodsDetail">{{ $t.goodsDetail.kanjia }}</van-button>
-        <van-button wx:elif="{{item.pingtuan}}" size="small" color="#e64340" round data-idx="{{index}}" bind:click="showGoodsDetailPOP">{{ $t.index.pingtuan }}</van-button>
-        <van-button wx:elif="{{item.propertyIds || item.hasAddition || item.hasGoodsTimes}}" size="small" color="#e64340" round data-idx="{{index}}" bind:click="showGoodsDetailPOP">{{ $t.index.selectSku }}</van-button>
-        <van-icon wx:else name="add" color="#e64340" size="50rpx" data-idx="{{index}}" bind:click="addCart1" />
-      </view>
-    </van-card>
+      </van-card>
+    </van-skeleton>
   </scroll-view>
 </view>
 
-<view class="cart-bar" wx:if="{{shippingCarInfo && shippingCarInfo.number}}">
-  <view class="l" bindtap="showCartPop">
-    <van-button type="default" round icon="shopping-cart-o">{{ $t.cart.title }}</van-button>
-    <view class="badge">{{shippingCarInfo.number}}</view>
-  </view>  
-  <view class="r">
-    <view class="amount"><text>¥</text>{{shippingCarInfo.price}}</view>
-    <view class="topay" bindtap="goPay">{{ $t.index.submit }}</view>
+<van-skeleton 
+  loading="{{ loading.cart }}" 
+  animate="{{ true }}"
+>
+  <view class="cart-bar" wx:if="{{shippingCarInfo && shippingCarInfo.number}}">
+    <view class="l" bindtap="showCartPop">
+      <van-button type="default" round icon="shopping-cart-o">{{ $t.cart.title }}</van-button>
+      <view class="badge">{{shippingCarInfo.number}}</view>
+    </view>  
+    <view class="r">
+      <view class="amount"><text>¥</text>{{shippingCarInfo.price}}</view>
+      <view class="topay" bindtap="goPay">{{ $t.index.submit }}</view>
+    </view>
   </view>
-</view>
-
-
+</van-skeleton>
 
 <van-popup
   show="{{ showGoodsDetailPOP }}"

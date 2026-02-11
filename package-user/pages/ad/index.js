@@ -16,6 +16,10 @@ Page({
     // 固定省市：广东省 / 汕头市
     fixedProvinceName: '福建省',
     fixedCityName: '厦门市',
+    // 骨架屏loading状态
+    loading: {
+      addressList: true
+    }
   },
   // 添加地址
   addAddress: function() {
@@ -136,21 +140,17 @@ Page({
   },  
   // 获取地址列表
   async initShippingAddress() {
-    wx.showLoading({
-      title: '',
-    })
     // const res = await WXAPI.queryAddress(wx.getStorageSync('token'))
     const res = await WXAPI.queryAddress(getApp().globalData.token)
-    wx.hideLoading({
-      success: (res) => {},
-    })
     if (res.code == 0) {
       this.setData({
-        addressList: res.data
+        addressList: res.data,
+        'loading.addressList': false
       });
     } else {
       this.setData({
-        addressList: null
+        addressList: null,
+        'loading.addressList': false
       });
     }
   },   

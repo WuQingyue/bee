@@ -7,6 +7,8 @@
     "van-submit-bar": "@vant/weapp/submit-bar/index",
     "van-popup": "@vant/weapp/popup/index",
     "van-datetime-picker": "@vant/weapp/datetime-picker/index",
-    "payment": "/components/payment/index"
+    "payment": "/components/payment/index",
+    "van-icon": "@vant/weapp/icon/index",
+    "van-field": "@vant/weapp/field/index"
   }
 }

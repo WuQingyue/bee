@@ -33,7 +33,6 @@ async function bindSeller() {
 
 // 检测登录状态，返回 true / false
 async function checkHasLogined() {
-  // const token = wx.getStorageSync('token')
   let token
   try {
     const app = getApp && getApp()
@@ -61,7 +60,7 @@ async function checkHasLogined() {
   if (checkTokenRes.code != 0) {
     // wx.removeStorageSync('token')
     console.log("checkHasLogined",token)
-     getApp().globalData.token = ""
+    getApp().globalData.token = ""
     return false
   }
   return true
@@ -153,56 +152,11 @@ async function authorize() {
     wx.login({
       success: function (res) {
         const code = res.code
-        // let referrer = '' // 推荐人
-        // let referrer_storge = wx.getStorageSync('referrer');
-        // if (referrer_storge) {
-        //   referrer = referrer_storge;
-        // }
-        // 下面开始调用注册接口
-        // const componentAppid = wx.getStorageSync('componentAppid')
-        // if (componentAppid) {
-        //   WXAPI.wxappServiceAuthorize({
-        //     code: code,
-        //     referrer: referrer
-        //   }).then(function (res) {
-        //     if (res.code == 0) {
-        //       wx.setStorageSync('token', res.data.token)
-        //       wx.setStorageSync('uid', res.data.uid)
-        //       resolve(res)
-        //     } else {
-        //       wx.showToast({
-        //         title: res.msg,
-        //         icon: 'none'
-        //       })
-        //       reject(res.msg)
-        //     }
-        //   })
-        // } else {
-        //   WXAPI.authorize({
-        //     code: code,
-        //     referrer: referrer
-        //   }).then(function (res) {
-        //     if (res.code == 0) {
-        //       wx.setStorageSync('token', res.data.token)
-        //       wx.setStorageSync('uid', res.data.uid)
-        //       resolve(res)
-        //     } else {
-        //       wx.showToast({
-        //         title: res.msg,
-        //         icon: 'none'
-        //       })
-        //       reject(res.msg)
-        //     }
-        //   })
-        // }
         WXAPI.authorize({
           code: code
         }).then(function (res) {
           if (res.code == 0) {
-            console.log("authorize",res)
-            // wx.setStorageSync('token', res.data.token)
             getApp().globalData.token = res.data.token
-            // wx.setStorageSync('uid', res.data.uid)
             getApp().globalData.uid = res.data.uid
             resolve(res)
           } else {
